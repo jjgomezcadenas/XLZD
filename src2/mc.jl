@@ -101,7 +101,8 @@ or `:outside_lxe`.
 function handle_deposit!(state::PhotonState, det::LXeDetector,
                           params::MCParams,
                           x::Float64, y::Float64, z::Float64,
-                          E_dep::Float64)
+                          E_dep::Float64,
+                          scratch::Union{PhotonScratch, Nothing}=nothing)
     reg = region_at(det, x, y, z)
     E_visible_MeV  = det.E_visible_keV   * 1.0e-3
     E_skin_veto_MeV = det.E_skin_veto_keV * 1.0e-3
@@ -109,6 +110,8 @@ function handle_deposit!(state::PhotonState, det::LXeDetector,
 
     if reg === :active
         E_dep < E_visible_MeV && return
+        # Record for control histograms (before MS-reject branching)
+        scratch !== nothing && push!(scratch.deposits, (z, E_dep))
         if !state.cluster_started
             state.x_cluster = x
             state.y_cluster = y
@@ -169,7 +172,12 @@ function track_one_photon!(rng::AbstractRNG,
                             det::LXeDetector,
                             eff::EffectiveSource,
                             xcom::XCOMTable,
-                            params::MCParams)::Symbol
+                            params::MCParams;
+                            hist::Union{HistogramSet, Nothing}=nothing,
+                            scratch::Union{PhotonScratch, Nothing}=nothing)::Symbol
+    # Reset scratch for this photon
+    scratch !== nothing && empty!(scratch.deposits)
+
     # Sample entry point + initial direction
     x, y, z, dx, dy, dz = sample_entry(rng, det, eff)
     E = eff.E_MeV
@@ -245,7 +253,7 @@ function track_one_photon!(rng::AbstractRNG,
 
         elseif r_branch < (sX + sP) / sT
             # Photoelectric absorption: full energy locally
-            handle_deposit!(state, det, params, x, y, z, E)
+            handle_deposit!(state, det, params, x, y, z, E, scratch)
             if state.outcome === :in_progress
                 finalize_outcome!(state, rng, params)
             end
@@ -255,7 +263,7 @@ function track_one_photon!(rng::AbstractRNG,
             # Compton: KN scatter
             E_scatt, cos_θ = sample_klein_nishina(rng, E)
             E_dep = E - E_scatt
-            handle_deposit!(state, det, params, x, y, z, E_dep)
+            handle_deposit!(state, det, params, x, y, z, E_dep, scratch)
             state.outcome === :in_progress || break
 
             # Update direction & energy
@@ -265,13 +273,18 @@ function track_one_photon!(rng::AbstractRNG,
 
             # Energy cutoff: deposit remainder locally
             if E < E_cutoff
-                handle_deposit!(state, det, params, x, y, z, E)
+                handle_deposit!(state, det, params, x, y, z, E, scratch)
                 if state.outcome === :in_progress
                     finalize_outcome!(state, rng, params)
                 end
                 break
             end
         end
+    end
+
+    # Update control histograms from this photon's scratch buffer
+    if hist !== nothing && scratch !== nothing
+        update_histograms!(hist, scratch, params)
     end
 
     return state.outcome

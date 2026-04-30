@@ -26,6 +26,7 @@ struct MCResult
     f_SS_in_ROI::Float64
     bg_per_yr::Float64
     r_comp::Float64
+    histograms::Union{HistogramSet, Nothing}
 end
 
 const _MC_OUTCOMES = (:escaped, :MS_rejected, :skin_vetoed,
@@ -50,7 +51,8 @@ function run_mc(det::LXeDetector, eff::EffectiveSource,
                 comp_eff::Union{EffectiveSource, Nothing},
                 xcom::XCOMTable, params::MCParams,
                 n_samples::Integer; mc_seed::Integer=1234,
-                verbose::Bool=false)::MCResult
+                verbose::Bool=false,
+                with_histograms::Bool=false)::MCResult
     n_threads  = Threads.nthreads()
     base       = div(n_samples, n_threads)
     rem        = n_samples - base * n_threads
@@ -60,10 +62,13 @@ function run_mc(det::LXeDetector, eff::EffectiveSource,
 
     thread_counts = [Dict{Symbol,Int}(o => 0 for o in _MC_OUTCOMES)
                      for _ in 1:n_threads]
+    thread_hists  = with_histograms ?
+                    [HistogramSet() for _ in 1:n_threads] :
+                    Vector{HistogramSet}()
+    thread_scratch = with_histograms ?
+                     [PhotonScratch() for _ in 1:n_threads] :
+                     Vector{PhotonScratch}()
 
-    # Progress reporting: 10 prints per run, by thread 1 only.
-    # report_every is per-thread; total events ≈ i × n_threads when thread 1
-    # has processed i events.
     base_thread1 = base + (1 <= rem ? 1 : 0)
     report_every = max(1, base_thread1 ÷ 10)
 
@@ -72,8 +77,11 @@ function run_mc(det::LXeDetector, eff::EffectiveSource,
         n_local      = base + (tid <= rem ? 1 : 0)
         rng          = MersenneTwister(mc_seed + tid)
         local_counts = thread_counts[tid]
+        local_hist    = with_histograms ? thread_hists[tid] : nothing
+        local_scratch = with_histograms ? thread_scratch[tid] : nothing
         for i in 1:n_local
-            outcome = track_one_photon!(rng, det, eff, xcom, params)
+            outcome = track_one_photon!(rng, det, eff, xcom, params;
+                                         hist=local_hist, scratch=local_scratch)
             if apply_veto && outcome === :SS_in_ROI
                 if rand(rng) < r_comp
                     if companion_visible!(rng, det, comp_eff, xcom, params)
@@ -105,8 +113,18 @@ function run_mc(det::LXeDetector, eff::EffectiveSource,
     f_ss_roi = counts[:SS_in_ROI] / n_total
     bg       = f_ss_roi * eff.total_per_yr
 
+    merged_hist = if with_histograms
+        h = HistogramSet()
+        for th in thread_hists
+            merge_histograms!(h, th)
+        end
+        h
+    else
+        nothing
+    end
+
     MCResult(eff.name, eff.isotope, counts, n_total, runtime,
-             eff.total_per_yr, f_ss_roi, bg, r_comp)
+             eff.total_per_yr, f_ss_roi, bg, r_comp, merged_hist)
 end
 
 """
@@ -121,7 +139,8 @@ function run_mc_all(det::LXeDetector, effs::Vector{EffectiveSource},
                     xcom::XCOMTable, params::MCParams,
                     n_samples::Integer;
                     mc_seed::Integer=1234,
-                    verbose::Bool=false)::Vector{MCResult}
+                    verbose::Bool=false,
+                    with_histograms::Bool=false)::Vector{MCResult}
     by_name = Dict(e.name => e for e in effs)
     results = MCResult[]
     main_names = ["CB_Bi214", "CTH_Bi214", "CBH_Bi214",
@@ -139,7 +158,8 @@ function run_mc_all(det::LXeDetector, effs::Vector{EffectiveSource},
         verbose && @printf("\n── Running %s (%d / %d) ──\n",
                             mname, i, length(main_names))
         push!(results, run_mc(det, eff, comp_eff, xcom, params, n_samples;
-                              mc_seed=seed, verbose=verbose))
+                              mc_seed=seed, verbose=verbose,
+                              with_histograms=with_histograms))
     end
     results
 end

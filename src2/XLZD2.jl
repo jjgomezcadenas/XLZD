@@ -17,6 +17,7 @@ include("lxe_detector.jl")
 include("physics.jl")
 include("sampling.jl")
 include("mc_params.jl")
+include("histograms.jl")
 include("mc.jl")
 include("run.jl")
 
@@ -89,5 +90,11 @@ export companion_visible!, companion_reach_prob
 
 # Run driver
 export MCResult, run_mc, run_mc_all
+
+# Control histograms
+export HistogramSet, PhotonScratch
+export update_histograms!, merge_histograms!
+export fill_Δz!, fill_E_first!, fill_E_cluster!
+export fill_N_clusters!, fill_N_extra!, fill_ssms!
 
 end # module XLZD2
