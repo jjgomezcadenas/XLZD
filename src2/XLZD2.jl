@@ -15,6 +15,7 @@ include("transport.jl")
 include("effective_sources.jl")
 include("lxe_detector.jl")
 include("physics.jl")
+include("sampling.jl")
 
 # Geometry primitives
 export GCyl, GDisk
@@ -69,5 +70,11 @@ export XCOMTable, load_xcom
 export σ_photo, σ_Compton, σ_pair, μ_total_lin
 export sample_klein_nishina, rotate_direction
 export ME_C2_MEV
+
+# Source sampling
+export build_cdf, sample_u
+export sample_barrel_entry, sample_endcap_entry, sample_entry
+export icv_top_inner_disk, icv_bot_inner_disk
+export ICV_TOP_ASPECT, ICV_BOT_ASPECT
 
 end # module XLZD2
