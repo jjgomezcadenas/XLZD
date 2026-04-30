@@ -66,7 +66,10 @@ function build_effective_source(name::AbstractString, region::Symbol,
                                 u_bins::Vector{Float64})::EffectiveSource
     dNdu  = aggregate_dNdu(contributions, u_bins)
     total = _trapz(dNdu, u_bins)
-    E_MeV = isotope === :Bi214 ? E_BI214_MEV : E_TL208_MEV
+    E_MeV = isotope === :Bi214  ? E_BI214_MEV          :
+            isotope === :Tl208  ? E_TL208_MEV          :
+            isotope === :Tl208c ? E_TL208_COMPANION_MEV :
+            error("Unknown isotope $isotope")
     EffectiveSource(String(name), region, isotope, E_MeV,
                     contributions, u_bins, dNdu, total)
 end
@@ -128,8 +131,11 @@ function build_effective_sources(individual_sources::Vector{GammaSource},
 
     out = EffectiveSource[]
 
-    for iso in (:Bi214, :Tl208)
-        E   = iso === :Bi214 ? E_BI214_MEV : E_TL208_MEV
+    for iso in (:Bi214, :Tl208, :Tl208c)
+        E   = iso === :Bi214  ? E_BI214_MEV          :
+              iso === :Tl208  ? E_TL208_MEV          :
+              iso === :Tl208c ? E_TL208_COMPANION_MEV :
+              error("Unknown isotope $iso")
         μ   = mat_Ti.μ_lin(E)
         slab_body = Slab(μ, t_ICV_body, "ICV_body")
         slab_top  = Slab(μ, t_ICV_top,  "ICV_top_head")

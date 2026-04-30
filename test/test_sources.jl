@@ -19,11 +19,12 @@ _trapz_t(y, x) = sum(0.5 * (y[i]+y[i+1]) * (x[i+1]-x[i]) for i in 1:length(x)-1)
 
 @testset "build_individual_sources count and shape" begin
     sources = build_individual_sources(cryo, mat_Ti)
-    @test length(sources) == 34   # 17 sources × 2 isotopes
+    @test length(sources) == 51   # 17 sources × 3 isotopes (Bi214, Tl208, Tl208c)
 
-    # Half are Bi-214, half Tl-208
-    @test count(s -> s.isotope === :Bi214, sources) == 17
-    @test count(s -> s.isotope === :Tl208, sources) == 17
+    # One third each
+    @test count(s -> s.isotope === :Bi214,  sources) == 17
+    @test count(s -> s.isotope === :Tl208,  sources) == 17
+    @test count(s -> s.isotope === :Tl208c, sources) == 17
 
     # All have positive produced rate
     @test all(s -> s.produced_per_yr > 0, sources)
@@ -34,6 +35,28 @@ _trapz_t(y, x) = sum(0.5 * (y[i]+y[i+1]) * (x[i+1]-x[i]) for i in 1:length(x)-1)
     for s in sources
         I = _trapz_t(s.dNdu, s.u_bins)
         @test isapprox(I, s.exit_inward_per_yr; rtol=1e-10)
+    end
+end
+
+@testset "Tl-208 companion BR and self-shielding" begin
+    sources = build_individual_sources(cryo, mat_Ti)
+    by_name = Dict(s.name => s for s in sources)
+
+    # Companion produced rate = Tl-208 produced × BR_TL208_COMPANION
+    for base in ("OCV_barrel", "ICV_barrel", "ICV_top_head", "ICV_bottom_head")
+        main = by_name["$(base)_Tl208"]
+        comp = by_name["$(base)_Tl208c"]
+        @test isapprox(comp.produced_per_yr,
+                       main.produced_per_yr * BR_TL208_COMPANION;
+                       rtol=1e-12)
+        @test comp.E_MeV ≈ E_TL208_COMPANION_MEV
+        # Companion is more strongly self-shielded than the main γ
+        # (μ_Ti(0.583) > μ_Ti(2.615)), so the exit/produced fraction is lower.
+        # Surface sources (PSurface) have no self-shielding so frac is constant.
+        if !(comp.producer isa PSurface)
+            @test comp.exit_inward_per_yr / comp.produced_per_yr <
+                  main.exit_inward_per_yr / main.produced_per_yr
+        end
     end
 end
 
@@ -79,4 +102,9 @@ end
     # MC-active Ti mass = 2143.7 kg. Bi-214 γ/yr = 2143.7×0.08×1e-3×0.0155×3.1557e7
     # ≈ 8.39e4 γ/yr.
     @test isapprox(γ_active, 8.39e4; rtol=0.05)
+
+    # Total Tl-208 companion produced rate = 0.99 × total Tl-208 produced rate
+    γ_main = sum(s.produced_per_yr for s in sources if s.isotope === :Tl208)
+    γ_comp = sum(s.produced_per_yr for s in sources if s.isotope === :Tl208c)
+    @test isapprox(γ_comp, γ_main * BR_TL208_COMPANION; rtol=1e-12)
 end

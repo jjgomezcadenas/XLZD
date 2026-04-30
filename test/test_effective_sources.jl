@@ -25,17 +25,18 @@ _trapz_t(y, x) = sum(0.5 * (y[i]+y[i+1]) * (x[i+1]-x[i]) for i in 1:length(x)-1)
 # Pull individual sources by name
 indiv_by_name = Dict(s.name => s for s in indiv)
 
-@testset "Six effective sources built" begin
-    @test length(effs) == 6
+@testset "Nine effective sources built" begin
+    # 3 regions × 3 isotopes (Bi214, Tl208, Tl208c) = 9
+    @test length(effs) == 9
     @test sort([e.name for e in effs]) == [
-        "CBH_Bi214", "CBH_Tl208",
-        "CB_Bi214",  "CB_Tl208",
-        "CTH_Bi214", "CTH_Tl208",
+        "CBH_Bi214", "CBH_Tl208", "CBH_Tl208c",
+        "CB_Bi214",  "CB_Tl208",  "CB_Tl208c",
+        "CTH_Bi214", "CTH_Tl208", "CTH_Tl208c",
     ]
 
     for e in effs
         @test e.region in (:barrel, :endcap_top, :endcap_bottom)
-        @test e.E_MeV in (E_BI214_MEV, E_TL208_MEV)
+        @test e.E_MeV in (E_BI214_MEV, E_TL208_MEV, E_TL208_COMPANION_MEV)
         @test e.total_per_yr > 0
         # Spectrum integrates to total_per_yr
         @test isapprox(_trapz_t(e.dNdu, e.u_bins), e.total_per_yr; rtol=1e-10)
@@ -45,13 +46,15 @@ end
 @testset "Contribution counts per effective source (with MLI)" begin
     # MLI surface source attached to ICV_body adds one CB contribution
     by = Dict(e.name => e for e in effs)
-    @test length(by["CB_Bi214" ].contributions) == 8   # 7 Ti + 1 MLI
-    @test length(by["CTH_Bi214"].contributions) == 6
-    @test length(by["CBH_Bi214"].contributions) == 4
-    # 8 + 6 + 4 = 18 individual sources accounted per isotope (17 Ti + 1 MLI)
-    @test (length(by["CB_Bi214" ].contributions) +
-           length(by["CTH_Bi214"].contributions) +
-           length(by["CBH_Bi214"].contributions)) == 18
+    # Same contribution layout for every isotope
+    for iso_suffix in ("Bi214", "Tl208", "Tl208c")
+        @test length(by["CB_$iso_suffix" ].contributions) == 8   # 7 Ti + 1 MLI
+        @test length(by["CTH_$iso_suffix"].contributions) == 6
+        @test length(by["CBH_$iso_suffix"].contributions) == 4
+        @test (length(by["CB_$iso_suffix" ].contributions) +
+               length(by["CTH_$iso_suffix"].contributions) +
+               length(by["CBH_$iso_suffix"].contributions)) == 18
+    end
 
     # The MLI contribution sits in CB with one ICV-body slab downstream
     cb = by["CB_Bi214"]
@@ -59,6 +62,27 @@ end
     @test length(mli_contribs) == 1
     @test mli_contribs[1].source.producer.name == "Cryostat_insulation_MLI"
     @test length(mli_contribs[1].downstream_slabs) == 1
+end
+
+@testset "Companion source paired with main Tl-208" begin
+    by = Dict(e.name => e for e in effs)
+    for region in ("CB", "CTH", "CBH")
+        main = by["$(region)_Tl208"]
+        comp = by["$(region)_Tl208c"]
+        # Same contribution count and producers
+        @test length(main.contributions) == length(comp.contributions)
+        for (cm, cc) in zip(main.contributions, comp.contributions)
+            @test cm.source.producer === cc.source.producer
+        end
+        # Companion is at 583 keV, more strongly attenuated through Ti, so
+        # the integrated exit rate is a smaller fraction of the produced rate
+        # than for the 2.615 MeV main γ.
+        main_frac_avg = sum(c.source.exit_inward_per_yr for c in main.contributions) /
+                        sum(c.source.produced_per_yr   for c in main.contributions)
+        comp_frac_avg = sum(c.source.exit_inward_per_yr for c in comp.contributions) /
+                        sum(c.source.produced_per_yr   for c in comp.contributions)
+        @test comp_frac_avg < main_frac_avg
+    end
 end
 
 @testset "Downstream attenuation never increases flux" begin
@@ -154,6 +178,7 @@ end
     # the bottom endcap is distributed in our model across explicit
     # geometric elements (legs, flanges, anchors) — most of which are
     # MC-inactive or end up CB-attached rather than head-attached.
+    # (Comparison only on the main 2.615 MeV γ, not the companion.)
     @test 0.7 < by["CB_Bi214"] / ref["CB_Bi214"] < 1.3
     @test 0.7 < by["CB_Tl208"] / ref["CB_Tl208"] < 1.3
     # Endcap residual: still within a factor of 5 (sanity-only)

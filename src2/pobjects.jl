@@ -17,6 +17,12 @@ const SEC_PER_YEAR         = 3.1557e7   # Julian year
 const E_BI214_MEV          = 2.448
 const E_TL208_MEV          = 2.615
 
+# ²⁰⁸Tl cascade companion (lumped at 583 keV; sum of cascade companions
+# coincident with the 2.615 MeV γ: 583 (84.5%) + 860 (12.5%) + 763 (1.79%)
+# + 1094 (0.4%) ≈ 99% of Tl-208 decays). The remaining ~1% has no companion.
+const BR_TL208_COMPANION   = 0.99
+const E_TL208_COMPANION_MEV = 0.583
+
 # ---------------------------------------------------------------------------
 # Types
 # ---------------------------------------------------------------------------
@@ -101,6 +107,11 @@ gamma_rate_Bi214(p::PObject)::Float64 =
 "Tl-208 2.615 MeV γ production rate (γ/yr)."
 gamma_rate_Tl208(p::PObject)::Float64 =
     activity_Th232_late(p) * 1.0e-3 * BR_TL208_FROM_CHAIN * SEC_PER_YEAR
+
+"Tl-208 cascade companion γ (lumped at 583 keV) production rate (γ/yr)."
+gamma_rate_Tl208_companion(p::PObject)::Float64 =
+    activity_Th232_late(p) * 1.0e-3 *
+    BR_TL208_FROM_CHAIN * BR_TL208_COMPANION * SEC_PER_YEAR
 
 # ---------------------------------------------------------------------------
 # Self-shielding inward angular spectrum at the source's own inner surface

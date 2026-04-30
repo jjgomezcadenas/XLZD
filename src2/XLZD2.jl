@@ -37,12 +37,12 @@ export Material, load_material
 # Physics-aware geometry
 export PCyl, PDisk, PSurface, PObject
 export activity_U238_late, activity_Th232_late
-export gamma_rate_Bi214, gamma_rate_Tl208
+export gamma_rate_Bi214, gamma_rate_Tl208, gamma_rate_Tl208_companion
 export source_slab_thickness, self_shielded_spectrum
 
 # Constants
-export BR_BI214_GAMMA, BR_TL208_FROM_CHAIN, SEC_PER_YEAR
-export E_BI214_MEV, E_TL208_MEV
+export BR_BI214_GAMMA, BR_TL208_FROM_CHAIN, BR_TL208_COMPANION, SEC_PER_YEAR
+export E_BI214_MEV, E_TL208_MEV, E_TL208_COMPANION_MEV
 export TI_BB0NU_U238_LATE_MBQKG, TI_BB0NU_TH232_LATE_MBQKG
 
 # Sources

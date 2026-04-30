@@ -43,11 +43,12 @@ end
 end
 
 @testset "Out-of-range queries error" begin
-    @test_throws ErrorException mat_Ti.μ_lin(1.0)
-    @test_throws ErrorException mat_Ti.μ_lin(10.0)
+    @test_throws ErrorException mat_Ti.μ_lin(0.05)
+    @test_throws ErrorException mat_Ti.μ_lin(50.0)
 end
 
 println()
-@printf("  μ_Ti(2.448 MeV) = %.4f cm⁻¹  (Bi-214)\n", mat_Ti.μ_lin(2.448))
-@printf("  μ_Ti(2.615 MeV) = %.4f cm⁻¹  (Tl-208)\n", mat_Ti.μ_lin(2.615))
+@printf("  μ_Ti(0.583 MeV) = %.4f cm⁻¹  (Tl-208 companion)\n", mat_Ti.μ_lin(0.583))
+@printf("  μ_Ti(2.448 MeV) = %.4f cm⁻¹  (Bi-214)\n",            mat_Ti.μ_lin(2.448))
+@printf("  μ_Ti(2.615 MeV) = %.4f cm⁻¹  (Tl-208)\n",            mat_Ti.μ_lin(2.615))
 println()

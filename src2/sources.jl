@@ -59,6 +59,10 @@ function make_gamma_source(p::PObject, isotope::Symbol,
     elseif isotope === :Tl208
         E       = E_TL208_MEV
         rate_pr = gamma_rate_Tl208(p)
+    elseif isotope === :Tl208c
+        # Cascade companion of the 2.615 MeV γ, lumped at 583 keV.
+        E       = E_TL208_COMPANION_MEV
+        rate_pr = gamma_rate_Tl208_companion(p)
     else
         error("make_gamma_source: unknown isotope $isotope")
     end
@@ -135,9 +139,10 @@ end
                              mc_only=true) -> Vector{GammaSource}
 
 For each MC-active physical Ti volume in the cryostat, build a
-self-shielded `GammaSource` for both Bi-214 and Tl-208. With the
-default `mc_only=true`, returns 2 × N_active = 34 sources for the
-current LZ model.
+self-shielded `GammaSource` for Bi-214 (2.448 MeV), Tl-208 (2.615 MeV),
+and the Tl-208 cascade companion (lumped at 583 keV — used for the
+companion-γ veto in the per-photon MC). With the default `mc_only=true`,
+returns 3 × N_active = 51 sources for the current LZ model.
 """
 function build_individual_sources(c::Cryostat, mat_Ti::Material,
                                   u_bins::Vector{Float64}=DEFAULT_U_BINS;
@@ -145,8 +150,9 @@ function build_individual_sources(c::Cryostat, mat_Ti::Material,
     ps = pobjects_from_cryostat(c, mat_Ti; mc_only=mc_only)
     out = GammaSource[]
     for p in ps
-        push!(out, make_gamma_source(p, :Bi214, u_bins))
-        push!(out, make_gamma_source(p, :Tl208, u_bins))
+        push!(out, make_gamma_source(p, :Bi214,  u_bins))
+        push!(out, make_gamma_source(p, :Tl208,  u_bins))
+        push!(out, make_gamma_source(p, :Tl208c, u_bins))
     end
     out
 end
