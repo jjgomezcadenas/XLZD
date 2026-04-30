@@ -13,6 +13,7 @@ include("pobjects.jl")
 include("sources.jl")
 include("transport.jl")
 include("effective_sources.jl")
+include("lxe_detector.jl")
 
 # Geometry primitives
 export GCyl, GDisk
@@ -56,5 +57,10 @@ export Slab, optical_depth, transmission_factor
 # Effective sources
 export SourceContribution, EffectiveSource
 export aggregate_dNdu, build_effective_source, build_effective_sources
+
+# LXe detector
+export LXeDetector, build_lxe_detector
+export region_at, μ_LXe
+export active_volume_cm3, active_mass_kg, skin_volume_cm3, skin_mass_kg
 
 end # module XLZD2
