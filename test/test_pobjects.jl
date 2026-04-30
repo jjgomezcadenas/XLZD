@@ -73,6 +73,23 @@ end
     @test 0.80 < m_mc / 2572.1 < 0.86
 end
 
+@testset "PSurface basic + MLI activity" begin
+    s = PSurface("MLI_test", :ICV_body, "MLI", 13.8, 11.1, 7.79)
+    @test mass(s) == 13.8
+    @test activity_U238_late(s) ≈ 13.8 * 11.1
+    @test activity_Th232_late(s) ≈ 13.8 * 7.79
+    # Bi-214 γ produced = 13.8 × 11.1 × 1e-3 × 0.0155 × 3.1557e7 ≈ 7.495e4 γ/yr
+    @test isapprox(gamma_rate_Bi214(s), 7.495e4; rtol=1e-3)
+    # Tl-208: 13.8 × 7.79 × 1e-3 × 0.359 × 3.1557e7 ≈ 1.218e6 γ/yr
+    @test isapprox(gamma_rate_Tl208(s), 1.218e6; rtol=1e-3)
+
+    # Surface spectrum is constant in u (= R/2 for u > 0)
+    u_bins = collect(range(0.005, 0.995, length=10))
+    R = gamma_rate_Bi214(s)
+    dNdu = self_shielded_spectrum(s, R, E_BI214_MEV, u_bins)
+    @test all(d ≈ R / 2 for d in dNdu)
+end
+
 @testset "Count multiplicity" begin
     # Tie-bar ports (count=3) and conduit ports (count=2) are in the
     # MC-active set. Verify mass scales by count.

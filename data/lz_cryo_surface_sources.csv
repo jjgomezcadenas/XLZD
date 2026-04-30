@@ -1,0 +1,2 @@
+name,attached_to,total_mass_kg,act_U238_late_mBqkg,act_Th232_late_mBqkg,material_name,include_in_mc
+Cryostat_insulation_MLI,ICV_body,13.8,11.1,7.79,MLI,true

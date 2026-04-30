@@ -118,6 +118,14 @@ function build_effective_sources(individual_sources::Vector{GammaSource},
 
     t_ICV_body, t_ICV_top, t_ICV_bot = _icv_slab_thicknesses(c)
 
+    # Map an `attached_to` symbol on a PSurface to the effective-source region
+    # and the corresponding ICV downstream slab.
+    region_for_attachment = Dict(
+        :ICV_body => :barrel,
+        :ICV_top  => :endcap_top,
+        :ICV_bot  => :endcap_bottom,
+    )
+
     out = EffectiveSource[]
 
     for iso in (:Bi214, :Tl208)
@@ -139,7 +147,6 @@ function build_effective_sources(individual_sources::Vector{GammaSource},
             SourceContribution(get_src("OCV_HV_port_$iso"),                 [slab_body]),
             SourceContribution(get_src("OCV_cathode_side_port_$iso"),       [slab_body]),
         ]
-        push!(out, build_effective_source("CB", :barrel, iso, cb_contribs, u_bins))
 
         # ── CTH: Cryostat Top Head (exit at ICV inner top head) ─────────
         cth_contribs = [
@@ -150,7 +157,6 @@ function build_effective_sources(individual_sources::Vector{GammaSource},
             SourceContribution(get_src("OCV_top_conduit_ports_$iso"),       [slab_top]),
             SourceContribution(get_src("OCV_top_tie_bar_ports_$iso"),       [slab_top]),
         ]
-        push!(out, build_effective_source("CTH", :endcap_top, iso, cth_contribs, u_bins))
 
         # ── CBH: Cryostat Bottom Head (exit at ICV inner bottom head) ──
         cbh_contribs = [
@@ -159,6 +165,31 @@ function build_effective_sources(individual_sources::Vector{GammaSource},
             SourceContribution(get_src("OCV_bottom_support_flange_$iso"),   [slab_bot]),
             SourceContribution(get_src("OCV_bottom_umbilical_port_$iso"),   [slab_bot]),
         ]
+
+        # ── Surface sources (e.g. MLI) appended to the right effective source ──
+        slab_for_attachment = Dict(
+            :ICV_body => slab_body,
+            :ICV_top  => slab_top,
+            :ICV_bot  => slab_bot,
+        )
+        contribs_by_region = Dict(
+            :barrel        => cb_contribs,
+            :endcap_top    => cth_contribs,
+            :endcap_bottom => cbh_contribs,
+        )
+        for s in individual_sources
+            s.isotope === iso || continue
+            s.producer isa PSurface || continue
+            attached = s.producer.attached_to
+            haskey(region_for_attachment, attached) ||
+                error("Unknown PSurface.attached_to = $attached for source $(s.name)")
+            region = region_for_attachment[attached]
+            slab   = slab_for_attachment[attached]
+            push!(contribs_by_region[region], SourceContribution(s, [slab]))
+        end
+
+        push!(out, build_effective_source("CB",  :barrel,        iso, cb_contribs,  u_bins))
+        push!(out, build_effective_source("CTH", :endcap_top,    iso, cth_contribs, u_bins))
         push!(out, build_effective_source("CBH", :endcap_bottom, iso, cbh_contribs, u_bins))
     end
 

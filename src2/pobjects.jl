@@ -56,7 +56,26 @@ end
 PDisk(geom, material, aU, aTh; count=1, name="") =
     PDisk(geom, material, Float64(aU), Float64(aTh), Int(count), String(name))
 
-const PObject = Union{PCyl, PDisk}
+"""
+    PSurface(name, attached_to, material_name, total_mass_kg,
+             act_U238_late_mBqkg, act_Th232_late_mBqkg)
+
+Surface (zero-thickness) source. The activity is given as
+specific-activity × explicit `total_mass_kg` (not derived from a volume).
+`attached_to` is a Symbol identifying which Ti wall the surface sits on
+(`:ICV_body`, `:ICV_top`, `:ICV_bot`, …); the effective-source registry
+uses it to select the right downstream slab list.
+"""
+struct PSurface
+    name::String
+    attached_to::Symbol
+    material_name::String
+    total_mass_kg::Float64
+    act_U238_late_mBqkg::Float64
+    act_Th232_late_mBqkg::Float64
+end
+
+const PObject = Union{PCyl, PDisk, PSurface}
 
 # ---------------------------------------------------------------------------
 # Mass and activity
@@ -65,6 +84,9 @@ const PObject = Union{PCyl, PDisk}
 "Total Ti mass (kg) for this object: shell volume × density × count."
 mass(p::PCyl)::Float64 = mass(p.geom, p.material.density) * p.count
 mass(p::PDisk)::Float64 = mass(p.geom, p.material.density) * p.count
+
+"Mass (kg) for a surface source: explicit field, no geometry derivation."
+mass(p::PSurface)::Float64 = p.total_mass_kg
 
 "Total ²³⁸U-late activity (mBq)."
 activity_U238_late(p::PObject)::Float64 = mass(p) * p.act_U238_late_mBqkg
@@ -91,8 +113,9 @@ The slab thickness used in the self-shielding integral. For both `PCyl`
 and `PDisk` this is the wall thickness in the inward direction (radial
 for cylinders, normal-to-surface for discs).
 """
-source_slab_thickness(p::PCyl)::Float64  = p.geom.wall_thickness
-source_slab_thickness(p::PDisk)::Float64 = p.geom.wall_thickness
+source_slab_thickness(p::PCyl)::Float64    = p.geom.wall_thickness
+source_slab_thickness(p::PDisk)::Float64   = p.geom.wall_thickness
+source_slab_thickness(::PSurface)::Float64 = 0.0
 
 """
     self_shielded_spectrum(p, gamma_rate_per_yr, E_MeV, u_bins) -> dNdu
@@ -109,7 +132,7 @@ where R is the total γ-production rate (γ/yr) and t_src the source
 slab thickness. The integral over u ∈ (0, 1] gives the inward-going
 γ/yr at the inner surface.
 """
-function self_shielded_spectrum(p::PObject, gamma_rate_per_yr::Real,
+function self_shielded_spectrum(p::Union{PCyl,PDisk}, gamma_rate_per_yr::Real,
                                 E_MeV::Real, u_bins::Vector{Float64})
     μ_src = p.material.μ_lin(E_MeV)
     t_src = source_slab_thickness(p)
@@ -123,6 +146,26 @@ function self_shielded_spectrum(p::PObject, gamma_rate_per_yr::Real,
             dNdu[i] = (R / (2.0 * t_src)) * (u / μ_src) *
                       (1.0 - exp(-μ_src * t_src / u))
         end
+    end
+    dNdu
+end
+
+"""
+    self_shielded_spectrum(p::PSurface, R, E_MeV, u_bins) -> dN/du
+
+Surface source: emission is isotropic into the inward hemisphere with
+no self-shielding. Per inward hemisphere `dN/du(u) = R/2` (constant in u);
+integrating over u ∈ [0, 1] recovers `R/2` (the inward fraction of the
+total γ rate). The `E_MeV` argument is ignored; the surface has no
+material-thickness dependence.
+"""
+function self_shielded_spectrum(p::PSurface, gamma_rate_per_yr::Real,
+                                E_MeV::Real, u_bins::Vector{Float64})
+    R = Float64(gamma_rate_per_yr)
+    dNdu = similar(u_bins)
+    val = R / 2.0
+    @inbounds for i in eachindex(u_bins)
+        dNdu[i] = u_bins[i] > 0 ? val : 0.0
     end
     dNdu
 end

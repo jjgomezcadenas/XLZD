@@ -28,14 +28,14 @@ export area_inner, volume_shell, mass
 export sample_inner_surface, inward_normal, path_through_shell
 
 # Cryostat composite
-export CryostatExtra, Cryostat, build_cryostat
+export CryostatExtra, CryostatSurface, Cryostat, build_cryostat
 export total_mass, mass_breakdown, mc_active_extras, mc_active_mass
 
 # Materials
 export Material, load_material
 
 # Physics-aware geometry
-export PCyl, PDisk, PObject
+export PCyl, PDisk, PSurface, PObject
 export activity_U238_late, activity_Th232_late
 export gamma_rate_Bi214, gamma_rate_Tl208
 export source_slab_thickness, self_shielded_spectrum

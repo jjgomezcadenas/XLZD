@@ -30,17 +30,38 @@ struct CryostatExtra
 end
 
 """
+    CryostatSurface
+
+One row of `lz_cryo_surface_sources.csv`: a non-Ti surface source
+(e.g. MLI insulation). Carries the explicit total mass and specific
+activities, and the symbol identifying which Ti wall the surface sits
+on. The loader does not produce a `PSurface` directly; that happens in
+`pobjects_from_cryostat` where MC-active filtering is also applied.
+"""
+struct CryostatSurface
+    name::String
+    attached_to::Symbol
+    total_mass_kg::Float64
+    act_U238_late_mBqkg::Float64
+    act_Th232_late_mBqkg::Float64
+    material_name::String
+    include_in_mc::Bool
+end
+
+"""
     Cryostat
 
-Full LZ cryostat built from the two CSVs:
+Full LZ cryostat built from up to three CSVs:
   * `barrels`  — OCV and ICV cylindrical bodies
   * `heads`    — four ellipsoidal heads (OCV top/bot, ICV top/bot)
   * `extras`   — every additional Ti element (flanges, ports, …)
+  * `surfaces` — non-Ti surface sources (MLI insulation, …)
 """
 struct Cryostat
     barrels::Vector{GCyl}
     heads::Vector{GDisk}
     extras::Vector{CryostatExtra}
+    surfaces::Vector{CryostatSurface}
 end
 
 # ---------------------------------------------------------------------------
@@ -73,14 +94,16 @@ end
 # ---------------------------------------------------------------------------
 
 """
-    build_cryostat(geom_csv, extras_csv) -> Cryostat
+    build_cryostat(geom_csv, extras_csv, surfaces_csv="") -> Cryostat
 
-Construct the LZ cryostat object from `data/lz_cryo_geometry.csv` and
-`data/lz_cryo_extras.csv`. Specific axial positions in the geometry CSV
-do not affect mass; they are placeholders used by the radioactivity step
-later.
+Construct the LZ cryostat object from `data/lz_cryo_geometry.csv`,
+`data/lz_cryo_extras.csv`, and (optionally) `data/lz_cryo_surface_sources.csv`.
+Specific axial positions in the geometry CSV do not affect mass; they
+are placeholders used by the radioactivity step later. If `surfaces_csv`
+is empty or the file does not exist, no surface sources are loaded.
 """
-function build_cryostat(geom_csv::AbstractString, extras_csv::AbstractString)
+function build_cryostat(geom_csv::AbstractString, extras_csv::AbstractString,
+                        surfaces_csv::AbstractString="")
     geom_rows = _read_csv_rows(geom_csv)
     barrels = GCyl[]
     heads   = GDisk[]
@@ -117,7 +140,22 @@ function build_cryostat(geom_csv::AbstractString, extras_csv::AbstractString)
         push!(extras, CryostatExtra(name, category, cnt, in_mc, shell))
     end
 
-    Cryostat(barrels, heads, extras)
+    surfaces = CryostatSurface[]
+    if !isempty(surfaces_csv) && isfile(surfaces_csv)
+        for row in _read_csv_rows(surfaces_csv)
+            push!(surfaces, CryostatSurface(
+                strip(string(row["name"])),
+                Symbol(strip(string(row["attached_to"]))),
+                Float64(row["total_mass_kg"]),
+                Float64(row["act_U238_late_mBqkg"]),
+                Float64(row["act_Th232_late_mBqkg"]),
+                strip(string(row["material_name"])),
+                _parse_bool(row["include_in_mc"]),
+            ))
+        end
+    end
+
+    Cryostat(barrels, heads, extras, surfaces)
 end
 
 # ---------------------------------------------------------------------------

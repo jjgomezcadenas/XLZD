@@ -23,7 +23,7 @@ Fields:
 """
 struct GammaSource
     name::String
-    producer::Union{PCyl, PDisk}
+    producer::PObject
     isotope::Symbol
     E_MeV::Float64
     produced_per_yr::Float64
@@ -107,13 +107,24 @@ function pobjects_from_cryostat(c::Cryostat, mat_Ti::Material;
         push!(ps, PDisk(g, mat_Ti, aU, aTh; count=1, name=head_names[i]))
     end
 
-    # Extras
+    # Extras (Ti volumes)
     for e in c.extras
         if mc_only && !e.include_in_mc
             continue
         end
         push!(ps, PCyl(e.shell, mat_Ti, aU, aTh;
                        count=e.count, name=e.name))
+    end
+
+    # Surface sources (non-Ti, e.g. MLI)
+    for s in c.surfaces
+        if mc_only && !s.include_in_mc
+            continue
+        end
+        push!(ps, PSurface(s.name, s.attached_to, s.material_name,
+                           s.total_mass_kg,
+                           s.act_U238_late_mBqkg,
+                           s.act_Th232_late_mBqkg))
     end
 
     ps
