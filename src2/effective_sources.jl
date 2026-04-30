@@ -188,9 +188,9 @@ function build_effective_sources(individual_sources::Vector{GammaSource},
             push!(contribs_by_region[region], SourceContribution(s, [slab]))
         end
 
-        push!(out, build_effective_source("CB",  :barrel,        iso, cb_contribs,  u_bins))
-        push!(out, build_effective_source("CTH", :endcap_top,    iso, cth_contribs, u_bins))
-        push!(out, build_effective_source("CBH", :endcap_bottom, iso, cbh_contribs, u_bins))
+        push!(out, build_effective_source("CB_$iso",  :barrel,        iso, cb_contribs,  u_bins))
+        push!(out, build_effective_source("CTH_$iso", :endcap_top,    iso, cth_contribs, u_bins))
+        push!(out, build_effective_source("CBH_$iso", :endcap_bottom, iso, cbh_contribs, u_bins))
     end
 
     out
