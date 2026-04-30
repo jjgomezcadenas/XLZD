@@ -18,6 +18,7 @@ include("physics.jl")
 include("sampling.jl")
 include("mc_params.jl")
 include("mc.jl")
+include("run.jl")
 
 # Geometry primitives
 export GCyl, GDisk
@@ -84,5 +85,9 @@ export MCParams, in_fv, classify_ss_energy
 export E_tracking_cutoff_MeV, Δz_threshold_cm
 export PhotonState, track_one_photon!, path_to_next_region
 export handle_deposit!, finalize_outcome!
+export companion_visible!, companion_reach_prob
+
+# Run driver
+export MCResult, run_mc, run_mc_all
 
 end # module XLZD2

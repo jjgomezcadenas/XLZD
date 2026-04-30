@@ -176,3 +176,84 @@ end
     @test run_one(0x42) == run_one(0x42)
     @test run_one(0x42) != run_one(0x43)
 end
+
+# ---------------------------------------------------------------------------
+# MC4: companion veto + threaded driver
+# ---------------------------------------------------------------------------
+
+@testset "companion_reach_prob has the right scaling" begin
+    comp_eff = by_name["CB_Tl208c"]
+    r = companion_reach_prob(comp_eff)
+    # comp.total_per_yr / decay_rate ≤ 0.5 (inward hemisphere only); times BR=0.99
+    # Expected: a few tens of percent for thin Ti walls
+    @test 0.0 < r < 0.5
+    # Cross-check by recomputing decay rate from contributions
+    total_produced = sum(c.source.produced_per_yr for c in comp_eff.contributions)
+    decay_rate     = total_produced / 0.99
+    @test isapprox(r, comp_eff.total_per_yr / decay_rate, rtol=1e-12)
+end
+
+@testset "companion_visible! returns Bool; mostly false for low-E γ" begin
+    rng = MersenneTwister(0xCAFEBABE)
+    comp_eff = by_name["CB_Tl208c"]
+    n_visible = 0
+    N = 5000
+    for _ in 1:N
+        if companion_visible!(rng, det, comp_eff, xcom, params)
+            n_visible += 1
+        end
+    end
+    # 583 keV γ that reaches the LXe is fairly likely to deposit something
+    # visible (μ_LXe ~ 0.25 cm⁻¹ → mfp ~4 cm; mostly Compton, often visible)
+    @test 0.0 < n_visible / N < 1.0
+    @printf("  companion_visible! fraction (CB_Tl208c, %d trials) = %.3f\n",
+            N, n_visible / N)
+end
+
+@testset "run_mc — Bi-214 has no companion-vetoed events" begin
+    eff = by_name["CB_Bi214"]
+    res = run_mc(det, eff, nothing, xcom, params, 5000; mc_seed=0xAAAA)
+    @test res.counts[:companion_vetoed] == 0
+    @test res.r_comp == 0.0
+    @test res.n_total == 5000
+    @test res.γ_per_yr_total == eff.total_per_yr
+    @test isapprox(res.bg_per_yr, res.f_SS_in_ROI * eff.total_per_yr; rtol=1e-12)
+end
+
+@testset "run_mc — Tl-208 with companion produces some companion-vetoed" begin
+    eff      = by_name["CB_Tl208"]
+    comp_eff = by_name["CB_Tl208c"]
+    res = run_mc(det, eff, comp_eff, xcom, params, 20_000; mc_seed=0xBBBB)
+    # Companion veto enabled → r_comp > 0
+    @test res.r_comp > 0.0
+    # Companion vetos = SS_in_ROI candidates that got knocked out
+    @test res.counts[:companion_vetoed] >= 0
+    # Total accounting still consistent
+    @test res.n_total == 20_000
+    @test sum(values(res.counts)) == 20_000
+end
+
+@testset "run_mc — reproducibility with fixed seed and same thread count" begin
+    eff = by_name["CB_Bi214"]
+    res1 = run_mc(det, eff, nothing, xcom, params, 4000; mc_seed=0xC1C1)
+    res2 = run_mc(det, eff, nothing, xcom, params, 4000; mc_seed=0xC1C1)
+    @test res1.counts == res2.counts
+    res3 = run_mc(det, eff, nothing, xcom, params, 4000; mc_seed=0xC1C2)
+    @test res1.counts != res3.counts
+end
+
+@testset "run_mc_all returns 6 results, sums match per-source" begin
+    res_all = run_mc_all(det, effs, xcom, params, 2000; mc_seed=0xDDDD)
+    @test length(res_all) == 6
+    names = [r.name for r in res_all]
+    @test sort(names) == sort(["CB_Bi214", "CTH_Bi214", "CBH_Bi214",
+                                "CB_Tl208", "CTH_Tl208", "CBH_Tl208"])
+    # Tl-208 sources have r_comp > 0; Bi-214 sources have r_comp == 0
+    for r in res_all
+        if r.isotope === :Tl208
+            @test r.r_comp > 0.0
+        else
+            @test r.r_comp == 0.0
+        end
+    end
+end

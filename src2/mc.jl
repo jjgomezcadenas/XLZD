@@ -276,3 +276,119 @@ function track_one_photon!(rng::AbstractRNG,
 
     return state.outcome
 end
+
+# ---------------------------------------------------------------------------
+# Companion veto (Tl-208)
+# ---------------------------------------------------------------------------
+
+"""
+    companion_visible!(rng, det, comp_eff, xcom, params) -> Bool
+
+Track one companion γ from `comp_eff` (lumped at 583 keV) into the
+LXe and return `true` iff it produces a visible deposit anywhere —
+i.e. any single deposit ≥ `det.E_visible_keV` in `:active` LXe, OR the
+accumulated skin deposit ≥ `det.E_skin_veto_keV`. Pair production is
+treated as visible (the two annihilation γ guarantee a visible deposit).
+
+This is a stripped-down version of `track_one_photon!`: no SS/MS
+clustering, no FV cut, no ROI smearing — just a Bool answer for the
+veto step. Intended to be called only when the main γ has already
+been tagged `:SS_in_ROI`.
+"""
+function companion_visible!(rng::AbstractRNG, det::LXeDetector,
+                             comp_eff::EffectiveSource,
+                             xcom::XCOMTable,
+                             params::MCParams)::Bool
+    x, y, z, dx, dy, dz = sample_entry(rng, det, comp_eff)
+    E = comp_eff.E_MeV
+    E_visible_MeV   = det.E_visible_keV   * 1.0e-3
+    E_skin_veto_MeV = det.E_skin_veto_keV * 1.0e-3
+    E_cutoff = E_tracking_cutoff_MeV(params)
+    ρ = det.material.density
+    E_skin_total = 0.0
+
+    while true
+        reg = region_at(det, x, y, z)
+        if reg === :outside_lxe
+            return false
+        end
+
+        if reg === :gas || reg === :fc_region
+            d = path_to_next_region(x, y, z, dx, dy, dz, det)
+            d == Inf && return false
+            d_step = d + 1.0e-7
+            x += d_step * dx; y += d_step * dy; z += d_step * dz
+            continue
+        end
+
+        # LXe region: sample step length and compare to next boundary
+        μ = μ_total_lin(xcom, E, ρ)
+        d_int = -log(rand(rng)) / μ
+        d_bnd = path_to_next_region(x, y, z, dx, dy, dz, det)
+        if d_int >= d_bnd
+            d_step = d_bnd + 1.0e-7
+            x += d_step * dx; y += d_step * dy; z += d_step * dz
+            continue
+        end
+
+        # Interact
+        x += d_int * dx; y += d_int * dy; z += d_int * dz
+
+        sP = σ_photo(xcom, E)
+        sC = σ_Compton(xcom, E)
+        sX = σ_pair(xcom, E)
+        sT = sP + sC + sX
+        r_branch = rand(rng)
+
+        # Determine deposit + termination
+        E_dep = 0.0
+        terminate = false
+        if r_branch < sX / sT
+            # Pair production: 511 keV γ pair certainly deposit visibly nearby
+            return true
+        elseif r_branch < (sX + sP) / sT
+            E_dep = E
+            terminate = true
+        else
+            # Compton
+            E_scatt, cos_θ = sample_klein_nishina(rng, E)
+            E_dep = E - E_scatt
+            φ_az = 2π * rand(rng)
+            dx, dy, dz = rotate_direction(dx, dy, dz, cos_θ, φ_az)
+            E = E_scatt
+            if E < E_cutoff
+                E_dep += E
+                terminate = true
+            end
+        end
+
+        # Visibility check on this deposit
+        reg_dep = region_at(det, x, y, z)
+        if reg_dep === :active
+            E_dep >= E_visible_MeV && return true
+        elseif reg_dep === :skin
+            E_skin_total += E_dep
+            E_skin_total >= E_skin_veto_MeV && return true
+        end
+
+        terminate && return false
+    end
+end
+
+# ---------------------------------------------------------------------------
+# Tl-208 helper: per-decay probability that the companion reaches the LXe
+# ---------------------------------------------------------------------------
+
+"""
+    companion_reach_prob(comp_eff::EffectiveSource) -> Float64
+
+Probability that, given a Tl-208 decay in the contributing physical
+volumes, the cascade companion γ reaches the LXe inner exit surface.
+Equal to `comp_eff.total_per_yr / decay_rate`, where
+`decay_rate = (Σ contrib.source.produced_per_yr) / BR_TL208_COMPANION`.
+"""
+function companion_reach_prob(comp_eff::EffectiveSource)::Float64
+    total_produced = sum(c.source.produced_per_yr for c in comp_eff.contributions)
+    return (comp_eff.total_per_yr / total_produced) * BR_TL208_COMPANION
+end
+
