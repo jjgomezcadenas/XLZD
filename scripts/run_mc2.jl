@@ -37,22 +37,34 @@ function parse_cli()
             default  = "last_run_v2"
         "--source-index"
             arg_type = Int
-            default  = 0     # 0 = all 6 main sources
+            default  = 0           # 0 = all 6 main sources
+        "--sigma-e"
+            arg_type = Float64
+            default  = 0.007       # σ_E / E (LZ default 0.7 %)
+            help     = "Energy resolution σ/E. bb0nu uses 0.010."
+        "--roi-halfwidth"
+            arg_type = Float64
+            default  = 17.2        # keV; ±1σ at σ/E = 0.7 % and Q = 2458 keV
+            help     = "ROI half-width in keV (±1σ around Q_ββ)."
     end
     parse_args(s)
 end
 
 function main()
     args = parse_cli()
-    N      = args["n-samples"]
-    seed   = args["seed"]
-    outname = args["output"]
-    src_i  = args["source-index"]
+    N         = args["n-samples"]
+    seed      = args["seed"]
+    outname   = args["output"]
+    src_i     = args["source-index"]
+    sigma_e   = args["sigma-e"]
+    roi_half  = args["roi-halfwidth"]
 
     println("\n── src2/ MC driver — Cryostat backgrounds ──")
     @printf("  N samples per source : %d\n", N)
     @printf("  Master seed          : %d\n", seed)
     @printf("  Threads              : %d\n", Threads.nthreads())
+    @printf("  σ_E / E              : %.4f\n", sigma_e)
+    @printf("  ROI half-width       : %.2f keV\n", roi_half)
 
     # Load
     mat_LXe = load_material("LXe", 2.953, LXE_NIST)
@@ -62,7 +74,8 @@ function main()
     indiv   = build_individual_sources(cryo, mat_Ti)
     effs    = build_effective_sources(indiv, cryo, mat_Ti)
     xcom    = load_xcom(XCOM_PATH)
-    params  = MCParams()
+    params  = MCParams(σ_E_over_E       = sigma_e,
+                       ROI_halfwidth_keV = roi_half)
 
     # Run
     main_names = ["CB_Bi214", "CTH_Bi214", "CBH_Bi214",
@@ -70,7 +83,8 @@ function main()
     by_name = Dict(e.name => e for e in effs)
     results = MCResult[]
     if src_i == 0
-        results = run_mc_all(det, effs, xcom, params, N; mc_seed=seed)
+        results = run_mc_all(det, effs, xcom, params, N;
+                              mc_seed=seed, verbose=true)
     else
         1 <= src_i <= length(main_names) ||
             error("source-index must be 1..$(length(main_names))")
@@ -80,7 +94,9 @@ function main()
         else
             nothing
         end
-        push!(results, run_mc(det, eff, comp_eff, xcom, params, N; mc_seed=seed))
+        @printf("\n── Running %s ──\n", eff.name)
+        push!(results, run_mc(det, eff, comp_eff, xcom, params, N;
+                               mc_seed=seed, verbose=true))
     end
 
     # Print summary

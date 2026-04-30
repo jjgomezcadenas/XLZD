@@ -49,7 +49,8 @@ veto is applied: each `:SS_in_ROI` candidate is converted to
 function run_mc(det::LXeDetector, eff::EffectiveSource,
                 comp_eff::Union{EffectiveSource, Nothing},
                 xcom::XCOMTable, params::MCParams,
-                n_samples::Integer; mc_seed::Integer=1234)::MCResult
+                n_samples::Integer; mc_seed::Integer=1234,
+                verbose::Bool=false)::MCResult
     n_threads  = Threads.nthreads()
     base       = div(n_samples, n_threads)
     rem        = n_samples - base * n_threads
@@ -60,12 +61,18 @@ function run_mc(det::LXeDetector, eff::EffectiveSource,
     thread_counts = [Dict{Symbol,Int}(o => 0 for o in _MC_OUTCOMES)
                      for _ in 1:n_threads]
 
+    # Progress reporting: 10 prints per run, by thread 1 only.
+    # report_every is per-thread; total events ≈ i × n_threads when thread 1
+    # has processed i events.
+    base_thread1 = base + (1 <= rem ? 1 : 0)
+    report_every = max(1, base_thread1 ÷ 10)
+
     t0 = time()
     Threads.@threads for tid in 1:n_threads
         n_local      = base + (tid <= rem ? 1 : 0)
         rng          = MersenneTwister(mc_seed + tid)
         local_counts = thread_counts[tid]
-        for _ in 1:n_local
+        for i in 1:n_local
             outcome = track_one_photon!(rng, det, eff, xcom, params)
             if apply_veto && outcome === :SS_in_ROI
                 if rand(rng) < r_comp
@@ -75,9 +82,20 @@ function run_mc(det::LXeDetector, eff::EffectiveSource,
                 end
             end
             local_counts[outcome] += 1
+            if verbose && tid == 1 && (i % report_every == 0)
+                est_done = i * n_threads
+                elapsed  = time() - t0
+                @printf("    progress %5.1f %%  (%d / %d)  elapsed %.1f s\r",
+                        100.0 * est_done / n_samples,
+                        est_done, n_samples, elapsed)
+            end
         end
     end
     runtime = time() - t0
+    if verbose
+        @printf("    progress 100.0 %%  (%d / %d)  elapsed %.1f s\n",
+                n_samples, n_samples, runtime)
+    end
 
     counts = Dict{Symbol,Int}(
         o => sum(thread_counts[i][o] for i in 1:n_threads)
@@ -102,7 +120,8 @@ suffix). Returns one `MCResult` per main source.
 function run_mc_all(det::LXeDetector, effs::Vector{EffectiveSource},
                     xcom::XCOMTable, params::MCParams,
                     n_samples::Integer;
-                    mc_seed::Integer=1234)::Vector{MCResult}
+                    mc_seed::Integer=1234,
+                    verbose::Bool=false)::Vector{MCResult}
     by_name = Dict(e.name => e for e in effs)
     results = MCResult[]
     main_names = ["CB_Bi214", "CTH_Bi214", "CBH_Bi214",
@@ -117,8 +136,10 @@ function run_mc_all(det::LXeDetector, effs::Vector{EffectiveSource},
             nothing
         end
         seed = mc_seed + (i - 1) * 1_000_000
+        verbose && @printf("\n── Running %s (%d / %d) ──\n",
+                            mname, i, length(main_names))
         push!(results, run_mc(det, eff, comp_eff, xcom, params, n_samples;
-                              mc_seed=seed))
+                              mc_seed=seed, verbose=verbose))
     end
     results
 end
