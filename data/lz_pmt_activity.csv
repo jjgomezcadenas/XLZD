@@ -1,0 +1,11 @@
+component,region,activity_type,count,mass_kg,Bi214_val,Bi214_unit,Bi214_total_mBq,Tl208_val,Tl208_unit,Tl208_total_mBq,attenuation
+Top TPC PMTs,endcap_top,per_kg,253,47.066,3.22,mBq/kg,151.55,1.61,mBq/kg,75.78,none
+Top PMT bases,endcap_top,per_kg,253,1.434,75.9,mBq/kg,108.84,33.1,mBq/kg,47.47,none
+Top PMT structure,endcap_top,per_kg,1,83.0,1.6,mBq/kg,132.8,1.06,mBq/kg,87.98,none
+Bottom TPC PMTs,endcap_bottom,per_kg,241,44.834,3.22,mBq/kg,144.36,1.61,mBq/kg,72.18,none
+Bottom PMT bases,endcap_bottom,per_kg,241,1.366,75.9,mBq/kg,103.68,33.1,mBq/kg,45.21,none
+Bottom PMT structure,endcap_bottom,per_kg,1,83.0,1.6,mBq/kg,132.8,1.06,mBq/kg,87.98,none
+TPC PMT cables,barrel,per_kg,1,88.7,4.31,mBq/kg,382.3,0.82,mBq/kg,72.73,none
+Skin PMTs side,barrel,per_kg,93,6.098,46.0,mBq/kg,280.52,14.9,mBq/kg,90.86,none
+Skin PMTs lower ring,barrel,per_kg,20,1.311,46.0,mBq/kg,60.33,14.9,mBq/kg,19.54,lxe_skin
+Skin PMTs dome,endcap_bottom,per_kg,18,1.18,46.0,mBq/kg,54.29,14.9,mBq/kg,17.59,lxe_skin

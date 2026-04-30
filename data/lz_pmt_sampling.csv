@@ -1,0 +1,14 @@
+# LZ PMTs: MC sampling parameters
+# Flat sources: u = cos(theta) ~ Uniform(0, 1), factor 1/2 already applied
+# Shaped sources: R8778 PMTs behind ~6 cm LXe skin
+# Entry point: uniform on barrel cylinder or endcap disc
+#   endcap_top: disc at top of TPC
+#   endcap_bottom: disc at bottom of TPC
+#   barrel: cylindrical shell
+isotope,region,total_gammas_per_yr,flat_gammas_per_yr,shaped_gammas_per_yr,angular_distribution
+Bi214,barrel,1.656110e+05,1.621028e+05,3.508212e+03,"mixed (flat 98%, shaped 2%)"
+Bi214,endcap_top,9.616227e+04,9.616227e+04,0.000000e+00,"flat (u ~ Uniform(0,1))"
+Bi214,endcap_bottom,9.629908e+04,9.314169e+04,3.157391e+03,"mixed (flat 97%, shaped 3%)"
+Tl208,barrel,9.534909e+05,9.266969e+05,2.679401e+04,"mixed (flat 97%, shaped 3%)"
+Tl208,endcap_top,1.196464e+06,1.196464e+06,0.000000e+00,"flat (u ~ Uniform(0,1))"
+Tl208,endcap_bottom,1.187467e+06,1.163353e+06,2.411461e+04,"mixed (flat 98%, shaped 2%)"

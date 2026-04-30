@@ -1,0 +1,7 @@
+component,region,material,mass_kg,Bi214_mBq_per_kg,Bi214_total_mBq,Tl208_mBq_per_kg,Tl208_total_mBq
+Field-cage rings,barrel,Ti,93.0,0.35,32.55,0.24,22.32
+Field-cage resistors,barrel,mixed (alumina ceramic),0.06,1350.0,81.0,2010.0,120.6
+PTFE walls,barrel,PTFE,184.0,0.04,7.36,0.01,1.84
+TPC sensors,barrel,mixed,5.02,5.82,29.2164,1.88,9.4376
+Top grids and holders,endcap,SS/Ti,44.55,2.63,117.1665,1.46,65.043
+Bottom grids and holders,endcap,SS/Ti,44.55,2.63,117.1665,1.46,65.043

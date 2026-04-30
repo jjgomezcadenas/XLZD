@@ -1,0 +1,7 @@
+source,region,source_type,mass_kg,Bi214_mBq_per_kg,Bi214_total_mBq,Tl208_mBq_per_kg,Tl208_total_mBq
+OCV shell,barrel,volume,385.7,0.08,30.85,0.22,84.85
+OCV heads,endcap,volume,392.9,0.08,31.43,0.22,86.44
+ICV shell,barrel,volume,401.9,0.08,32.15,0.22,88.41
+ICV heads,endcap,volume,249.2,0.08,19.94,0.22,54.83
+Extra Ti (flanges etc),endcap,surface,1160.3,0.08,92.82,0.22,255.27
+Cryostat insulation,barrel,surface,13.8,11.1,153.18,7.79,107.5

@@ -1,0 +1,2205 @@
+Eur. Phys. J. C manuscript No.
+(will be inserted by the editor)
+
+arXiv:2505.17848v2 [physics.ins-det] 10 Dec 2025
+
+The NEXT-100 Detector
+C. Adamsa,1 , H. Almazán2 , V. Álvarez3 , A.I. Aranburu2 , L. Arazi4 , I.J. Arnquist5 ,
+F. Auria-Luna6 , S. Ayet7 , Y. Ayyad8 , C.D.R. Azevedo9 , K. Bailey1 , F. Ballester3 ,
+J.E. Barcelon2 , M. del Barrio-Torregrosa2,10 , A. Bayo11 , J.M. Benlloch-Rodríguez2 ,
+F.I.G.M. Borges12 , A. Brodoline2,13 , N. Byrnes14 , A. Castillo2 , E. Church5 , L. Cid11 ,
+M. Cid7,8 , X. Cid8 , C.A.N. Condeb,12 , C. Cortes-Parra7 , F.P. Cossío6 , R. Coupe15 ,
+E. Dey14 , P. Dietz2 , C. Echeverria2 , M. Elorza2,10 , R. Esteve3 , R. Felkaic,4 , L.M.P.
+Fernandes16 , P. Ferrariod,2,17 , F.W. Foss18 , Z. Freixa19,17 , J. García-Barrena3 , J.J.
+Gómez-Cadenase,2,17 , J.W.R. Grocott15 , R. Guenette15 , J. Hauptman20 , C.A.O.
+Henriques16 , J.A. Hernando Morata8 , P. Herrero-Gómez21 , V. Herrero3 , C. Hervés
+Carrete8 , Y. Ifergan4 , A.F.B. Isabel16 , B.J.P. Jones14,15 , F. Kellerer7 , L. Larizgoitia2,10 ,
+A. Larumbe6 , P. Lebrun22 , F. Lopez2 , N. López-March7 , R. Madigan18 , R.D.P. Mano16 ,
+A. Marauri6 , A.P. Marques12 , J. Martín-Albo7 , A. Martínez3 , G. Martínez-Lema4 , M.
+Martínez-Vara7 , R.L. Miller18 , K. Mistry14 , J. Molina-Canteras6 , F. Monrabal2,17 ,
+C.M.B. Monteiro16 , F.J. Mora3 , K.E. Navarro14 , P. Novella7 , D.R. Nygren14 , E. Oblak2 ,
+I. Osborne15 , J. Palacio11 , B. Palmeiro15 , A. Para22 , I. Parmaksiz14 , A. Pazos19 , J.
+Pelegrin2 , M. Pérez Maneiro8 , M. Querol7 , J. Renner7 , I. Rivilla6,2 , C. Rogero13 , L.
+Rogers1 , B. Romeof,2 , C. Romo-Luqueg,7 , E. Ruiz-Chóliz11 , P. Saharia7 , F.P. Santos12 ,
+J.M.F. dos Santos16 , M. Seemann2,10 , I. Shomroni21 , A.L.M. Silva9 , P.A.O.C. Silva16 , A.
+Simón7 , S.R. Soleti2,17 , M. Sorel7 , J. Soto-Oton7 , J.M.R. Teixeira16 , S. Teruel-Pardo7 ,
+J.F. Toledo3 , C. Tonnelé2 , S. Torelli2 , J. Torrent2,23 , A. Trettin15 , P.R.G. Valle2,19 , M.
+Vanga18 , P. Vázquez Cabaleiro2,8 , J.F.C.A. Veloso9 , J.D. Villamil7 , J. Waiton15 , A.
+Yubero-Navarro2,10
+1 Argonne National Laboratory, Argonne, IL 60439, USA
+2 Donostia International Physics Center, BERC Basque Excellence Research Centre, Manuel de Lardizabal 4, San Sebastián / Donostia, E-20018,
+
+Spain
+3 Instituto de Instrumentación para Imagen Molecular (I3M), Centro Mixto CSIC - Universitat Politècnica de València, Camino de Vera s/n,
+Valencia, E-46022, Spain
+4 Unit of Nuclear Engineering, Faculty of Engineering Sciences, Ben-Gurion University of the Negev, P.O.B. 653, Beer-Sheva, 8410501, Israel
+5 Pacific Northwest National Laboratory (PNNL), Richland, WA 99352, USA
+6 Department of Organic Chemistry I, Universidad del Pais Vasco (UPV/EHU), Centro de Innovación en Química Avanzada (ORFEO-CINQA),
+San Sebastián / Donostia, E-20018, Spain
+7 Instituto de Física Corpuscular (IFIC), CSIC & Universitat de València, Calle Catedrático José Beltrán, 2, Paterna, E-46980, Spain
+8 Instituto Gallego de Física de Altas Energías, Univ. de Santiago de Compostela, Campus sur, Rúa Xosé María Suárez Núñez, s/n, Santiago de
+Compostela, E-15782, Spain
+9 Institute of Nanostructures, Nanomodelling and Nanofabrication (i3N), Universidade de Aveiro, Campus de Santiago, Aveiro, 3810-193,
+Portugal
+10 Department of Physics, Universidad del Pais Vasco (UPV/EHU), PO Box 644, Bilbao, E-48080, Spain
+11 Laboratorio Subterráneo de Canfranc, Paseo de los Ayerbe s/n, Canfranc Estación, E-22880, Spain
+12 LIP, Department of Physics, University of Coimbra, Coimbra, 3004-516, Portugal
+13 Centro de Física de Materiales (CFM), CSIC & Universidad del Pais Vasco (UPV/EHU), Manuel de Lardizabal 5, San Sebastián / Donostia,
+E-20018, Spain
+14 Department of Physics, University of Texas at Arlington, Arlington, TX 76019, USA
+15 Department of Physics and Astronomy, Manchester University, Manchester. M13 9PL, United Kingdom
+16 LIBPhys, Physics Department, University of Coimbra, Rua Larga, Coimbra, 3004-516, Portugal
+17 Ikerbasque (Basque Foundation for Science), Bilbao, E-48009, Spain
+18 Department of Chemistry and Biochemistry, University of Texas at Arlington, Arlington, TX 76019, USA
+19 Department of Applied Chemistry, Universidad del Pais Vasco (UPV/EHU), Manuel de Lardizabal 3, San Sebastián / Donostia, E-20018, Spain
+20 Department of Physics and Astronomy, Iowa State University, Ames, IA 50011-3160, USA
+21 Racah Institute of Physics, The Hebrew University of Jerusalem, Jerusalem 9190401, Israel
+22 Fermi National Accelerator Laboratory, Batavia, IL 60510, USA
+23 Escola Politècnica Superior, Universitat de Girona, Av. Montilivi, s/n, Girona, E-17071, Spain
+Received: date / Accepted: date
+
+2
+
+Abstract The NEXT collaboration is dedicated to the study
+of double beta decays of 136 Xe using a high-pressure gas
+electroluminescent time projection chamber. This advanced
+technology combines exceptional energy resolution (≤ 1%
+FWHM at the Qβ β value of the neutrinoless double beta decay) and powerful topological event discrimination. Building on the achievements of the NEXT-White detector, the
+NEXT-100 detector started taking data at the Laboratorio
+Subterráneo de Canfranc (LSC) in May of 2024. Designed
+to operate with xenon gas at 13.5 bar, NEXT-100 consists of
+a time projection chamber where the energy and the spatial
+pattern of the ionising particles in the detector are precisely
+retrieved using two sensor planes (one with photo-multiplier
+tubes and the other with silicon photo-multipliers). The detector has been operating at stable conditions using argon
+and xenon gases at ∼4 bar and drift fields of 74 V cm−1 and
+118 V cm−1 , respectively. Alpha decays from the 222 Rn chain
+have been used to test and monitor the stability of the detector, showing a constant electron lifetime in the drift volume. In this paper, in addition to reporting the results of the
+commissioning run, we provide a detailed description of the
+NEXT-100 detector, describe its assembly, and present the
+current estimation of the radiopurity budget.
+Keywords Neutrino · Gas Detector · Time Projection
+Chamber · Neutrinoless Double Beta Decay
+
+1 Introduction
+The observation of the neutrinoless double beta decay
+(β β 0ν) would be a major discovery, implying the violation of lepton number conservation and revealing key aspects of neutrino properties, such as the origin of its mass
+and the matter-antimatter asymmetry in the universe [1].
+The Neutrino Experiment with a Xenon TPC (NEXT) program is advancing high-pressure xenon gas Time Projection Chambers (TPC) with electroluminescent amplification (HPXeTPC-EL). As detailed throughout this paper, this
+technology represents a promising candidate for large-mass
+detectors in the search for β β 0ν decays. The first phase of
+the program was focused on the construction, commissioning, and operation of two detectors called NEXT-DEMO
+and NEXT-DBDM [2, 3]. These two prototypes demonstrated the potential of the technology by showing excellent energy resolution (a corresponding 0.5% FWHM [4]
+at the β β 0ν energy in 136 Xe, Qβ β = (2457.8 ± 0.4) keV
+a Now at NVIDIA.
+b Deceased.
+c Now at Weizmann Institute of Science, Israel.
+d On leave.
+e NEXT Spokesperson.
+f Now at University of North Carolina, USA.
+g Now at Los Alamos National Laboratory, USA.
+
+[5]) and the topological capabilities to differentiate signal
+from background [6]. NEXT-White operated during the second phase of the program (from 2016 to 2021) [7] at the
+Laboratorio Subterráneo de Canfranc (LSC), validating the
+HPXeTPC-EL technology in a large-scale radiopure detector. It exhibited an energy resolution better than 1% FWHM
+at the Qβ β [8, 9], contributed to a background model assessment [10, 11] (specifically identifying the radioactive budget of various components), and successfully differentiated
+between single and double electron tracks [12, 13]. This detector enabled the measurement of the two-neutrino double
+beta decay rate (β β 2ν) [14], and set a limit on the half-life
+of β β 0ν of T 0ν > 1.3 · 1024 yr at 90% C.L. [15].
+The NEXT-100 detector (Fig. 1a) constitutes the third
+phase of the program. The detector began operations in May
+of 2024 at LSC, and it is currently taking data after a commissioning phase. It consists of a HPXeTPC using an electroluminescence (EL) region to amplify the signal, and it is
+designed to hold ∼70.5 kg of 136 Xe at 13.5 bar in the active
+volume. A HPXeTPC-EL is composed of three main sections, all aligned axially, as illustrated in Fig. 1b. The first
+section is the Buffer Region. This region, positioned between
+a cathode at negative high voltage (up to −70 kV) and an
+electrical ground shielding, prevents sparking and unwanted
+electroluminescence. The second section, the Drift Region
+extends between the cathode and gate, maintaining a uniform electric field (up to ∼400 V cm−1 ). The final section
+is the Electroluminescence Region of the detector. An intense electric field created in a very small (around 10 mm)
+region between the TPC gate held at high voltage (up to
+−20 kV) and the grounded anode, accelerates the ionization
+electrons sufficiently to produce a scintillation light. The EL
+field (from 1 kV/cm/bar to 5 kV/cm/bar) is sufficient to induce EL but low enough to avoid additional gas ionization,
+which would affect the linearity of the amplification process
+[16]. The whole detector barrel is encapsulated with internal
+and external shielding in a high pressure vessel (Fig. 1c).
+The principle of operation of a HPXeTPC-EL is depicted in
+Fig. 1b. When a charged particle interacts in high pressure
+gas it loses energy by ionization and by exciting the atoms
+in the gas. After de-excitation, these atoms emit vacuum ultraviolet (VUV) photons of 172 nm wavelength creating a
+primary scintillation signal (called S1, depicted with blue
+lines on Fig. 1b). The S1 signal provides the information
+of the start time of the event (t0 ). The secondary electrons
+created by ionization drift towards the anode under the influence of the electric drift field. The ionization signal is
+amplified by the EL and produces secondary scintillation
+light (called S2, represented with red lines on the same figure). The light signal of S1 and S2 propagates along a reflective light tube and is collected through two different sensor
+planes on each end of the barrel. One plane is instrumented
+with 53 photo-multiplier tubes (PMTs) placed behind the
+
+3
+
+OUTER LEAD
+SHIELDING
+
+INNER
+COPPER
+SHIELDING
+
+HIGH VOLTAGE
+FEEDTHROUGH
+FIELD CAGE
+
+TRACKING
+PLANE
+-HV
+
+ENERGY PLANE (PMTs)
+
+e−
+−
+
+e−
+e−
+
+e
+
+e−
+
+Electroluminescence
+S2
+Drift
+Region
+
+TRACKING PLANE (SiPMs)
+
+Primary
+Scintillation
+S1
+
+Buffer
+Region
+
+(a)
+
+GATE
+
+CATHODE
+
+--HV
+
+ANODE
+
+ENERGY
+PLANE
+
+Electroluminescence
+Region
+
+(b)
+
+(c)
+
+(d)
+
+(e)
+
+Fig. 1: (a) Illustration of the NEXT-100 setup in Hall A of the LSC, showing the high-pressure time projection chamber,
+pressure vessel, internal components, and external shielding. (b) Operation principle of the high pressure xenon detectors
+of the NEXT program: a time projection chamber, using electroluminescence as amplification. (c) A picture of the pressure
+vessel and inner copper shell taken from the energy plane side during assembly. (d) Field cage after being assembled and
+inserted over the inner copper shell inside the pressure vessel, picture taken from the energy plane side. (e) Field cage after
+inserting the PTFE panels that create the light tube, picture taken from the tracking plane side.
+cathode region of the TPC, while the other is instrumented
+with a plane of 3,584 silicon photo-multipliers (SiPMs) and
+collects the signal from the amplification region. The energy
+of the event is estimated by measuring the amplified S2 EL
+signal with the PMTs, the so-called Energy Plane (EP). This
+EP also records the previously mentioned prompt S1 signal.
+The plane of SiPMs (called Tracking Plane, TP) extracts the
+information from the drift electrons since the S2 light can
+provide the transverse (x, y) position. Thanks to the combination of both S1 and S2 information, the longitudinal (z)
+position of the event can also be obtained,
+z = vd · (ti − t0 )
+
+(1)
+
+where the origin (z = 0) is defined to be the edge of the
+EL region, ti is the time of each of the electrons making
+it to the EL region (S2 time), and vd the drift velocity
+corresponding to field conditions. The design of the NEXT
+detectors is able to retrieve the energy and position (x,y,z)
+
+information of the particles interacting on the detector with
+high accuracy.
+The aim of the NEXT-100 detector is to reach
+a sensitivity to the β β 0ν half-life in the order of
+∼1025 yr at 90% C.L., for a background index below
+1 × 10−3 counts/(keV · kg · year) and an energy resolution
+of ∼ 1% FWHM at the Qβ β of 136 Xe. This will demonstrate the scalability of the HPXeTPC-EL technology and
+reinforce the case for a future ton-scale detector. This paper
+describes the design and performance of the NEXT-100
+detector. The information regarding its pressure vessel and
+shielding is summarized in Section 2, while all the inner
+elements like the TPC and the sensor planes are described
+in Sections 3, 4 and 5. Improvements of the data acquisition
+and the gas system with respect to the previous-generation
+detectors are covered in Sections 6 and 7, respectively.
+Additionally, details regarding the radioactive budget of
+
+4
+
+the detector and performance and stability observed during its first year of operation are covered in Sections 8 and 9.
+
+2 The detector vessel and shielding
+The NEXT-100 detector operates in the Hall A of LSC, inside a pressure vessel (Fig. 2a) with a volume of 1.7 m3
+which is fabricated with a stainless steel radiopure titanium
+alloy (316Ti) and can hold a maximum pressure of 15 bar.
+Several ports and connections are distributed along this vessel for mechanical and electronic integration of the gas system with the sensor planes. The xenon gas circulates through
+a dedicated gas system that keeps it continuously purified
+(details about the Gas System can be found in Section 7).
+Several calibration ports for external radioactive sources are
+integrated into the detector. A total of four axial ports enable
+a full understanding of the detector performance thanks to
+their position along the drift region. Additionally, a calibration port for the use of an internal Krypton (83m Kr) source is
+placed within the gas system (described also in Section 7).
+The whole setup is placed on the same seismic table as the
+NEXT-White [7] detector (Fig. 1a), located on top of an elevated grating platform.
+The NEXT-100 detector is shielded from external backgrounds through two layers. An outer shielding made of
+lead bricks (outer lead shielding, depicted in Fig. 1a) reduces background gamma radiation from cosmic ray interactions and natural radioactivity from the LSC. The same
+outer lead shielding was used during the operation of NEXTWhite detector. However, its characteristic red paint had to
+be removed since it had been observed during the operation
+of NEXT-White that it had a high radioactive component.
+An inner shielding, made with an ultra-pure copper shielding (ICS) of 120 mm thickness, is designed to block lowerenergy X-rays and secondary radiation. The barrel region
+of the ICS was designed with 40 individual copper blocks
+(Fig. 1c), each one covering between 6-12 degrees of the total circumference to facilitate machining and assembly. The
+EP and the TP copper plates (140 mm and 120 mm thick respectively) were machined as a single piece with the corresponding insertions required for sensors: holes for the coupling of PMTs coupling to the gas (Fig. 2b) and elongated
+slots for SiPM cables (Fig. 2c), respectively. The ICS of both
+caps have the same shielding purpose for the detector, but
+are coupled to the detector differently. The TP ICS holds the
+SiPMs and the EL region, and does not provide any isolation
+to the pressure volume. However, the EP ICS acts as a separation flange between the pressure volume and a vacuum
+region. This maintains the right operation conditions of the
+PMTs: vacuum and a dark environment.
+
+(a)
+
+(b)
+
+(c)
+
+Fig. 2: (a) Pressure vessel after polishing and prior to installation at the LSC. Inner Copper Shielding of (b) the Energy
+Plane and (c) the Tracking Plane. These pictures were taken
+after their machining and during the cleaning process, prior
+to installation in the NEXT-100 detector.
+
+5
+
+3.1 Field Cage
+HV
+CABLE
+
+HDPE
+STRUTS
+
+COPPER
+RINGS
+
+CATHODE
+BUFFER
+REGION
+
+PTFE
+REFLECTOR
+PANELS
+
+DRIFT
+REGION
+
+(a)
+HDPE
+STRUTS
+COPPER
+RINGS
+
+RESISTOR
+CHAIN
+CATHODE
+
+(b)
+
+Fig. 3: (a) Drawing of the field cage without the outside insulator panel. The copper rings (red-brown) are inserted into
+the struts, the cable (pink) wraps around from the field cage
+connecting to the cathode (white), and the reflector panels
+(yellow) are slid into place through the struts. (b) Field cage
+during assembly. Resistor chains are visible along the drift
+region and connected to the cathode ring (left). Stainless
+steel wheels were used to help during assembly and insertion, and removed once it was inserted.
+
+3 Time Projection Chamber
+
+The NEXT-100 Time Projection Chamber (TPC) consists
+structurally of the field cage (FC), the cathode and EL region
+formed by a set of grids, and the high voltage feed-throughs
+(HVFT). This section details the design of the TPC, its components, and the assembly process. All materials were carefully selected to meet radiopurity requirements (more details
+in Section 8), with extensive ICP-MS and HPGe assays to
+limit contamination from 238 U and 232 Th.
+
+The NEXT-100 Field Cage (Fig. 3a) main structure is held
+together by 18 high-density polyethylene (HDPE) struts that
+run along the full length of the FC. These plastic struts provide structural support (in Fig. 1d and 3a), space the copper
+field shaping rings, and are also used for fastening the light
+reflecting panels (Fig. 1e) and cathode into place. The 52
+field shaping copper rings serve as the circumferential mechanical support holding the weight of the whole FC. The
+drift region is formed by 48 rings that are spaced axially with
+a pitch of 24 mm. They are built in three separate pieces and
+connected together with brass bolts to form a full ring. Each
+copper ring is attached to the grooves of the struts by nylon
+bolts. The cathode is supplied with high voltage (HV) via a
+cable connected at its upper section (more details about the
+connection are described in Sec. 3.3). The HV cable makes
+a helical path path around the FC (Fig. 3a) from the cathode connection towards the gate region, where the HV feedthrough is located. Ridges are cut into the HDPE to provide
+room and a path for the cable to lay.
+The potential along the drift region is shaped by 3 resistor chains that are placed isometrically (visible in 3 positions in Fig. 1d: top-right, bottom, and left-middle areas),
+connecting each copper ring and are attached to the cathode. Resistors from Vishay Techno with 100 MΩ resistance
+(CHRV100MEDKR-ND) were selected to ensure low currents in the FC and fulfill the radiopurity criteria. Circuit
+boards are made of CuFlon, a high-performance dielectric
+material made of polytetrafluoroethylene (PTFE) bonded to
+a copper foil. The PTFE used is unfilled, meaning it has no
+glass or ceramic fillers, giving it superior electrical properties and capable of meeting the radiopurity budget. Each
+resistor board, of dimensions 28 mm × 6 mm × 2.7 mm connects two copper rings (Fig. 3b). This chain of resistors is
+mounted on the inside of the FC rings to avoid any possible
+sharp point from the resistors or the soldering in the high
+field region between the rings and the ICS. The final ring is
+connected to the cathode with a resistor board of 150 MΩ
+and a silicon bronze button similar to the one used for the
+HV cable connection (Section 3.3). Resistors were tested
+prior to installation, and after assembly connection to the
+rings was measured using a picoammeter. The FC was assembled outside the pressure vessel, on top of a cradle structure tooled to provide support during assembly and to push
+the main structure into the main pressure vessel.
+Panels of PTFE reflectors are attached to the struts
+with a dovetail connection and are coated with tetraphenyl
+butadiene (TPB) (Fig. 1e and 3a), which is a wavelength
+shifter. These reflectors create a light-tube that delimits
+the active volume and enhances photon collection efficiency. The PTFE panels have a thickness of 5 mm in their
+flat region, optimizing maximum light reflectivity with
+
+TPB thickness ( m)
+
+6
+
+4.4
+4.2
+4.0
+3.8
+3.6
+3.4
+3.2
+3.0
+
+Trend
+First round data
+Second round data
+
+5
+
+10 15 20 25
+Radial distance (cm)
+
+30
+
+Fig. 4: Expected thickness of the TPB coating of the PTFE
+panels covering the interior side of the light tube. Two
+test evaporations were evaluated (blue and red markers),
+showing an agreement at different radial distances within
+the evaporator (shown by the general trend in black). Values show a homogeneous coating between 3 µm to 4 µm of
+TPB, ensuring a maximal efficiency for light emission [17].
+Thickness was estimated by positioning test slides where
+the panels would be placed and, after a regular evaporation,
+measuring the deposition over said slides with a stylus profilometer. Errors reflect the actual size of the slides (for the
+radial distance) and the variation of the coating along each
+slide (for the thickness).
+
+the minimum amount of material [18]. The NEXT-100
+light tube has been designed in panel sections along the
+longitudinal axis to simplify their coating and assembly.
+Smaller plastic pieces allow for easier TPB coating and
+transportation, and reduces the stress on the detector during
+vacuum and pressure cycles from expansion of the PTFE.
+Additionally, this arrangement was meant to test the design
+and construction of larger future detectors. Prior to coating,
+the panels were sanded in order to ensure a homogeneous
+surface and to remove specular reflections [18], then
+cleaned to remove any surface contamination. The quality
+of the TPB deposition was monitored and measured during
+evaporations using profiles at different positions along the
+evaporator. A homogeneous layer of 3 µm to 4 µm (Fig. 4)
+along the whole FC surface was observed, ensuring an
+optimum transformation and reflection of the xenon light
+[17]. Panels were transported to LSC in dark sealed bags
+filled with a nitrogen atmosphere and were the last piece
+installed in the detector to minimize the degradation of the
+TPB when exposed to light. The dimensions of each of the
+components of the field cage are described on the Table 1.
+
+Table 1: Dimensions of the individual components of the
+field cage, where the light-tube drift region defines the active
+volume of the detector.
+Component
+
+Length [mm]
+
+Diameter [mm]
+
+HDPE Insulator
+HDPE Struts
+Copper Rings
+Light Tube Buffer Region
+Light Tube Drift Region
+
+1427
+1427
+–
+241
+1187
+
+1105
+–
+1014
+983
+983
+
+An outer layer made of two pieces of HDPE serves as an
+insulator separating the FC from the internal copper shielding within the vessel. They are mechanically designed as a
+flat sheet of quarter-inch thickness, wrapped directly around
+the external FC structure to prevent sparking between the
+field-shaping copper rings and the ICS. The inner layer, directly touching the FC, covers the whole surface. The outer
+layer in contact with the copper shielding is designed to protect the gap from the inner layer and avoid any direct contact with the copper rings. This two layer outer insulator was
+slid over the copper layer before the FC was inserted into the
+pressure vessel.
+3.2 Cathode and Electroluminescence Meshes
+The NEXT-100 detector drift field and amplification region
+are produced by photoetched tensioned hexagonal stainlesssteel meshes of 1 m of diameter. Full details of their design,
+characterization, and installation can be found in Ref. [19].
+These have been tested to ensure uniformity and stability for
+the high-precision energy measurement in the detector.
+The EL region consists of two parallel meshes featuring
+a 2.5 mm hexagonal pattern with a 90% optical transparency.
+This is structurally placed over the TP copper plate using HDPE brackets that maintain the amplification gap (see
+Fig. 9b) of (9.70±0.15) mm (measured after installation).
+Both meshes are held in place and tensioned with a silicon
+bronze frame that was chosen for its mechanical strength
+and radiopurity. Electrostatic deflection of the meshes under high voltage was measured (Fig. 5) using an optical
+microscope system. The extracted tension was ∼900 N,
+which results in deflections that remain below 0.4 mm at the
+expected operating conditions. For pressures in the range
+10-15 bar, the expected impact of the electrostatic deflection on the total energy resolution does not vary more than
+0.15% FWHM for electrical fields greater than 16 kV cm−1 .
+In addition, studies have shown that the EL mesh alignment
+(shifted, aligned, or rotated configurations) had minimal impact on the energy resolution [19]. Breakdown voltage tests
+in air and argon confirmed that the EL meshes withstand discharges from operating voltages up to 28 kV without structural damage [19]. Post-installation tests verified that the as-
+
+7
+
+NEXT-100 Mesh A
+
+Deflection [ m]
+
+500
+
+HDPE
+STRUTS
+
+Dist. from Centre
+0 cm
+32 cm
+16 cm
+48 cm
+
+400
+
+Tension best fit: 990+/-45 N
+
+300
+200
+100
+0
+
+0
+
+2
+
+4
+
+6
+8
+10
+Voltage [kV]
+
+12
+
+14
+
+CATHODE
+
+Fig. 5: Measurement of the electrostatic deflection as a function of applied voltage shown for one of the EL meshes.
+Measurements are fit to a deflection model and the extracted
+mesh tensions are 990±45 N and 835±40 N [19].
+sembled system met the required mechanical and electrical
+specifications.
+The cathode mesh features a 5 mm hexagonal pattern to
+optimize transparency (95%) and light collection efficiency,
+while minimizing electric field leakage. This mesh is designed to provide a constant drift field of ∼400 V cm−1 in
+the active region, which implies a field of ∼2 kV cm−1 in
+the buffer region. The cathode operates at a lower local field
+strength compared to the ∼20 kV cm−1 of the EL, making
+the electrostatic deflection of the cathode mesh less significant. The cathode mesh is also tensioned with a silicon
+bronze frame. However, due to the lower fields applied less
+tension is required. The cathode is held on the main structure
+of the FC (see Fig. 6a). The conductive center of the high
+voltage cable connects to the cathode (see Fig. 6b) through a
+silicon bronze button that fits the mesh frame and is secured
+with brass screws. The material fulfills the same mechanical
+and radiopurity specifications of the mesh frame, and has a
+rounded shape to minimize electric fields arising from sharp
+points in the connection region.
+
+(a)
+
+CATHODE
+CONNECTION
+BUTTON
+
+HV
+CABLE
+
+(b)
+
+3.3 High Voltage Feed-throughs
+
+Fig. 6: (a) Cathode close up during the assembly of the field
+cage. (b) Connection of the high voltage cable with the cathode through a silicon bronze button.
+
+The high voltage of the NEXT-100 TPC is provided through
+three feed-throughs (FT) on the main vessel: a cathode
+HVFT, a FT connected to the last ring of the FC, and
+an EL gate FT. The three FTs are designed to deliver a
+stable voltage while maintaining insulation and preventing
+electrical breakdowns. Their design ensures durability
+based on tests of hydrostatic pressure (up to 20 bar) and
+vacuum tests (below 1 × 10−5 Torr).
+The cathode HVFT (Fig. 7a) is designed to deliver a stable
+voltage up to −70 kV to the cathode mesh. It is placed
+over the vessel on an upper port (see Fig. 1a) and provides
+connection to the cathode through the HV cable (Fig. 3a,
+
+[20]). The outer grounding shield consists of a stainless
+steel 316 cylinder and it is connected to the vessel to
+provide a good ground connection. An electrical insulation
+sheath was designed with tapered ends to reduce electric
+field concentrations and minimize charge build-up (Fig. 7b).
+Internal and external cables are connected through an inner
+copper pin designed with interference fits to avoid air
+gaps and ensure stable electrical contact through a press-fit
+connection. The HV cables are attached using modified
+banana plug connectors. The grounding shield is extended
+
+8
+From Power
+Supply
+EL
+Region
+
+To Vessel
+
+Conical
+Top
+
+Drift Region
+
+Insulating Copper Pin Grounding
+with
+Poly
+Shield
+Brass Plug
+Inserts
+
+ICS
+
+(a)
+
+(b)
+
+Fig. 7: (a) Cross section of the feed-through for the high
+voltage connection of the cathode. More details can be found
+in [20]. (b) Simulation of the electric fields using COMSOL
+within the feed-through when operating at 100 kV [20].
+
+Buffer Region
+
+0.5e+06
+0
+
+6e+06
+5.5e+06
+5e+06
+4.5e+06
+4e+06
+3.5e+06
+3e+06
+2.5e+06
+2e+06
+1.5e+06
+1e+06
+
+V/m
+
+Cathode
+
+(a)
+
+using a metallic hose clamp over the cable’s shielding braid.
+Since the EL meshes are not directly attached to the
+FC but are instead supported by the TP copper plate, it is
+essential to fully control the potential at the end of the drift
+region. To achieve this, a HV connection is established at
+the final ring of the FC through a FT. This FT consists of an
+outer stainless steel tube with a flange, connected through
+an inner PE1000 tube and a stainless-steel rod. This rod
+holds an inner copper tube with a single pin high voltage
+connector (GES; Type SB150 50 kVDC) to ensure a safe
+and stable voltage connection. The assembly of the FT
+was done with cryogenic shrink fitting, meaning that all
+the parts had to be machined with precise tolerances. After
+the machining and assembly, a leak and pressure test was
+done, which confirms that the FT can operate safely up to
+15 bar. A FT with the same design is connected to the EL
+mesh that acts as a gate providing the desired voltage for
+amplification. Cathode voltage is supplied by a FUG HCP
+140-100000, while the last ring and the gate are supplied by
+a FUG HCP 35-35000.
+The electric field at different operation voltages has been
+simulated using COMSOL (Fig. 8a) finite element analysis software, where a 2D-axis-symmetric approximation was
+
+(b)
+
+Fig. 8: (a) Simulations of the electric field in the NEXT100 field cage using COMSOL at the maximum operation
+voltages: cathode at -70 kV and gate at -20 kV. Electric field
+lines are homogenous and constant along the detector drift
+region, corresponding to a electric field of ∼400 V cm−1 . (b)
+Reduced electric field evaluated at 20 mm from the PTFE
+walls, corresponding to the fiducial cut boundary where nonhomogeneous effects are most significant.
+
+used and radial components of the electric field have been
+evaluated through different axial positions. The field uniformity is satisfactory (within 10%) for a radial distance of
+
+9
+
+20 mm (Fig. 8b) from the teflon walls, showing no sharp
+points at different drift field values and ensuring the good
+quality of the electric field in the fiducial region.
+4 Energy Plane
+The event energy (S2) and the primary scintillation light
+(S1) in the NEXT-100 detector is measured by the Energy
+Plane shown in Fig. 9a. It operates with 53 bialkali photocathode PMTs (R11410-10 from Hamamatsu) with a surface diameter of 64 mm, in a vacuum region with a gain of
+5 · 106 . The vacuum operated PMTs are coupled to the pressure volume through holes machined in the copper plate and
+closed with sapphire windows (Fig. 2b). These windows are
+coated with poly ethylenedioxythiophene (PEDOT), a resistive and highly transparent compound that helps to define the
+ground at the EP while at the same time avoiding sharp electric field components and preventing charge accumulation
+on the windows. In addition, the sapphire windows are also
+coated with a thin layer of TPB to shift the direct VUV light
+from xenon to blue, where sapphire is highly transparent,
+maximising the total light collection. The PMTs are coupled to the sapphire windows with an optical gel (NOA76
+from the company Edmund Optics). The design of the EP
+plate can accommodate up to 60 PMTs. However, some of
+the sapphire windows did not pass the quality tests needed to
+guarantee a safe operation of the detector. Simulations have
+demonstrated that a PMT coverage of approximately 25% is
+sufficient to achieve the excellent energy resolution required
+for the experiment, similar to that observed in the NEXTWhite detector [9]. Based on these results, the decision was
+made to operate the Energy Plane with only 53 PMTs.
+Each PMT receives power through a base circuit built on
+a Kapton printed circuit board (PCB). As the PMTs are operating at high vacuum, the heat produced by the circuit needs
+to be dissipated by direct thermal contact. This was solved
+by covering the base with a copper cap (Fig. 9c) filled with
+radiopure epoxy that guarantees a good contact between the
+electronic components and the copper cap. The output of the
+PMTs is read in pseudo-differential mode by extracting the
+signal on the last and the third-to-last dynodes. This connection is made with twisted Kapton cables connecting the
+PMT bases with a feed-through in the torispherical head of
+the pressure vessel (visible in Fig. 1a). Electronic signals are
+retrieved from the pressure vessel through two custom feedthroughs each on CF100 flange. Each of them has 30 PMTs
+connected through 3 multipin connectors (Fig. 9d).
+The Front-end electronics (FEE) is based on a differential transmission to effectively suppress noise coupled to the
+signal, which is essential for the detection of single photoelectrons and the identification of S1 signals. A differential amplifier (THS4511) chosen for its high bandwidth,
+low noise, and low distortion characteristics, is configured
+
+for a current amplification factor of 1500. Following the
+amplifier, a low-pass filter is implemented to reduce highfrequency noise and shape the signal. This shaping is necessary because the DAQ system, operating at a sampling frequency of 40 MHz (25 ns), must reliably capture single photoelectron pulses while preserving good energy resolution.
+The low-pass filter has a cutoff frequency of 2 MHz. Consequently, the bandwidth of the FEE (2 MHz) also acts as a
+shaping filter, extending the single photoelectron response
+time. The FEE also includes an offset adjustment feature
+that allows fine control over the baseline, preventing signal saturation and fully utilizing the dynamic range of the
+DAQ FPGA. Finally, a differential driver ensures sufficient
+current for transmission to the external acquisition system.
+Further details about readout system are covered in detail in
+Section 6.
+An LED calibration system is distributed along the EP
+plate in order for calibrating the TP at the opposite side of
+the detector. A set of 12 LEDs are distributed along the plane
+and placed inside the cavities of the EP (next to the PMTs),
+ensuring that the light goes through the sapphire window.
+Temperature sensors have also been installed on the EP.
+5 Tracking Plane
+The particles interacting in the NEXT-100 detector can be
+3D reconstructed thanks to a Tracking Plane consisting of
+a matrix of 3,584 SiPMs that are placed in contact with
+the gas xenon (Fig. 9b). The sensors of 1.3 mm × 1.3 mm
+(69% larger area than the ones used in NEXT-White) effective photosensitive area are the S13372-1350TE model
+from Hamamatsu, with 50 µm pixel pitch. These photosensors have been chosen due to their high sensitivity, and
+the reduced radioactivity in the optical detector package.
+The SiPMs are distributed on 56 Kapton PCBs (named as
+DICE-Boards) of 8×8 SiPMs each at a pitch of 15.55 mm.
+Compared to the SiPMs used in the NEXT-White detector,
+the density of SiPMs has been reduced. This was necessary
+due to the high density of outer cables, which were interfering with sensor connections. Simulations have demonstrated
+that, thanks to the high-quality reconstruction algorithms developed by the NEXT collaboration [13], reducing the SiPM
+coverage from 1.78% to 0.74% and distributing them uniformly along the TP does not impact the spatial resolution
+of the detector. This reduction cuts the number of channels
+by a factor of two.
+The DICE-Boards are placed at a distance of 15.1 mm
+with respect to the anode mesh, and therefore at a distance
+of 24.8 mm to the EL gate. The design concept used for the
+DICE boards is the same as the one for the NEXT-White detector: a low-radioactivity Kapton printed circuit of 0.2 mm
+(Fig. 9e) with a flexible pigtail. As the glue in between different Kapton layers of these circuits was identified as the
+
+10
+
+(a)
+
+BASE
+CIRCUIT
+
+CF100
+FLANGE
+
+MULTIPIN
+CONNECTORS
+
+SAPPHIRE
+WINDOW
+
+30
+
+(c)
+
+KAPTON
+DICE-BOARD
+
+⌀152
+
+PMT
+
+COPPER
+CAP
+
+(b)
+
+SiPMs
+
+(d)
+AISI 316L CF100 flange with 3x32 pin MIL-C-26482
+
+(e)
+
+Date:
+
+05/04/2018
+
+Revision:
+
+0.0
+
+TPB COATED
+PTFE MASKS
+
+(f)
+
+Property and confidential
+The information contained in this drawing is the
+sole property of Hermetic Sealing Srl. Any
+reproduction in part or as a whole without the
+written permission of Hermetic Sealing Srl is
+prohibited.
+
+Fig. 9: (a) Energy plane of the NEXT-100 detector during assembly. The PMTs are coupled to the xenon pressure region
+through sapphire windows. Copper covers were used during the pressure tests, and replaced by sapphire windows and coupled
+PMTs during assembly. (b) Tracking plane of the NEXT-100 detector after assembly. 56 DICE-boards assembled on the
+copper plate with PTFE masks on top. The EL gap is also assembled on top of the TP copper plate using HDPE brackets.
+(c) 3D drawing of the PMT cap and the LED hole at the copper plate. (d) Drawing of the custom feedtroughs used for the
+PMTs. (e) Kapton DICE-Board with SiPMs wielded. The thin layer of Kapton circuit ensures enough rigidity for assembly
+and proper flexibility for the pigtail cables. (f) DICE-Board assembled on the tracking plane, with PTFE mask on top of it.
+Not scale drawing
+
+Sheet 1 o f 1
+
+Dimensions:
+
+mm
+
+Number:
+
+main source of radioactive impurities, a single layer of Kapton in the DICE-Boards where the SiPMs are soldered (the
+frontmost side of the circuit) was implemented. However,
+the flexible tail that crosses through the copper retained the
+extra layers of Kapton, to protect the lines from touching
+the copper as it is partially shielded from the detector by the
+ICS.
+
+The reflectivity of the detector and the light collection
+in the EP is maximized by placing PTFE masks of 6 mm
+thickness (Fig. 9f) over the DICE-Boards. These masks have
+a symmetric hole of 6 mm × 6 mm to ensure full light collection of the SiPMs at the TP. Both Kapton DICE-Boards
+(with mounted SiPMs) and PTFE masks are coated with a
+thin layer of TPB. Each of the DICE-Boards has a temper-
+
+11
+
+DN130
+FLANGE
+
+no bubbles or imperfections that could affect performance.
+Measurements indicate an exceptionally low helium leak
+rate of 5.5 × 10−10 mbar · L · s−1 . It has demonstrated the
+ability to withstand at least 200 pressurization cycles with a
+helium permeability of 1 × 10−6 mbar · L · s−1 at 17 bar and
+no detectable permeability for argon and neon. These tests
+confirm its robustness and reliability for demanding operational conditions.
+
+6 Read-out and DAQ
+
+EPOXY-SEALED
+BOARDS
+
+Fig. 10: The NEXT-100 tracking plane feed-through. It consists of four epoxy-sealed boards mounted on a DN130
+flange, each accommodating up to 16 DICE per feedthrough.
+
+ature sensor to monitor the system and also a blue LED to
+allow the calibration of the EP at the opposite side of the
+detector.
+The flexible pigtails of the NEXT-100 DICE-board pass
+through the elongated slots of the ICS, where they connect to another Kapton cable that transmits the signal to
+a set of feed-throughs. A set of custom made NEXT-100
+TP feed-throughs are designed for the experiment and represent a breakthrough that allow us to extract a very high
+number of channels from the high pressure vessel. Each
+of these uniquely designed feed-throughs consists of four
+epoxy-sealed boards mounted on a DN130 flange (Fig. 10).
+Each board can accommodate four DICE boards, allowing a
+single feed-through to house up to 16 of them. This highdensity, low-noise feed-through preserves the integrity of
+the SiPM signals and supports up to 2240 sensors per unit.
+These feed-throughs have undergone rigorous mechanical
+validation, including pressure cycles, vacuum tightness tests
+with helium, and permeability tests with helium and neon.
+They have been tested for outgassing through residual gas
+analysis (RGA), which helped optimize the assembly process to avoid contamination from tapes or other consumables during epoxy application. The epoxy and electronic
+boards showed no apparent outgassing in RGA studies.
+Additionally, the feed-throughs have passed X-ray inspections to verify the correct deposition of the epoxy, ensuring
+
+While the events of interest for the physics exploitation of
+NEXT-100 cover the ∼1 – 2.5 MeV range with a trigger
+rate <1 Hz, calibration sources induce energy deposits from
+41.5 keV (83m Kr) to 2.6 MeV (228 Th) with trigger rates of
+tens of Hz. The acquisition system of NEXT-100 is able
+to cope with both data taking conditions. In particular, the
+DAQ implements a dual trigger scheme, with independent
+parameters, allowing for the continuous recording of Kr
+events (Type 1 trigger), meant to perform a volumetric calibration of the detector, while collecting also physics data
+(Type 2 trigger).
+
+6.1 Read-out and DAQ Electronics
+The NEXT-100 experiment inherits the read-out and DAQ
+electronics, firmware, and software from its predecessor,
+the NEXT-White experiment [21]. This reliable and wellestablished system was scaled for NEXT-100 by simply
+adding modules, eliminating the need for extra concentration stages. The read-out, DAQ and FEE architecture in
+NEXT-100 is represented in Fig. 11. The system has a total
+of 13 DAQ Modules, 7 more than its predecessor (divided
+into 7 EP DAQ Modules, and 6 TP DAQ Modules, reading out the 53 PMT and 3,584 SiPM sensors, respectively),
+and one extra Control Module for control and event detection. The main component in the DAQ system hardware
+is the advanced telecommunications computing architecture
+(ATCA) blades, a field programmable gate array (FPGA)
+based module originally developed for the CERN RD-51
+Collaboration [22], that builds and buffers sub-events from
+incoming detector data as well as to perform system control. This module and the rest of the cards used in the DAQ
+(the two types of mezzanine, ADC and DTC, and the FEB
+cards used to readout SiPM sensors) are described in [21]
+and [23].
+
+6.2 DAQ Software
+Each half of an ATCA blade sends data to the DAQ servers
+via user datagram protocol (UDP) frames using two optical
+
+12
+
+FE for PMTs
+8/9 PMT channels
+8/ PMT FE boards
+
+FEB
+
+DTC Card
+
+FEB
+
+4x optical
+1 GbE links
+
+ATCA
+Blade
+
+FE for tracking
+~350 SiPM ch.
+9/10 FEB boards
+
+Tracking plane
+
+FEB
+
+DTC Card
+ADC Card
+
+7 SRS Modules
+(ATCA blades)
+13 DAQ modules
+1 control module
+
+ATCA
+Blade
+
+4x optical
+1 GbE links
+
+ATCA
+Blade
+
+RTM
+
+ADC Card
+
+10 GbE Network
+switch
+
+4x optical
+1 GbE links
+
+Energy Plane
+DTC Card
+
+7x
+servers
+
+182 cores
+335 TB
+
+RTM
+
+NEXT-100
+Detector
+
+Reco & Analysis
+
+5x servers
+12 DAQ
+modules
+x6
+
+FEB
+FEB
+
+NEXT cluster
+
+DAQ servers
+
+RTM
+
+FEB
+
+ADC Card
+
+LSC
+Data center
+Reco & Analysis
+
+768 cores
+300 TB
+
+1 control
+module
+
+Fig. 11: NEXT-100 Data Acquisition and Front-End hardware architecture. The system poses 13 DAQ modules reading the
+front-end electronics from both (TP and EP) sensors planes. The DAQ modules consist in ATCA blades that send data to the
+DAQ servers. The acquired data is reconstructed and analysed on two clusters: one from the NEXT collaboration (182 cores)
+and one from the LSC (768 cores).
+fiber gigabit Ethernet (GbE) links. In total, there are 28 GbE
+links reaching the server farm. The data are read by 7 servers
+(in orange in Fig. 11) running the data acquisition software,
+which has been developed from scratch and has been successfully tested and deployed in NEXT-100. The software’s
+backend is written in Go [24]. It includes four main parts:
+– Local Data Concentrator (LDC): One program to readout the UDP frames from all the links connected to each
+search. There is one Go routine per link. Once all the
+fragments have been collected, a header is added and
+sent to the Global Data Concentrator.
+– Global Data Concentrator (GDC): An event builder
+program. This program listens for Transmission Control Protocol (TCP) connections from LDCs containing
+subevents data. Once all the fragments of a given event
+are received, the whole event is put together with a new
+header and written locally to the output file.
+– Server Application Programming Interface (API): The
+whole system requires a web server with a REST API
+to control the system and monitor its status. The API
+server communicates with the LDCs and GDCs using
+the gRPC protocol.
+– Web Interface: The user interface is provided via a web
+page written with Vue.js that communicates with the API
+web server, allowing the user to interact with the system.
+Data received by the GDCs is written into binary files
+that are copied to the NEXT processing cluster (in blue in
+Fig. 11) where they are decoded. Events on each file are reconstructed with the analysis software Invisible Cities [25].
+Some of the jobs are running in the LSC computing cluster
+
+(in green in Fig. 11), that provides service to all LSC experiments. Custom software has been developed to manage
+productions and automatically send all required jobs. The
+DAQ servers, NEXT cluster and LSC cluster are connected
+via 10 GbE network. The data production is monitored via
+Grafana dashboards.
+
+6.3 DAQ Event Detection
+The different topologies and orientation of the tracks produced in the active volume lead to a wide range of lengths
+in the drift axis (z) and thus in the time duration and
+height of the amplified signal. To deal with this variety of
+PMT pulse shapes, the NEXT-White detector was already
+equipped with specialized event detection capabilities [26],
+which have been also implemented in the NEXT-100 DAQ
+system, based on the charge, height and duration of the S2
+signal in the PMTs. Although a S1-based trigger is possible, the regular operation of NEXT-100 relies on a S2-based
+trigger, as the amplified signals are easier to detect and differ
+depending on the topology of the event. Furthermore, coincident triggers across multiple PMT channels can be used
+to reduce potential biases in the event selection. In order to
+ensure the recording of the S1 signal associated to a S2 triggering the detector, as well as to guarantee that the full S2
+signal is processed, the trigger readout window spans twice
+the maximum drift time, being the trigger time (start of the
+S2 signal) in the centre.
+Scaling from NEXT-White to NEXT-100 increased the
+number of sensors, detector volume, and buffer size, thereby
+
+13
+
+raising the per-event data load and DAQ throughput requirements. Each of the seven servers can sustain up to 125 MB/s,
+for a combined limit of 875 MB/s, which is insufficient for
+uncompressed calibration runs. To address this, both lossy
+and lossless compression schemes were evaluated, with the
+adopted solution achieving a ∼ 80% reduction in data size
+for both PMTs and SiPMs [27]. This significantly lowers
+throughout demands and reduces DAQ dead time, keeping
+operation within design limits and avoiding costly system
+upgrades.
+As mentioned in the introduction to Section 6, the continuous calibration with an internal 83m Kr source implies a
+Type 1 trigger rate of tens of Hz. This high rate induces a
+non-negligible dead time in the Type 2 trigger, meant to collect physics events, since both type of triggers share the double buffer and the Ethernet links used to transmit data to the
+DAQ servers, even if processed in parallel. To mitigate this,
+the NEXT-100 DAQ also employs a double-buffering strategy: Type 1 and Type 2 events are processed in parallel, with
+Type 1 events confined to a single buffer (with shortened acquisition window if necessary), ensuring that at least one
+buffer remains available for Type 2 events. With this configuration, initial tests suggest dead times from 11% to 16%
+for Type 2 trigger, being the double for Type 1. These dead
+times do not significantly impact the physics exploitation of
+NEXT-100 detector.
+
+7 Gas System
+Ionization electrons created when a charged particle interacts in the detector can be lost due to attachment to
+electronegative impurities during drift towards the EL
+region. A low electron drift lifetime would imply a significant fraction of electrons lost before reaching the readout
+TP, resulting in signal degradation, inaccurate energy
+reconstruction, and poor spatial resolution. A good control
+of the gas impurities is needed to ensure a constant high
+electron lifetime. During the design phase of the NEXT-100
+detector, a careful testing for outgassing of the different
+detector materials in contact with the gas was performed,
+also using the experience of the NEXT-White detector
+operation. During detector operation, the ultimate goal
+of the NEXT-100 gas system is to monitor and maintain
+gas purity under control, and keep the detector at a stable
+pressure.
+The NEXT-100 gas system builds upon the former
+NEXT-White [7] one and can be partitioned into four interconnected subsystems, pictured in Fig. 12:
+(a) The pressure system (red and black lines), encompassing gas recirculation and purification. A compressor is
+used to keep the pressure of the system stable at the op-
+
+erating value and to circulate the gas. The detector pressure is monitored at different points allowing the observation of small variations due to temperature oscillations
+(very important due to the size of the NEXT-100 detector). Purification of the gas is achieved by circulation at
+around ∼100 slpm through chemical purifiers: two ambient temperature cold getters (CG1 and CG2), and one
+hot getter (HG). The maximum operation pressure of the
+NEXT-100 detector is 13.5 bar. This value is limited by
+the rupture discs of the recovery system, which reduce
+the maximum operating pressure of the vessel (15 bar).
+(b) The vacuum system, including the vacuum lines (blue)
+and pumps. The vacuum system is used to evacuate the
+system prior to its filling with xenon. This helps to considerably reduce the time needed to purify the gas. The
+NEXT-100 vacuum system is able to hold a vacuum of
+1 × 10−6 mbar. This system has been considerably upgraded from the NEXT-White one by increasing the size
+of the main lines, using rigid pipes and by multiplying
+the number and positions of pump stations (combination
+of a turbomolecular pump with a roughing pump). This
+allows reaching a good vacuum level in such a large system within an acceptable amount of time.
+(c) The emergency recovery system (orange lines) of which
+the main part is the expansion tank. Thanks to the constant monitoring of the pressure and vacuum values at
+the gas system, the system is able to react quickly and
+without any manual intervention to changes indicating
+an unexpected overpressure condition or a potential leak.
+The emergency recovery system is designed to collect
+the maximum gas capacity of the pressure vessel on a
+recovery tank in 11 min.
+(d) The cryo-recovery system (purple lines), including the
+cryogenic recovery bottle and all the lines connecting to
+the rest of the system. The recovery of the xenon under
+normal operation conditions is achieved by the connection of two cryo-bottles where the xenon is collected by
+freezing it, to the recirculation loop and to the expansion
+tank (one of the bottles is used to recover normal xenon,
+while the other is for enriched xenon).
+Major upgrades have been implemented in the gas system considering the bigger size of the NEXT-100 detector and lessons learned with NEXT-White. First, a metering
+valve to improve the regulation of the krypton input to the
+gas system has been installed (represented with radioactive
+symbol on Fig. 12). The remotely controlled metering valve
+facilitates krypton source survey operations, enabling fine
+adjustments to achieve the desired number of krypton events
+inside the NEXT-100 detector. Additionally, some major updates regarding the emergency recovery and the circulation
+flow have been implemented and are covered in the next subsections.
+
+01-P&ID diagram of NEXT-100 GAS SYSTEM
+14
+
+Emergency
+Recovery Tank
+
+Cryo Bottle 1
+
+Cryo Bottle 2
+
+NEXT
+100
+
+HOT GETTER
+
+COLD GETTER
+
+KR SOURCE
+
+CG2
+PNEUMATIC-OPERATED VALVE
+
+Argon gas bottle
+
+HG
+
+Xenon gas bottle
+
+Compressor
+
+CG1
+
+MANUAL VALVE
+MASS FLOW CONTROLLER
+
+VACUUM PUMP
+PURIFICATION LOOP
+CRYO-RECOVERY
+AR/XE GAS BOTTLES
+VACUUM SYSTEM
+EMERGENCY RECOVERY SYSTEM
+PRESSURE VESSEL
+
+Fig. 12: Simplified representation of the gas system for the NEXT-100 detector. Highlighted with colors are the different
+parts of the system.
+7.1 Emergency Recovery
+The recovery system of the NEXT-100 experiment (orange
+line in Fig. 12) has undergone a significant upgrade with
+the addition of a newly manufactured recovery tank. This
+tank has a capacity of 20 m3 and is rated for a maximum
+pressure of 3 bar. It has demonstrated the ability to maintain impurity levels below 1 ppm over extended periods (several months) without the need for continuous evacuation.
+This performance is attributed to its electropolished internal
+surface, achieving a roughness below 0.6 µm, and a hightemperature nitrogen gas treatment at 200 ◦ C applied during
+manufacturing. These features significantly reduce maintenance requirements while ensuring long-term xenon purity.
+The tank includes a dual-stage overpressure protection system. The first stage, newly introduced in this upgrade, consists of a rupture disc rated at 2 bar, a relief valve also set at
+2 bar, and a manual valve for maintenance. This is designed
+to protect the emergency recovery tank to avoid a loss of gas
+in case of overheating or fire at the laboratory. The second
+stage, retained from the previous setup, consists of a rupture
+
+disc rated at 3 bar, which protects the maximum operating
+pressure of the emergency recovery tank. These two stages
+provide redundant safety mechanisms, ensuring robust protection during overpressure events. Unlike the previous system, this upgraded configuration does not require continuous vacuuming; instead, vacuum cycles can be scheduled at
+controlled intervals, improving operational stability and enhancing safety in xenon recovery and storage.
+One possible critical failure in the NEXT-100 detector is
+the potential rupture of a PMT window. The PMTs used are
+not designed to operate under pressure. To address this, custom windows were developed to house the PMTs in a separate vacuum environment. These windows undergo rigorous validation procedures, including gas permeability tests,
+helium leak testing under both vacuum and pressure, and
+pressure cycling, to ensure reliability. Nevertheless, a window failure could result in xenon leakage and pressure damage to the whole EP. To mitigate this risk, the EP is directly
+connected to the recovery tank via a turbo pump (dark blue
+line in Fig. 12). The large volume of the recovery tank allows it to function as a primary buffer, offering a direct path
+
+Instituto de
+CSIC Conse
+
+Title: P&ID dia
+Document nu
+Date: 05/06/2
+Autor: Jordi To
+Revision: Simó
+
+15
+
+INLET
+PRESSURE
+PIPING
+
+PMT
+VACUUM
+REGION
+
+EP VESSEL
+ENDCAP
+(a)
+
+(b)
+
+(c)
+
+(d)
+
+Fig. 13: (a) Gas injection system placed behind the Energy Plane copper shielding to improve circulation flow. (b) Port at the
+energy plane cap that controls the gas flow of the injection system in the PMT vacuum region. Simulations of the gas flow
+when the circulation is performed from (c) Energy Plane towards Tracking Plane and (d) Tracking Plane towards Energy
+Plane. The implementation of a reverse flow configuration provides the capability to study the influence of flow patterns
+within the system. Simulations provide a homogeneous flow on both directions.
+for gas evacuation in case of a window breach. Simulations
+have verified that this setup keeps the EP pressure below
+3 bar even in the event of a catastrophe window failure, minimizing potential damage to the PMTs. Additionally, this
+configuration enables continuous xenon monitoring with an
+RGA and rapid leak detection, thereby improving the overall
+safety and responsiveness of the system.
+
+7.2 Improvement of the circulation flow
+To further enhance the gas purification process and electron
+lifetime uniformity along the NEXT-100 detector a series
+of gas flow simulations were performed. The most optimal
+solution was the introduction of gas input holes in the EP
+copper plate, with pipes going through the vacuum volume
+(Fig. 13a). This results in a uniform distribution of the gas
+along the active region of the detector, with fewer dead re-
+
+gions than what we would have had with a single pipe in
+the center of the vessel. The system also allows for selective control of the gas flow across different regions of the
+EP, allowing it to be directed towards the peripheral section, the central section, or both simultaneously. Additionally, two manual valves provide the ability to select the flow
+path (between outlet holes and/or the inlet hole) and to isolate the pressure volume. The first function makes it easier to
+clean areas of the detector where gas circulation is reduced.
+The second function enables the EP endcap to be opened by
+removing only a small section of the pressure piping. This is
+achieved by routing the outlet through a dedicated port and
+employing a secure, sealed connection system (Fig. 13b).
+This connection features blind-threaded holes that allow it
+to be tightened from the ambient pressure side, so the EP
+endcap can be opened while keeping the internal pressure
+piping securely in place. Simulations of the gas flow were
+performed and are represented in Fig. 13c and Fig. 13d. In
+
+16
+
+addition, a modification has been introduced to the gas system, allowing simultaneous operation of both cold getters
+along with the hot getter. This upgrade provides a range of
+configurations that significantly increase the versatility of
+the purification circuit.
+
+8 Radiopurity
+NEXT-100 sensitivity studies assume background levels of
+order 4 × 10−4 counts/(keV · kg · year) after all β β 0ν selection cuts [28], or about Btot = 1 counts/year total background rate in the entire energy region of interest, for energy
+resolution and xenon mass values characteristic of NEXT100. As the background model accounts for many sources,
+ideally we set a requirement of less than 10% of this total
+rate from any given (isotope, detector volume) background
+source combination (i, j), that is Bi, j = 0.1 counts/year. This
+background rate contribution is given by
+Bi, j = (3.17 · 10−5 ) · Ai, j · εi, j
+
+,
+
+where Ai, j is the radio-activity (in mBq) in component j produced by isotope i, εi, j is the (dimensionless) background
+acceptance, that is the probability for a decay i in detector component j to induce an event in the detector surviving the β β 0ν selection cuts, and (3.17 · 10−5 ) is a factor
+to convert mBq rate units into year−1 units. Through MC
+simulations with a detailed detector geometry modelling and
+an idealized detector response and event reconstruction, we
+estimated the background acceptance factors εi, j for various (isotope, detector component) combinations and for a
+simple cut-based β β 0ν event selection, as done in [28]. In
+this way, we can estimate maximum tolerable specific activities ai, j for each candidate material, where ai, j = Ai, j /M j ,
+and M j is the mass of detector component j, providing an
+approximate guidance before accepting/rejecting any given
+material or component screened. For consistency, the same
+methodology described in [28] to define radiopurity requirements was kept throughout the several years that the material
+screening campaign for NEXT-100 lasted.
+The NEXT collaboration, with the support of LSC,
+PNNL, SURF and external companies, has performed a
+comprehensive radiopurity screening campaign of all relevant materials and components installed in the NEXT100 detector and surrounding infrastructures. Results of
+this campaign were used both for selecting materials and
+components prior to their manufacturing and installation in
+the detector, and are being used to build the NEXT-100
+background model predictions. Particularly relevant is the
+screening of impurities in the 238 U and 232 Th decay chains,
+given that their 214 Bi and 208 Tl daughters are expected to be
+the dominant radiogenic background in the energy region of
+interest for β β 0ν searches.
+
+Several techniques have been applied to quantify ultralow levels of specific activities [29]. Measurements based on
+gamma-ray spectroscopy with ultra-low background, highpurity, Ge detectors of the LSC Radiopurity Service have
+been performed on essentially all NEXT-100 materials and
+components. Being a non-destructive technique, Ge spectroscopy is particularly useful for detector assemblies involving many components, such as photo-sensors (PMTs,
+SiPMs) or electronic readout parts (PMT bases, Kapton
+DICE-Boards, connectors). For certain materials, more sensitive, but destructive, techniques have to be used. Glow
+discharge mass spectrometry (GDMS) or inductively coupled plasma mass spectrometry (ICP-MS) techniques provide concentrations of 238 U and 232 Th in material samples,
+and hence their activity. Assuming secular equilibrium, specific activities for 214 Bi and 208 Tl can be derived. GDMS is
+suitable only for metals.
+Table 2 summarizes central values and upper limits
+(95% C.L.) for the 214 Bi and 208 Tl total activities of several detector components and materials installed within the
+NEXT-100 vessel. Quantities for each component or material are also reported, such that specific activities can also be
+evaluated. The table covers the information of the energy,
+tracking and barrel regions. For clarity, only total activities
+exceeding 1 mBq (214 Bi plus 208 Tl) are shown. Overall, all
+in-vessel components are expected to contribute less than
+1 Bq (214 Bi plus 208 Tl), with comparable contributions from
+the three detector regions. Many more components belonging to the pressure vessel itself, or to the shielding structure
+and infrastructures located outside it, were also screened before being selected. They are not reported here for conciseness, as they tend to be less critical from a radiopurity point
+of view, given their larger (and shielded) distance from the
+detector active volume.
+Screening measurements for most detector components
+and materials installed satisfy our radiopurity requirements.
+The few components that may not (note that only upper limits were obtained for certain specific activity measurements)
+are still estimated to be within a factor of 2–3 from requirements, at most. The only notable exception we are aware of
+are the Kapton cable connectors FX11LA from Hirose. Despite being shielded by copper, their activity is large enough
+that they surpass requirements by about one order of magnitude. Once suitable alternative connectors are identified,
+they will be replaced in a future detector intervention. Of
+course, higher background rates compared to our screening
+estimates may be observed in the future during NEXT-100
+low-background operations, pointing to either unscreened
+contributions, or contamination of some component subsequent to its screening (e.g., during the manufacturing or installation process). Hence, a detailed background measurement analysis will be essential, as done for the NEXT-White
+detector [11]. As discussed in Ref. [30], detector back-
+
+17
+
+Table 2: Summary of screening measurements for in-vessel materials and components near the energy endcap, tracking
+endcap, and barrel detector regions. Energy end-cap covers cathode and PMTs, tracking end-cap covers gate, anode and
+SiPMs, and barrel region covers the TPC and the ICS volumes. For each region, components are listed in decreasing order of
+total activity (214 Bi plus 208 Tl). Only materials or components contributing more than 1 mBq are separately listed, with less
+active contributions grouped under “other” components. Components that do not comply with our radiopurity requirements
+(>0.1count/year after selection cuts) are highlighted in italic.
+
+ENERGY END-CAP
+
+Material or component
+SS316Ti M18 screws for copper plate
+Sapphire windows with PEDOT coating
+and copper cans
+PMT bases
+PMTs
+Gel for window-PMT optical coupling
+Oxygen-free Cu for EP plate
+Stainless steel cathode mesh
+Other
+
+Provider
+
+Hamamatsu
+NuSil
+Atlantic Copper
+
+Quantity
+
+Technique
+
+3.6E+01 kg
+6.0E+01 units
+
+Ge
+Ge
+
+8.0E+01
+<6.6E+01
+
+4.7E+01
+<2.2E+01
+
+6.0E+01 units
+6.0E+01 units
+2.4E-01 kg
+1.4E+03 kg
+1.7E-01 kg
+
+Ge
+Ge
+Ge
+ICP-MS
+ICP-MS
+
+4.1E+01
+2.1E+01
+<7.9E+00
+1.6E+00
+1.3E+00
+<1.1E+00
+
+1.5E+01
+1.1E+01
+<3.2E+00
+1.4E-01
+5.0E-02
+<3.7E-01
+
+<2.2E+02
+
+<9.9E+01
+
+TRACKING END-CAP
+
+Sub-total
+Kapton cable connectors FX11LA
+
+Hirose
+
+5.6E+00 units
+
+Ge
+
+1.6E+02
+
+1.2E+02
+
+PTFE masks
+SiPMs S13372-1350TE
+Kapton DICE-Boards
+Stainless steel gate and anode meshes
+Oxygen-free Cu for TP plate
+Si-bronze for gate and anode rings
+Other
+
+FEYMA
+Hamamatsu
+
+5.6E+00 units
+3.6E+03 units
+5.6E+00 units
+3.4E-01 kg
+1.5E+03 kg
+1.7E+01 kg
+
+Ge
+Ge
+Ge
+ICP-MS
+ICP-MS
+ICP-MS
+
+<1.4E+01
+<1.2E+01
+3.9E+00
+2.5E+00
+1.8E+00
+1.1E+00
+<1.2E+00
+
+<4.2E+00
+<2.8E+00
+<5.8E-01
+1.0E-01
+1.5E-01
+2.8E-01
+<3.2E-01
+
+<1.9E+02
+
+<1.3E+02
+
+Atlantic Copper
+Farmers Copper
+
+Sub-total
+
+BARREL REGION
+
+Total activities [mBq]
+214 Bi
+208 Tl
+
+Welding Copper
+
+6.1E+03 kg
+
+ICP-MS
+
+<4.5E+01
+
+<7.1E+00
+
+Vishay Techno
+
+1.6E+02 units
+7.2E-01 kg
+
+Ge
+GDMS
+
+2.7E+01
+8.9E+00
+
+2.5E+00
+7.4E-01
+
+PTFE Cube
+Plastenics
+Plastenics
+
+5.5E+01 kg
+5.0E+01 kg
+3.9E+01 kg
+
+ICP-MS
+ICP-MS
+ICP-MS
+
+2.8E+00
+1.8E+00
+1.4E+00
+<1.1E+00
+
+2.9E-01
+1.1E+00
+8.5E-01
+<2.8E-01
+
+Sub-total
+
+<8.8E+01
+
+<1.3E+01
+
+Total
+
+<5.0E+02
+
+<2.4E+02
+
+Electrolytic Copper for inner shield and
+field rings
+Field cage resistors
+SS316Ti M6x20 screws for inner copper
+shield
+PTFE reflector panels
+HDPE wrap
+HDPE struts
+Other
+
+grounds induced by internal 222 Rn activity within the xenon
+active volume are expected to be rejected very efficiently,
+and to contribute 0.1 counts/year at most to the total NEXT100 background budget after all selection cuts.
+Prior to installation in the detector, all detector components and materials underwent a standardized cleaning
+procedure. This applies both to metallic (e.g., steel alloys,
+bronze alloys, copper, lead) and plastic (e.g., HDPE, PTFE)
+components. For copper pieces, the outer layers were first
+removed by manual wiping or scouring. The main cleaning
+step involves a soap cleaning solution with Alconox8 detergent in an ultrasonic bath, followed by rinsing with distilled
+water. Additional cleaning steps (nitric acid solutions, citric
+acid solutions, ethanol or isopropanol) were used for certain
+
+materials. All pieces were dried with nitrogen gas to remove
+water impurities, and stored in plastic bags until installation.
+Installation of all components was performed in controlled
+environmental conditions, by installing an ISO-7 clean room
+of 46 m2 surface and 4 m height, fully enclosing the NEXT
+seismic table, the NEXT-100 pressure vessel and the outer
+lead shielding structure.
+
+9 Detector Operation
+The NEXT-100 detector began operation in May 2024 and
+has undergone commissioning in two phases. A first campaign was conducted with argon gas at ∼4 bar. The goal
+of this campaign was to test all the systems (energy and
+
+18
+
+Xenon
+
+Pressure [bar]
+Vcathode [V]
+Vgate [V]
+Detector Diameter [mm]
+Drift Length [mm]
+Drift Field [V/cm]
+E/P [kV/cm/bar]
+vd [mm/µs]
+√
+DT [µm/√ cm]
+DL [µm/ cm]
+
+∼4
+∼4
+14,700 23,000
+6,700
+9,000
+1014
+1187
+74
+118
+∼ 1.47 ∼ 2.30
+1.51
+0.82
+1930
+2040
+660
+580
+
+2650
+2600
+2550
+2500
+
+0
+
+S1
+
+S2
+
+500
+
+1000 1500 2000 2500
+Time ( s)
+(a)
+
+10 1
+222Rn
+218Po
+
+10 2
+10 3
+
+9.1 Commissioning with argon (May – Sept. 2024)
+
+10 4
+4000
+
+5000 6000 7000 8000
+Reconstructed Energy (keV)
+(b)
+
+×106
+1.00
+0.95
+0.90
+0.85
+0.80
+0.75
+0.70
+0.65
+400
+
+9000
+
+×10 4
+214Po
+
+S2 Energy (pe)
+
+tracking planes, gas system, DAQ, and HV for drift and EL
+fields) under regular operation conditions, and in particular
+to identify possible gas leaks in the vessel or the gas system. Once all systems were demonstrated to be leak-tight, a
+second commissioning stage started in October 2024 using
+136 Xe-depleted xenon gas at the same pressure. During both
+phases, PMTs and SiPMs were calibrated on a weekly basis
+in order to ensure stability and to define the long-term calibration strategy. During the commissioning, both argon and
+xenon have been circulated through the CG, allowing for a
+quick purification of the gas. The cold getter produces a significant amount of 222 Rn in the system (see [10]). The alpha
+decays of this isotope and its progeny (218 Po and 214 Po) have
+been used to characterize the response of the detector, without putting at risk the future background measurements. The
+detector operation conditions of both commissioning runs
+are summarized in Table 3 together with estimated drift conditions.
+
+214Po
+
+5
+4
+
+events / (bin · s)
+
+Argon
+
+Average amplitude (adc)
+
+Parameter
+
+2700
+
+counts / (bin · s)
+
+Table 3: Configuration parameters of the commissioning
+runs of the NEXT-100 operation using argon and xenon gas.
+Conditions are different due to the differences in breakdown
+voltages of the two gases. Drift velocity and diffusion parameters (longitudinal and transversal, DL and DT ) are estimated with Magboltz [31] using the operation parameters.
+
+3
+2
+222Rn
+
+600
+
+1
+
+800 1000 1200
+Drift Time ( s)
+(c)
+
+During this period, the pressure conditions and performance
+of the gas system were monitored by means of the slow
+controls of the detector. The stability at high voltages applied at the cathode and the EL regions was also successfully tested by gradually increasing the fields. A drift field
+scan was performed varying the HV at the cathode from
+13.0 kV to 14.7 kV, for a fixed voltage of 6.0 kV at the
+gate. This corresponded to drift fields (drift velocities) from
+∼60 V/cm to 73 V/cm (∼1.4 mm/µs to 1.5 mm/µs). An EL
+field scan was also conducted by increasing the HV at the
+gate from 6 kV to 6.7 kV, corresponding to reduced electric
+fields between ∼1.52 kV/cm/bar and ∼1.66 kV/cm/bar,
+while keeping the drift field constant. The operation voltages
+
+Fig. 14: (a) Average of the PMT waveforms in the NEXT100 detector for an alpha candidate event. (b) Reconstructed
+energy of Rn-induced alpha decays in Xe: 222 Rn (5.59
+MeV), 218 Po (6.11 MeV) and 214 Po (7.83 MeV). The energy has been corrected by the electron lifetime. (c) S2 energy of the 222 Rn and 214 Po alpha decays in Xe as a function
+of the drift time. The dashed blue line shows the fit yielding
+a lifetime value of (57 ± 3) ms, where the uncertainty accounts only for the statistics in the data sample considered.
+The dashed red lines mark the energy range considered for
+the fit, covering only the alpha decays from 222 Rn. The data
+correspond to a 24-hour period during the Xe commissioning phase.
+
+19
+
+9.2 Commissioning with xenon (Oct. 2024 – Feb. 2025)
+After ensuring the long-term stability of the NEXT-100 operation and the absence of gas leaks, the commissioning with
+xenon gas began. Following a vacuum cycle, the pressure
+vessel was filled with 136 Xe-depleted at ∼4 bar. As for the
+argon run, the operation conditions were defined via a scan
+of the drift fields and EL amplification fields. The voltage at
+the cathode ranged from 17 kV to 23 kV, while keeping the
+voltage at the gate at 6 kV. This corresponds to a drift field
+scan between ∼103 V/cm and ∼146 V/cm (drift velocities
+∼0.8 mm/µs to 0.87 mm/µs). For a fixed drift field, an EL
+scan was performed between 6.5 kV and 9.0 kV, yielding
+from 1.6 kV/cm/bar to 2.3 kV/cm/bar. The final voltages
+for this period were set at 23 kV for the cathode and 9 kV
+for the gate (see Tab. 3). These values were higher than the
+argon ones, but still limited by the breakdown voltage of the
+gate (∼9.2 kV) [32].
+With an S2-based trigger, similar to the one used in argon data, daily samples of alpha decays were analyzed in
+order to monitor the evolution of the electron lifetime, the
+light yield, and electron drift properties. The reconstructed
+energy of the alpha decays of 222 Rn (5.59 MeV), 218 Po
+(6.11 MeV) and 214 Po (7.83 MeV) is shown in Fig. 14b.
+The electron lifetime, extracted from the energy dependence
+with the drift time, was found to be long enough to comfortably meet specifications required for an energy resolution
+≤ 1% FWHM at the Qβ β . The attachment effect is small,
+making it difficult to quantify it precisely. Unlike in the
+NEXT-White detector, we have not found significant spatial
+variations of the electron lifetime. Future Krypton calibration analyses will address this question in more detail. As
+an example, Fig. 14c shows the fit of a 24-hour data sample
+with fluctuations typically due to the temperature variations
+in the LSC. The light yield was also stable below 1% within
+a 24-hour run, although larger (<10%) variations have been
+observed on a weekly basis, similar to the ones reported for
+
+Drift Velocity vd (mm/ s)
+
+1.1
+1.0
+
+Magboltz
+NEXT-100 - 4 bar
+NEXT-White - 7 bar
+NEXT-White - 9 bar
+
+0.9
+0.8
+0.7
+22.5 25.0 27.5 30.0 32.5 35.0 37.5
+Reduced Drift Field (V/cm/bar)
+(a)
+
+Longitudinal diffusion DL* ( bar m/ cm)
+
+for this argon run were finally set to 14.7 kV at the cathode
+and 6.7 kV for the gate, values limited by the breakdown
+voltage in argon (6.93 kV) [32]. These conditions remained
+stable during the argon commissioning period, without the
+appearance of sparks or discharges.
+A DAQ trigger was configured to collect events above
+∼1 MeV, relying on the S2 signals detected by one of the
+central PMTs. A typical raw waveform from an alpha candidate event is shown in Fig. 14a. The analysis of the Rninduced alpha decays, uniformly distributed across the active volume, allowed for the characterization of the detector
+performance and its time stability. In particular, stable values
+for the electron lifetime and the drift velocity (∼1.5 mm/µs)
+were derived on a daily basis. The light yield was monitored,
+exhibiting only sub-percent variations.
+
+1800
+
+Magboltz
+NEXT-100 - 4 bar
+NEXT-White - 7 bar
+NEXT-White - 9 bar
+
+1600
+1400
+1200
+1000
+
+800
+22.5 25.0 27.5 30.0 32.5 35.0 37.5
+Reduced Drift Field (V/cm/bar)
+(b)
+
+Fig. 15: (a) Drift velocity in gas xenon (red) for different
+drift conditions using reconstructed alpha events. (b) Longitudinal diffusion coefficients in gas xenon (red) for different drift conditions using reconstructed alpha events. For
+both plots, results are compared with Magboltz predictions
+(dashed blue line with 1σ band) [31], and NEXT-White results using 83m Kr at different pressures (in green and blue)
+from [33]. Uncertainties are statistical and systematic, taking into account different fit methods.
+the NEXT-White detector [15]. Additionally, alpha decays
+were studied under different field conditions to evaluate the
+drift velocities and diffusion parameters in the chamber. The
+drift velocity (vd ) was estimated by measuring the drift time
+of point-like alpha events on the cathode,
+vd =
+
+Zcath
+tdri f t − tEL/2
+
+.
+
+(2)
+
+This calculation uses the cathode plane as reference point
+in the chamber (using Zcath as the drift length on Tab. 3),
+and extracts drift time (tdri f t ) from the end-point of the drift
+
+20
+
+time distribution. This relation also takes into account that
+the electron drift time is defined as the time difference between the S1 and S2 signals, with the S2 peak being the time
+when the center of the electron cloud passes the center of
+the EL region. This delay time tEL/2 =(0.83 ± 0.03) µs has
+been estimated using Magboltz [31] considering the amplification voltage and the operation conditions. The different
+drift velocity values obtained between 103-146 V/cm are
+represented in Fig. 15a. They show consistent results with
+respect to Magboltz simulations and previous results from
+the NEXT-White detector [33]. The longitudinal diffusion
+coefficient (DL ) was obtained by studying the distribution of
+the pulse width (σt2dri f t ) as a function of tdri f t [33]
+DL
+σt2dri f t = σt2dri f t,0 + 2 tdri f t
+vd
+
+(a)
+
+,
+
+(3)
+
+setting σt2dri f t,0 to the pulse variance at zero drift time. In this
+estimation, the detector is divided into drift time intervals,
+and the mean S2 waveform of each interval is computed.
+The diffusion parameters were converted to the reduced coefficient representation
+r
+T0 2 · DL · P
+∗
+DL =
+(4)
+T
+vd
+where T0 is the reference temperature (293.15 K), T is the
+detector temperature, P is the detector pressure, DL is the
+longitudinal diffusion coefficient, and vd is the previously
+estimated drift velocity value. The values obtained for D∗L
+are shown in Fig. 15b, and are compatible within uncertainties with Magboltz predictions and with previous studies
+from NEXT-White [33].
+In addition, xenon data was also used to test the topological imaging capabilities of NEXT-100. As an example,
+Fig. 16a and 16b show the reconstruction of an alpha decay
+candidate and a double electron track, respectively. The collected charge by the tracking plane allows for distinguishing between point-like charge events (alpha decays) and extended tracks (electrons).
+
+9.3 Sensors Calibration
+The sensor calibration process for NEXT-100 is largely
+based on the one carried out on the NEXT-White detector
+[7], aiming to evaluate and monitor the performance of both
+sensor planes during the operation of the detector. The calibration procedure relies on data collected with three different configurations: 1) sensors disconnected, 2) sensors operative, and 3) sensors operative and LED systems injecting
+light into the active volume. The first data sample allows
+for the characterization of the intrinsic electronic noise. The
+second sample is analyzed to measure the noise induced by
+the sensors and their dark count rate, identifying possible
+
+(b)
+
+Fig. 16: Charge collected at the SiPM plane from candidate event of (a) alpha and (b) double electron track from
+thallium-208 decay. Each square corresponds to a single
+SiPM signal. A charge threshold was applied to both event
+displays for visual purposes.
+
+dead channels. Finally, the third sample provides the single
+photoelectron spectrum in each channel, which allows for
+the pedestal, the gain (ADC to photo-electron conversion)
+and the charge resolution can be derived.
+During the commissioning period, sensor performance
+and stability were monitored by taking periodic calibration
+runs. After the commissioning period, a dedicated calibration campaign was executed in the early months of 2025
+for the evaluation of the sensor gains, which are to be used
+in subsequent data taking. Currently, calibration constants
+are monitored with weekly dedicated runs. In Fig. 17a and
+Fig. 17b, the average gain of the SiPMs on each dice board
+and the gains of the PMTs are represented showing good
+agreement within the detector.
+
+21
+
+Tracking Plane Calibration
+
+20
+
+Mean = 17.35 ADCs
+1 band (0.39 ADCs)
+Gain per DICE
+
+Average Gain (ADCs)
+
+19
+18
+17
+16
+15
+
+0
+
+10
+
+20
+30
+40
+DICE Number
+
+50
+
+(a)
+
+Average Gain (ADCs)
+
+60
+55
+50
+45
+40
+35
+30
+25
+20
+
+Energy Plane Calibration
+
+0
+
+10
+
+Mean = 39.38 ADCs
+1 band (5.70 ADCs)
+Gain per PMT
+20 30 40 50 60
+PMT ID
+(b)
+
+Fig. 17: (a) Average gain of the DICE boards. (b) Average
+gain of the PMTs.
+
+10 Summary
+The NEXT program aims to advance high-pressure xenon
+gas time projection chambers with electroluminescence amplification for the search for neutrinoless double beta decay. The detector NEXT-White, which operated at Laboratorio Subterráneo de Canfranc from 2016 to 2021, demonstrated the robustness of this technology, the energy resolution that this type of time projection chambers can achieve,
+contributed to background modeling, measured the twoneutrino double beta decay mode and provided a proof-ofprinciple neutrinoless double beta decay analysis.
+In the next phase, the NEXT-100 experiment, began
+its operation in 2024 and has concluded its commissioning
+phase. The NEXT-100 detector is a high pressure xenon time
+projection chamber using electroluminescence as amplification that has proven the scalability of NEXT technology.
+It measures charged particles interactions with two face-to-
+
+face sensor planes. A photo-multiplier plane that enables the
+tagging of events and measurement of their energy; and a
+plane formed by silicon photo-multipliers that provides spatial and topological information of the energy depositions.
+The NEXT-100 experiment aims to measure the radioactive
+budget of the NEXT program and to improve the sensitivity to neutrinoless double beta decay searches, aiming for an
+energy resolution of ∼1% FWHM at the double beta decay
+energy.
+This paper gathers the information about the detector
+design, the assembly process, and the data acquisition improvements. Details of the improved gas system and radiopurity and material screening have also been covered. The
+NEXT-100 detector began taking data in May 2024 and
+underwent commissioning in two phases. The first phase
+(May–Sept. 2024) used argon gas at ∼4 bar to test all subsystems, ensuring stability before introducing xenon in the
+chamber. Sensor calibration and event reconstruction were
+validated using alpha decays from 222 Rn. In October 2024,
+the second phase commenced with Xe-136 depleted xenon
+under the same pressure conditions. Alpha events were used
+for initial calibration, assessing light collection and electron
+lifetime. The commissioning results presented in this paper
+have demonstrated reliable operation, paving the way for detailed physics measurements, like the study of 83m Kr events
+and external high energy sources. Both data samples are currently being collected and analised.
+The xenon calibration run will be followed in 2025 by
+a xenon background run. After the outer shielding is closed
+and air is supplied from the radon abatement system, NEXT100 will operate in an environment virtually free of airborne
+222 Rn, confirmed by monitoring background rate variations
+and 222 Rn concentrations in Hall A of the LSC. In these conditions, a preliminary radiogenic background measurement
+will be conducted. A xenon high-pressure run will follow
+the background run. The plan is to fill the detector at a pressure comprised between the NEXT-White nominal pressure
+of 10 bar, and the maximum certified one for the system,
+13.5 bar. A data taking plan analogous to the one presented
+in this paper will be carried out at higher pressure: the operation will start with an argon run in order to ensure that
+no leaks are present in the detector or the gas system, followed by a xenon run. This will include a calibration and
+background campaign as the ones included along this paper.
+The NEXT-100 experiment is currently the largest highpressure xenon gas time projection chamber in the world.
+Its successful design, assembly, and commissioning has validated the robustness and scalability of this detection technology and represents a milestone in the development of
+rare event searches. It has provided essential operational insights relevant to the next generation of detectors, including
+the handling of meter-scale time projection chambers, the
+implementation of stable high-voltage systems under pres-
+
+22
+
+sure conditions, and the design of efficient gas recovery systems. By addressing these technological challenges, NEXT100 paves the way for the deployment of a larger scale, high
+performance detector to search for β β 0ν at tonne-scale and
+beyond.
+Acknowledgements The NEXT Collaboration acknowledges support from the following agencies and institutions: the European Research Council (ERC) under Grant Agreements No. 951281-BOLD
+and 101039048-GanESS; the European Union’s Framework Programme for Research and Innovation Horizon 2020 (2014–2020)
+under Grant Agreement No. 860881-HIDDeN; the MCIN/AEI of
+Spain and ERDF A way of making Europe under grants PID2021125475NB and RTI2018-095979, and the Severo Ochoa and María
+de Maeztu Program grants CEX2023-001292-S, CEX2023-001318-M
+and CEX2018-000867-S; the Generalitat Valenciana of Spain under
+grants PROMETEO/2021/087, ASFAE/2022/028, ASFAE/2022/029,
+CISEJI/2023/27, and CIDEXG/2023/16;; the Department of Education
+of the Basque Government of Spain under the predoctoral training program non-doctoral research personnel; the Spanish la Caixa Foundation (ID 100010434) under fellowship code LCF/BQ/PI22/11910019;
+the Portuguese FCT under project UID/FIS/04559/2020 to fund the
+activities of LIBPhys-UC; the Israel Science Foundation (ISF) under grant 1223/21; the Pazy Foundation (Israel) under grants 310/22,
+315/19 and 465; the US Department of Energy under contracts number DE-AC02-06CH11357 (Argonne National Laboratory), DE-AC0207CH11359 (Fermi National Accelerator Laboratory), DE-FG0213ER42020 (Texas A&M), DE-SC0019054, DE-SC0019223 and DESC0024438 (Texas Arlington); the US National Science Foundation
+under award number NSF CHE 2004111; the Robert A Welch Foundation under award number Y-2031-20200401. Finally, we are grateful
+to the Laboratorio Subterráneo de Canfranc for hosting and supporting
+the NEXT experiment.
+
+References
+1. J. J. Gómez-Cadenas et al. The search for neutrinoless double beta decay. Riv. Nuovo Cim., 35:29–
+89, 2012. URL: http://dx.doi.org/10.1393/ncr/
+i2012-10074-9.
+2. V. Álvarez et al. Initial results of next-demo, a largescale prototype of the next-100 experiment. JINST,
+8:P04002, 2013. URL: https://doi.org/10.1088/
+1748-0221/8/04/P04002.
+3. V. Álvarez et al. Operation and first results of the nextdemo prototype using a silicon photomultiplier tracking
+array. JINST, 8:P09011, 2013. URL: https://doi.
+org/10.1088/1748-0221/8/09/P09011.
+4. V. Álvarez et al. Near-intrinsic energy resolution for 30
+to 662 kev gamma rays in a high pressure xenon electroluminescent tpc. Nucl. Instrum. Meth., A708:101–114,
+2012. URL: https://doi.org/10.1016/j.nima.
+2012.12.123.
+5. M. Redshaw, E. Wingfield, J. McDaniel, and E. G.
+Myers. Mass and double-beta-decay Q value of Xe136. Phys. Rev. Lett., 98:053003, 2007. doi:10.1103/
+PhysRevLett.98.053003.
+
+6. P. Ferrario et al. First proof of topological signature
+in the high pressure xenon gas tpc with electroluminescence amplification for the next experiment. JHEP,
+2016:104, 2016. URL: https://doi.org/10.1007/
+JHEP01(2016)104.
+7. F. Monrabal et al. The next white (new) detector.
+JINST, 13:P12010, 2018. URL: https://doi.org/
+10.1088/1748-0221/13/12/P12010.
+8. J. Renner et al. Initial results on energy resolution
+of the next-white detector. JINST, 13:P10020, 2018.
+URL: https://doi.org/10.1088/1748-0221/13/
+10/P10020.
+9. J. Renner et al. Energy calibration of the next- white
+detector with 1% resolution near qβ β of 136xe. JHEP,
+10:230, 2019. URL: https://doi.org/10.1007/
+JHEP10%282019%29230.
+10. P. Novella et al. Measurement of radon-induced backgrounds in the next double beta decay experiment.
+JHEP, 10:112, 2018. URL: https://doi.org/10.
+48550/arXiv.1804.00471.
+11. P. Novella et al. Radiogenic backgrounds in the
+next double beta decay experiment. JHEP, 10:051,
+2019. URL: https://doi.org/10.1007/JHEP10%
+282019%29051.
+12. P. Ferrario et al. Demonstration of the event identification capabilities of the next-white detector. JHEP,
+10:052, 2019. URL: https://doi.org/10.1007/
+JHEP10%282019%29052.
+13. A. Simón et al. Boosting background suppression in
+the next experiment through richardson-lucy deconvolution. JHEP, 21:146, 2020. URL: https://doi.
+org/10.1007/JHEP07%282021%29146.
+14. P. Novella et al. Measurement of the xe136 twoneutrino double β decay half-life via direct background
+subtraction in next. Phys. Rev. C, 105:055501, 2022.
+URL: https://doi.org/10.1103/PhysRevC.105.
+055501.
+15. P. Novella et al. Demonstration of neutrinoless double beta decay searches in gaseous xenon with next.
+JHEP, 09:190, 2023. URL: https://doi.org/10.
+1007/JHEP09%282023%29190.
+16. C. A. B. Oliveira et al. Energy resolution studies for
+next. JINST, 6:P05007, 2011. URL: https://doi.
+org/10.1088/1748-0221/6/05/P05007.
+17. C. Benson et al. Measurements of the intrinsic quantum
+efficiency and absorption length of tetraphenyl butadiene thin films in the vacuum ultraviolet regime. Eur.
+Phys. J. C, 78:329, 2018. URL: https://doi.org/
+10.1140/epjc/s10052-018-5807-z.
+18. S. Ghosh et al. Dependence of polytetrafluoroethylene
+reflectance on thickness at visible and ultraviolet wavelengths in air. JINST, 15:P11031, 2020. URL: https:
+//doi.org/10.1088/1748-0221/15/11/P11031.
+
+23
+
+19. K. Mistry et al. Design, characterization and installation of the next-100 cathode and electroluminescence
+regions. JINST, 19:P02007, 2024. URL: https://
+doi.org/10.1088/1748-0221/19/02/P02007.
+20. C. Adams et al. High voltage delivery and distribution for the next-100 time projection chamber. Submitted to JINST. URL: https://arxiv.org/abs/2505.
+01002.
+21. R. Esteve et al. Readout and data acquisition in
+the next-new detector based on srs-atca.
+JINST,
+11:C01008, 2016.
+URL: https://doi.org/10.
+1088/1748-0221/11/01/C01008.
+22. S Martoiu et al. Development of the scalable readout system for micropattern gas detectors and other applications. JINST, 8:C03015, 2013. URL: https:
+//doi.org/10.1088/1748-0221/8/03/C03015.
+23. et al J. Rodríguez. The front-end electronics for the
+1.8-kchannel sipm tracking plane in the new detector.
+JINST, 10:C01025, 2015. URL: https://doi.org/
+10.1088/1748-0221/10/01/C01025.
+24. The Go Programming Language Specification - The
+Go Programming Language, Retrieved June 25, 2023.
+URL: https://go.dev/ref/spec.
+25. NEXT Collaboration. Invisible Cities. URL: https:
+//github.com/next-exp/IC.
+26. R. Esteve et al. The event detection system in the nextwhite detector. Sensors 2021, 21(2):673, 2021. URL:
+https://doi.org/10.3390/s21020673.
+27. R. Esteve et al. Data compression in the next-100 data
+acquisition system. Sensors 2022, 22:5197, 2022. URL:
+https://doi.org/10.3390/s22145197.
+28. J. Martín-Albo et al. Sensitivity of NEXT-100 to neutrinoless double beta decay. JHEP, 05:159, 2016. arXiv:
+1511.09246, doi:10.1007/JHEP05(2016)159.
+29. S. Cebrian. Low radioactivity techniques for large tpcs
+in rare event searches. URL: https://arxiv.org/
+abs/2403.18143.
+30. P. Novella et al. Measurement of radon-induced backgrounds in the NEXT double beta decay experiment.
+JHEP, 10:112, 2018. arXiv:1804.00471, doi:10.
+1007/JHEP10(2018)112.
+31. S. F. Biagi. Magboltz - transport of electrons in gas
+mixtures. Version maintained at CERN. 1999. URL:
+https://magboltz.web.cern.ch.
+32. D. Gonzalez-Diaz et al. Gaseous and dual-phase time
+projection chambers for imaging rare processes. Nucl.
+Instrum. Meth., 878:200–255, 2018. URL: https://
+doi.org/10.1016/j.nima.2017.09.024.
+33. A. Simon et al. Electron drift properties in high pressure
+gaseous xenon. JINST, 13:P07013, 2018. URL: https:
+//doi.org/10.1088/1748-0221/13/07/P07013.
+
+

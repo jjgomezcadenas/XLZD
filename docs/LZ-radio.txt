@@ -1,0 +1,10620 @@
+arXiv:2006.02506v3 [physics.ins-det] 28 Feb 2022
+
+The LUX-ZEPLIN (LZ) radioactivity and cleanliness control
+programs
+D.S. Akeriba,b , C.W. Akerlofc , D. Yu. Akimovd , A. Alquahtanie , S.K. Alsumf ,
+T.J. Andersona,b , N. Angelidesg , H.M. Araújoh , A. Arbucklef , J.E. Armstrongi ,
+M. Arthursc , H. Auyeunga , S. Avilesj , X. Baij , A.J. Baileyh , J. Balajthyk ,
+S. Balashovl , J. Bange , M.J. Barrym , D. Bauerh , P. Bauern , A. Baxtero , J. Bellep ,
+P. Beltrameq , J. Bensingerr , T. Bensonf , E.P. Bernards,m , A. Bernsteint , A. Bhattii ,
+A. Biekerts,m , T.P. Biesiadzinskia,b , H.J. Bircho , B. Birrittellaf , K.E. Boastu ,
+A.I. Bolozdynyad , E.M. Boultonv,s , B. Boxero , R. Bramantea,b , S. Bransonf ,
+P. Brásw , M. Breidenbacha , C.A.J. Brewl , J.H. Buckleyx , V.V. Bugaevx ,
+R. Bunkerj , S. Burdino , J.K. Busenitzy , R. Cabritaw , J.S. Campbellf , C. Carelsu ,
+D.L. Carlsmithf , B. Carlsonn , M.C. Carmona-Benitezz , M. Cascellag , C. Chane ,
+J.J. Cherwinkaf , A.A. Chilleraa , C. Chilleraa , N.I. Chottj , A. Colem , J. Colemanm ,
+D. Collingh , R.A. Conleya , A. Cottleu , R. Coughlenj , G. Coxz , W.W. Craddocka ,
+D. Currann , A. Currieh , J.E. Cutterk , J.P. da Cunhaw , C.E. Dahlab,p , S. Dardinm ,
+S. Dasuf , J. Davisn , T.J.R. Davisonq , L. de Viveirosz , N. Decheinef , A. Dobim ,
+J.E.Y. Dobsong , E. Druszkiewiczac , A. Dushkinr , T.K. Edbergi , W.R. Edwardsm ,
+B.N. Edwardsv , J. Edwardsf , M.M. Elnimry , W.T. Emmetv , S.R. Eriksenad ,
+C.H. Fahamm , A. Fana,b , S. Fayerh , S. Fioruccim , H. Flaecherad ,
+I.M. Fogarty Florangi , P. Fordl , V.B. Francisl , E.D. Frasero , F. Froborgh , T. Fruthg ,
+R.J. Gaitskelle , N.J. Gantosm , D. Garciae , V.M. Gehmanm , R. Gelfandac ,
+J. Genovesij , R.M. Gerhardk , C. Ghagg , E. Gibsonu , M.G.D. Gilchriesem ,
+S. Gokhaleae , B. Gomberf , T.G. Gondaa , A. Greenallo , S. Greenwoodh ,
+G. Gregersonf , M.G.D. van der Grintenl , C.B. Gwilliamo , C.R. Halli , D. Hamiltonf ,
+S. Hansae , K. Hanzelm , T. Harringtonf , A. Harrisonj , J. Harrisonj , C. Hasselkusf ,
+S.J. Haselschwardtaf , D. Hemerk , S.A. Hertelag , J. Heisef , S. Hillbrandk ,
+O. Hitchcockf , C. Hjemfeltj , M.D. Hoffm , B. Holbrookk , E. Holtoml , J.Y-K. Hory ,
+M. Hornn , D.Q. Huange , T.W. Hurteauv , C.M. Ignarraa,b , M.N. Irvingk ,
+R.G. Jacobsens,m , O. Jahangirg , S.N. Jefferyl , W. Jia,b , M. Johnsonn , J. Johnsonk ,
+P. Johnsonf , W.G. Jonesh , A.C. Kabothai,l , A. Kamahaah,∗, K. Kamdinm,s ,
+V. Kaseyh , K. Kazkazt , J. Keefnern , D. Khaitanac , M. Khaleeqh , A. Khazovl ,
+A.V. Khromovd , I. Khuranag , Y.D. Kimaj , W.T. Kimaj , C.D. Kochere , D. Kodroffz ,
+A.M. Konovalovd , L. Korleyr , E.V. Korolkovaak , M. Koyuncuac , J. Krasf , H. Krausu ,
+∗
+∗∗
+
+akamaha@albany.edu
+umit.utku.12@ucl.ac.uk
+
+S.W. Kravitzm , H.J. Krebsa , L. Kreczkoad , B. Kriklerad , V.A. Kudryavtsevak ,
+A.V. Kumpand , S. Kyreaf , A.R. Lambertm , B. Landerudf , N.A. Larsenv ,
+A. Laundrief , E.A. Leasonq , H.S. Leeaj , J. Leeaj , C. Leea,b , B.G. Lenardok ,
+D.S. Leonardaj , R. Leonardj , K.T. Leskom , C. Levyah , J. Liaj , Y. Liuf , J. Liaoe ,
+F.-T. Liaou , J. Lins,m , A. Lindotew , R. Linehana,b , W.H. Lippincottp , R. Liue ,
+X. Liuq , C. Loniewskiac , M.I. Lopesw , E. Lopez-Asamarw , B. López Paredesh ,
+W. Lorenzonc , D. Luceron , S. Luitza , J.M. Lylee , C. Lynche , P.A. Majewskil ,
+J. Makkinjee , D.C. Mallinge , A. Manalaysayk , L. Manentig , R.L. Manninof ,
+N. Marangouh , D.J. Markleyp , P. MarrLaundrief , T.J. Martinp , M.F. Marzioniq ,
+C. Maupinn , C.T. McConnellm , D.N. McKinseys,m , J. McLaughlinab , D.-M. Meiaa ,
+Y. Mengy , E.H. Millera,b , Z.J. Minakerk , E. Mizrachii , J. Mockah,m , D. Molashj ,
+A. Montep , M.E. Monzania,b , J.A. Moradk , E. Morrisonj , B.J. Mountal ,
+A.St.J. Murphyq , D. Naimk , A. Naylorak , C. Nedlikag , C. Nehrkornaf , H.N. Nelsonaf ,
+J. Nesbitf , F. Nevesw , J.A. Nikkell , J.A. Nikoleyczikf , A. Nilimaq , J. O’Delll ,
+H. Ohac , F.G. O’Neilla , K. O’Sullivanm,s , I. Olcinam,s , M.A. Olevitchx ,
+K.C. Oliver-Mallorym,s , L. Oxboroughf , A. Pagacf , D. Pagenkopfaf , S. Palw ,
+K.J. Palladinof , V.M. Palmaccioi , J. Palmerai , M. Pangilinane , N. Parveenah ,
+S.J. Pattonm , E.K. Peasem , B.P. Penningr , G. Pereiraw , C. Pereiraw , I.B. Petersonm ,
+A. Piepkey , S. Piersona , S. Powello , R.M. Preecel , K. Pushkinc , Y. Qieac ,
+M. Racinea , B.N. Ratcliffa , J. Reichenbacherj , L. Reichhartg , C.A. Rhynee ,
+A. Richardsh , Q. Riffards,m , G.R.C. Rischbieterah , J.P. Rodriguesw , H.J. Roseo ,
+R. Roseroae , P. Rossiterak , R. Rucinskip , G. Rutherforde , J.S. Sabam , L. Sabarotsf ,
+D. Santoneai , M. Sarychevp , A.B.M.R. Sazzady , R.W. Schneej , M. Schubnellc ,
+P.R. Scovelll , M. Seversonf , D. Seymoure , S. Shawaf , G.W. Shutta , T.A. Shutta,b ,
+J.J. Silki , C. Silvaw , K. Skarpaasa , W. Skulskiac , A.R. Smithm , R.J. Smiths,m ,
+R.E. Smithf , J. Soj , M. Solmazaf , V.N. Solovovw , P. Sorensenm , V.V. Sosnovtsevd ,
+I. Stancuy , M.R. Starkj , S. Stephensonk , N. Sterne , A. Stevensu , T.M. Stiegleram ,
+K. Stiftera,b , R. Studleyr , T.J. Sumnerh , K. Sundarnathj , P. Sutcliffeo , N. Swansone ,
+M. Szydagisah , M. Tanu , W.C. Taylore , R. Taylorh , D.J. Taylorn , D. Templesab ,
+B.P. Tennysonv , P.A. Termanam , K.J. Thomasm , J.A. Thomsonk , D.R. Tiedti ,
+M. Timalsinaj , W.H. Toa,b , A. Tomásh , T.E. Topep , M. Tripathik , D.R. Tronstadj ,
+C.E. Tullm , W. Turnero , L. Tvrznikovav,s , M. Utesp , U. Utkug,∗∗, S. Uvarovk ,
+J. Va’vraa , A. Vachereth , A. Vaitkuse , J.R. Verbuse , T. Vietanenf , E. Voirinp ,
+C.O. Vuosalof , S. Walcottf , W.L. Waldronm , K. Walkerf , J.J. Wangr , R. Wangp ,
+L. Wangaa , W. Wangag , Y. Wangac , J.R. Watsons,m , J. Migneaulte , S. Weatherlyi ,
+R.C. Webbam , W.-Z. Weiaa , M. Whileaa , R.G. Whitea,b , J.T. Whiteam ,
+D.T. Whiteaf , T.J. Whitisa,an , W.J. Wisniewskia , K. Wilsonm , M.S. Witherellm,s ,
+F.L.H. Wolfsac , J.D. Wolfsac , D. Woodwardz , S.D. Worml , X. Xiange , Q. Xiaof ,
+2
+
+J. Xut , M. Yehae , J. Yinac , I. Youngp , C. Zhangaa , P. Zarzhitskyy
+a
+
+SLAC National Accelerator Laboratory, Menlo Park, CA 94025-7015, USA
+Kavli Institute for Particle Astrophysics and Cosmology, Stanford University, Stanford, CA
+94305-4085 USA
+c
+University of Michigan, Randall Laboratory of Physics, Ann Arbor, MI 48109-1040, USA
+d
+National Research Nuclear University MEPhI (NRNU MEPhI), Moscow, 115409, RUS
+e
+Brown University, Department of Physics, Providence, RI 02912-9037, USA
+f
+University of Wisconsin-Madison, Department of Physics, Madison, WI 53706-1390, USA
+g
+University College London (UCL), Department of Physics and Astronomy, London WC1E 6BT,
+UK
+h
+Imperial College London, Physics Department, Blackett Laboratory, London SW7 2AZ, UK
+i
+University of Maryland, Department of Physics, College Park, MD 20742-4111, USA
+j
+South Dakota School of Mines and Technology, Rapid City, SD 57701-3901, USA
+k
+University of California, Davis, Department of Physics, Davis, CA 95616-5270, USA
+l
+STFC Rutherford Appleton Laboratory (RAL), Didcot, OX11 0QX, UK
+m
+Lawrence Berkeley National Laboratory (LBNL), Berkeley, CA 94720-8099, USA
+n
+South Dakota Science and Technology Authority (SDSTA), Sanford Underground Research
+Facility, Lead, SD 57754-1700, USA
+o
+University of Liverpool, Department of Physics, Liverpool L69 7ZE, UK
+p
+Fermi National Accelerator Laboratory (FNAL), Batavia, IL 60510-5011, USA
+q
+University of Edinburgh, SUPA, School of Physics and Astronomy, Edinburgh EH9 3FD, UK
+r
+Brandeis University, Department of Physics, Waltham, MA 02453, USA
+s
+University of California, Berkeley, Department of Physics, Berkeley, CA 94720-7300, USA
+t
+Lawrence Livermore National Laboratory (LLNL), Livermore, CA 94550-9698, USA
+u
+University of Oxford, Department of Physics, Oxford OX1 3RH, UK
+v
+Yale University, Department of Physics, New Haven, CT 06511-8499, USA
+w
+Laboratório de Instrumentação e Fı́sica Experimental de Partı́culas (LIP), University of
+Coimbra, P-3004 516 Coimbra, Portugal
+x
+Washington University in St. Louis, Department of Physics, St. Louis, MO 63130-4862, USA
+y
+University of Alabama, Department of Physics & Astronomy, Tuscaloosa, AL 34587-0324, USA
+z
+Pennsylvania State University, Department of Physics, University Park, PA 16802-6300, USA
+aa
+University of South Dakota, Department of Physics & Earth Sciences, Vermillion, SD
+57069-2307, UK
+ab
+Northwestern University, Department of Physics & Astronomy, Evanston, IL 60208-3112, USA
+ac
+University of Rochester, Department of Physics and Astronomy, Rochester, NY 14627-0171,
+USA
+ad
+University of Bristol, H.H. Wills Physics Laboratory, Bristol, BS8 1TL, UK
+ae
+Brookhaven National Laboratory (BNL), Upton, NY 11973-5000, USA
+af
+University of California, Santa Barbara, Department of Physics, Santa Barbara, CA
+93106-9530, USA
+ag
+University of Massachusetts, Department of Physics, Amherst, MA 01003-9337, USA
+ah
+University at Albany (SUNY), Department of Physics, Albany, NY 12222-1000, USA
+ai
+Royal Holloway, University of London, Department of Physics, Egham, TW20 0EX, UK
+aj
+IBS Center for Underground Physics (CUP), Yuseong-gu, Daejeon, KOR
+ak
+University of Sheffield, Department of Physics and Astronomy, Sheffield S3 7RH, UK
+b
+
+3
+
+al
+
+Black Hills State University, School of Natural Sciences, Spearfish, SD 57799-0002, USA
+Texas A&M University, Department of Physics and Astronomy, College Station, TX
+77843-4242, USA
+an
+Case Western Reserve University, Department of Physics, Cleveland, OH 44106, USA
+am
+
+Abstract
+LUX-ZEPLIN (LZ) is a second-generation direct dark matter experiment with spinindependent WIMP-nucleon scattering sensitivity above 1.4 × 10−48 cm2 for a WIMP
+mass of 40 GeV/c2 and a 1000 d exposure. LZ achieves this sensitivity through a
+combination of a large 5.6 t fiducial volume, active inner and outer veto systems, and
+radio-pure construction using materials with inherently low radioactivity content.
+The LZ collaboration performed an extensive radioassay campaign over a period of
+six years to inform material selection for construction and provide an input to the
+experimental background model against which any possible signal excess may be
+evaluated. The campaign and its results are described in this paper.
+We present assays of dust and radon daughters depositing on the surface of components as well as cleanliness controls necessary to maintain background expectations
+through detector construction and assembly.
+Finally, examples from the campaign to highlight fixed contaminant radioassays
+for the LZ photomultiplier tubes, quality control and quality assurance procedures
+through fabrication, radon emanation measurements of major sub-systems, and bespoke detector systems to assay scintillator are presented.
+Keywords: Radio-purity, Gamma-ray spectroscopy, Mass spectrometry, Neutron
+Activation, Alpha counting, Low background, Dark matter, LZ, Surface assay,
+Radon emanation
+1. Introduction
+The LUX-ZEPLIN (LZ) experiment operates a 7 t purified liquid-xenon target
+in a time projection chamber (TPC) and has a design sensitivity capable of excluding at 90% confidence level spin-independent WIMP-nucleon cross sections above
+1.4 × 10−48 cm2 for a 40 GeV/c2 mass WIMP, providing excellent discovery potential for WIMPs through nucleon elastic scattering and subsequent detection of light
+and charge from the collisions [1]. The detector is currently being installed in the
+Davis Cavern of the Sanford Underground Research Facility (SURF) at a depth of
+approximately 4850 ft which is equivalent to approximately 4300 meters of water
+4
+
+(henceforth referred to as meters of water equivalent - m w.e.). The detector is described in detail in [2] and [3]. The expected sensitivity of the experiment is achieved
+through a combination of very low background rates, a large fiducial mass of 5.6 t,
+and a 1000 d WIMP search exposure. The detector backgrounds are predominantly
+of two kinds: electron recoils (ER) which occur through interaction with the atomic
+electrons of the target xenon material; and nuclear recoils (NR) which occur through
+interaction with the nucleus of the xenon. The coincident background levels in LZ
+are suppressed, tagged and characterized by employing two veto detectors: an instrumented layer of liquid-xenon known as the xenon skin veto, and an outer detector
+(OD) that uses a Gd-loaded liquid scintillator (GdLS) detection medium. The inner
+5.6 t fiducial volume further benefits from attenuation of background radioactivity
+penetrating the TPC.
+The construction of LZ requires materials very low in radio-contamination to
+limit their background contribution in the target, thus maximizing the rare-event
+search sensitivity. Furthermore, an accurate knowledge of the expected low levels
+of background from remaining radioactivity and irreducible sources is necessary to
+ascribe confidence to any possible observation of signal excess. This article presents
+the results from the radioassay and screening campaign performed to inform the
+selection of LZ construction materials and to develop the experiment’s comprehensive
+background model.
+Section 2 describes the gamma-ray spectroscopy and mass spectrometry techniques and the facilities used to determine levels of radioactivity in the bulk of the
+materials, including efforts to cross-calibrate the various detectors deployed. Section 3 presents the radon emanation facilities available to LZ which were used to
+inform selection of materials in contact with liquid xenon and to characterize components used for the construction of the LZ experiment. Section 4 describes our
+techniques to limit surface depositions of environmental dust and atmospheric radon
+decay-progeny, with particular emphasis on the period of detector assembly at SURF.
+Section 5 presents a selection of highlights from the assay program that illustrates
+our fixed-contaminant radioassays for the LZ PMTs; demonstrates the importance
+of our quality control (QC) and quality assurance (QA) procedures for construction
+of the cryostat; revisits a dedicated detector constructed to survey the scintillator
+for the OD first discussed in [4]; and presents radon emanation measurements from
+key components, including in-situ assays of the cryostat with the complete detector
+within.
+Upon completion of any assay, results are uploaded to a dedicated database. This
+database links assay results to individual components of the LZ detector, greatly
+simplifying the process of building the expected background model which, in turn,
+5
+
+helps to define the expected sensitivity of the detector. The results from the assays
+performed are tabulated in the Appendix to this article.
+2. Fixed Contamination
+2.1. Origin of Fixed Contamination
+Fixed contaminants are embedded in materials and typically consist of naturally occurring radioactive materials (NORM), the most prevalent being 238 U, 235 U,
+232
+Th, and their progenies which emit various radioactive species through their decay
+eventually to stable isotopes of lead; and gamma-ray emitting isotopes, 40 K, 60 Co
+and 137 Cs. Neutrons are produced through (α,n) reactions and through spontaneous
+fission in the uranium and thorium decay chains. The 238 U and 232 Th chains are
+divided into ‘early’ and ‘late’; for 238 U, the early part of the chain (238 Ue ) contains
+the isotopes above 226 Ra since chemical processes may induce a break of secular
+equilibrium at this point, and it will take thousands of years (τ1/2 1600 years) to be
+restored. The late part of the chain (238 Ul ) is counted from 226 Ra and below. Typical
+p-type high-purity germanium (HPGe) detectors are not sensitive to the low-energy
+gamma-ray lines from 210 Pb at the bottom of the chain but broad energy germanium
+(BEGe), n-type and well-type detectors available to LZ are.
+Secular equilibrium breaking is observed by differences in long-lived isotope concentrations in early and late chain values. However, it should be noted that the
+232
+Th chain, as defined, includes 228 Ra which has a relatively long half-life of 5.7 y.
+If 232 Th and 228 Th are depleted in production of a material, it is possible for 228 Th
+to grow back in from 228 Ra on a time scale of several years, such that assays may
+underestimate the ultimate activity. It can be difficult to measure 228 Ra with the
+same sensitivity as 232 Th because HPGe counting used for the former is generally less
+sensitive than ICP-MS analysis used for the latter, particularly for samples where
+only small masses are available, but the risk is generally mitigated by using materials
+where batches of different ages have been measured over the course of a long material
+selection campaign [5].
+The collaboration also performs assays with in-house inductively-coupled plasma
+mass spectrometry (ICP-MS) (Section 2.4) and some limited use of glow discharge
+mass spectromety (GDMS).
+2.2. High-Purity Germanium Screening
+Gamma-ray spectroscopy was used to identify the bulk of the radio-isotopes contributing to neutron and gamma-ray emission. In order to achieve sensitivity to the
+required low levels, these measurements were typically of 1 to 2 week duration. Assays were made using 12 HPGe detectors, or variants of HPGe detectors, available
+6
+
+to the LZ collaboration across four sites, described in the following subsections and
+with key parameters summarized in Table 1 and performance characteristics summarized in Table 2. In the early stages of the LZ screening program, a campaign of
+blind cross-calibration across all detectors was undertaken to verify the consistency
+of analysis and interpretation across the different sites. The cross-calibration campaign is described in Section 2.3. HPGe assay sensitivity to both early and late chain
+activities was critical to the comprehensive modeling of backgrounds.
+2.2.1. BHUC
+The Black Hills Underground Campus (BHUC) [6] is a facility located at the
+4850 ft level of SURF which hosts a class 2000 cleanroom containing six low- and
+ultra-low background HPGe detectors: Maeve, Morgan, Mordred, SOLO, and
+the TWINS. Maeve, an Ortec 85% relative efficiency p-type detector (where the
+efficiency is defined as relative to that of a 3-inch × 3-inch NaI detector exposed to
+1332 keV 60 Co gamma-rays with a source-detector distance of 25 cm) was previously
+situated in the Davis campus at SURF and, before that, at LBNL’s Oroville site for
+15 years. Morgan, an Ortec 85% relative efficiency p-type detector, is effectively
+identical to Maeve in performance. Mordred, an Ortec 60% relative efficiency
+n-type detector, was retrofitted with ultra-low background electronics to improve
+its performance for low-background assay. Mordred has good sensitivity to lowenergy gamma rays and is therefore particularly well-suited for U early chain assays.
+SOLO, a 30% relative efficiency p-type detector, was previously sited in the Soudan
+Underground Laboratory and played an important role in the LUX experiment’s
+material assay campaign [7, 8, 9]. While the crystal is small, it has exceptionally
+low backgrounds. The newest detectors in the BHUC are referred to as the TWINS,
+a pair of Ortec 90% relative efficiency p-type detectors in a common shield. The
+TWINS can operate in coincidence or anti-coincidence and in combined singles data
+acquisition mode where spectra from each detector are combined without any regard
+for events which are detected in coincidence.
+In the BHUC, Maeve, Morgan, Mordred, and SOLO are situated in separate
+graded shields. The TWINS are installed in a common shield. Each shield provides at
+least 20 cm of low-activity lead shielding with 2.5 cm of oxygen-free, low conductivity
+copper within the lead. The shield surrounding Maeve has an inner layer of 2.5 cm
+of ultra-low activity lead and the shield surrounding SOLO has an inner layer of 5 cm
+of ancient lead. The study of low-background lead for detector shielding is discussed
+in detail in [10]. All HPGe detectors are constructed using low-background designs
+and include remote preamplifiers. All detectors are cooled using liquid nitrogen from
+a fully automated filling system. The background radon in the BHUC counting
+7
+
+room varies between 500-1000 Bq/kg. In order to suppress the background in the
+detectors caused by radon, a dedicated gas generator was installed which produces
+low activity nitrogen gas from a liquid nitrogen dewar at a rate of approximately 1.4
+litres per minute. The gas purge flushes the detector counting cavities as well as the
+lead and copper shields. An additional detector, Ge-IV, operated by the University
+of Alabama, is installed outside the cleanroom, although this has not been used for
+assays discussed in this paper.
+2.2.2. BUGS
+The Boulby Underground Germanium Suite (BUGS) hosts seven gamma spectroscopy detectors 1.1 km underground at the Boulby Underground Laboratory in
+a class 1000 cleanroom. Since 2013, the majority of screening efforts for the LZ
+experiment were performed using the Chaloner, Lunehead, and Lumpsey detectors.
+These detectors are, respectively, a Mirion (formerly Canberra) BE5030 broad-energy
+ultra-low background (ULB) HPGe detector1 , a Mirion ULB SAGe well-detector, and
+a refurbished 100% relative efficiency Ortec p-type detector used previously for the
+ZEPLIN–II and ZEPLIN–III experiment’s low background counting [11, 12, 13]. The
+BUGS detectors are housed in custom shields designed and built by Lead Shield Engineering Ltd. The shields comprise 9 cm thickness of lead and an inner layer of 9 cm
+thickness of copper with interlocking retractable roofs to simplify sample loading.
+The lead used in these shields has mostly been recycled from lead used to shield previous low-background experiments hosted at the Boulby Underground Laboratory.
+The characterizations and sensitivities of these detectors are discussed in [5].
+In addition to these detectors, BUGS has installed additional Mirion “specialty
+ultra-low background” (S-ULB) detectors which have been used to screen later LZ
+samples since 2017. These comprise two p-type detectors, Belmont and Merrybent,
+with relative efficiencies of 160% and 100%, respectively, and Roseberry, a BE6530
+BEGe type detector. For uniformity, these detectors are housed in similar shields to
+those used for the ULB standard Mirion detectors with the exception of the shield
+used for the Belmont detector which includes an inner liner of very low-background
+copper. These three detectors display substantially lower backgrounds than those of
+the ULB standard to significantly enhance the throughput rate of assays for LZ. The
+Belmont detector in particular, was used to further lower the 238 Ul upper limits for
+1
+
+It is inappropriate to classify BEGe and SAGe well detectors by their relative efficiency as they
+are designed to maximize efficiency to low-energy gamma-rays rather than to maximize efficiency
+to a 1332 keV 60 Co gamma-ray. For the BEGe type detector, the model number signifies the area of
+the front face and the thickness of the crystal. In the case of the BE5030 detector, it has a 50 cm2
+front face and a thickness of 30 mm.
+
+8
+
+titanium reported in [14].
+The shields used for all detectors are purged using nitrogen from a Wirac NG6
+gas generator. The Boulby Underground Laboratory benefits from a low baseline
+radon level (averaging ∼2.5 Bq/m3 ). To remove residual radon in the nitrogen purge
+gas, charcoal traps containing approximately 6 kg of Carboact activated charcoal are
+deployed in a Labcold ULTF416 −80 ◦ C chest freezer. This radon reduction system
+is based on the design of a radon emanation detector developed at the Centre de
+Physique des Particules de Marseille (CPPM) [15]. As an example, the use of this
+purge system reduces the count rate in the 609 keV line by at least a factor of 40
+(from 16.4 counts/kg/day to less than 0.4 counts/kg/day at 90% confidence level).
+2.2.3. LBNL
+Lawrence Berkeley National Laboratory (LBNL) has two HPGe detectors devoted
+to assay [16]. These are housed in a near-surface room shielded with over 1.5 m of
+low radioactivity concrete. The Merlin detector is an Ortec 115% n-type detector.
+Merlin is shielded by 20 cm of lead with an inner layer of 2.5 cm of copper and is
+equipped with a plastic scintillator cosmic-ray veto. The BIG-8 detector is an 85%
+p-type detector shielded with 10 cm of lead and 1.2 cm of copper. It is equipped with
+a NaI veto that encloses the Ge crystal. Both detectors are flushed with nitrogen
+boil-off gas. The cosmic-ray vetos and local shielding result in detector performance
+equivalent to being sited at a depth of approximately 500 m w.e.
+2.2.4. Alabama
+The University of Alabama operates two above-ground Canberra p-type lowbackground HPGe detectors [17]. These are Ge-II and Ge-III which have relative
+efficiencies of 60% and 105%, respectively. Each of these detectors is housed in
+shielding comprising 20 cm of lead with an inner layer of 5 cm of copper, instrumented
+with 5 cm thick plastic scintillator cosmic-ray veto detectors. The sample chambers
+are continuously flushed with nitrogen boil-off gas to displace radon. Despite their
+above-ground location, the background rates achieved this way are comparable to
+some of the underground devices, as reported in Table 2. Ge-II and Ge-III have
+been used for items assayed using Neutron Activation Analysis (NAA), described
+in Section 2.5. Ge-III was further utilized extensively for studies of 210 Pb surface
+activities, their deposition through radon exposure, and their removal.
+2.3. HPGe Cross-Calibration
+Early in the LZ assay efforts, it was recognized that samples would be distributed
+amongst a large variety of detectors with different backgrounds, shielding arrangements, and histories. To cross-calibrate and evaluate the systematic uncertainties in
+9
+
+Table 1: Key characteristics of the 12 detectors used in the LZ HPGe screening campaign. Crystal
+mass and volume is included to give an idea of the relative sizes of the crystal. In addition the
+relative efficiency is given for the p-type detectors and the area of the front face is given for the
+BEGe detectors.
+
+Location Detector
+
+BUGS
+
+LBNL
+BHUC
+
+Alabama
+
+Relative Face
+V
+M
+Efficiency Area
+[cm3 ] [kg]
+(%)
+[cm2 ]
+
+Type
+
+Belmont
+p-type
+Merrybent p-type
+Lunehead p-type
+Roseberry BEGe
+Chaloner BEGe
+Lumpsey SAGe well
+Merlin
+n-type
+Maeve
+p-type
+Morgan p-type
+Mordred n-type
+SOLO
+p-type
+Ge-II
+p-type
+Ge-III
+p-type
+
+10
+
+600
+375
+375
+195
+150
+263
+430
+375
+375
+253
+113
+260
+406
+
+3.2
+2.0
+2.0
+1.0
+0.8
+1.4
+2.2
+2.0
+2.0
+1.3
+0.6
+1.4
+2.2
+
+160
+100
+100
+115
+85
+85
+60
+30
+60
+105
+
+65
+50
+-
+
+Table 2: Performance characteristics for each detector used in the LZ fixed contaminant screening
+campaign. For each detector, as is standard, the full-width at half maximum (FWHM) of the
+1332 keV 60 Co gamma-ray is shown. It can be seen that BEGe and SAGe-well type detectors
+(Roseberry, Chaloner & Lumpsey) typically achieve the best resolution. A comparison of the
+integral counts between 60-2700 keV is given scaled to the mass of the detector crystal. Finally, a
+comparison between count rates for several peaks of interest are given corresponding to standard
+NORM (or in the case of 60 Co, anthropogenic) isotopes. The gaps in this table reflect the absence of
+a measurable peak for the given energy either because of a lack of sensitivity (in the case of 46.5 keV
+for p-type detectors) or due to very low background levels. The Merlin detector is dedicated to prescreening NORM contamination in advance of samples being shipped to be assayed using a BHUC
+detector. This being the case, 60 Co levels are not routinely quoted and, therefore, a background
+level does not appear in this table.
+Detector
+
+Belmont
+Merrybent
+Lunehead
+Roseberry
+Chaloner
+Lumpsey
+Merlin
+Maeve
+Morgan
+Mordred
+SOLO
+Ge-II
+Ge-III
+
+208
+214
+60
+40
+210
+FWHM Integral (60 Tl
+Bi
+Co
+K
+Pb
+1332 keV 2700) keV
+2614.5 keV 609.3 keV 1332.5 keV 1460.8 keV 46.5 keV
+[keV]
+[kg−1 ·day−1 ] [kg−1 ·day−1 ] [kg−1 ·day−1 ] [kg−1 ·day−1 ] [kg−1 ·day−1 ] [kg−1 ·day−1 ]
+
+1.92
+1.87
+1.86
+1.58
+1.56
+1.66
+3.59
+3.19
+2.68
+2.44
+5.52
+3.6
+2.71
+
+135.0
+167.4
+582.4
+181.1
+1053.0
+4256.8
+68868.3
+956.1
+1338.8
+2103.2
+786.9
+9600
+8600
+
+0.3
+0.4
+2.0
+1.7
+12.2
+9.7
+1.8
+3.2
+2.1
+-
+
+1.4
+1.8
+4.7
+9.5
+60.3
+7.5
+1.4
+8.8
+3.9
+3.3
+3.6
+9.6
+
+11
+
+1.6
+0.6
+1.5
+0.6
+1.2
+1.6
+0.5
+3.8
+1.6
+10.3
+1.7
+
+1.0
+1.9
+9.2
+0.7
+8.3
+7.0
+20.0
+3.5
+4.8
+7.4
+2.3
+2.5
+
+0.3
+1.7
+13.7
+80.2
+49.6
+4.6
+29.0
+1.6
+
+assays performed with a number of the detectors listed in Table 2, a sample of latite
+with well-characterized uranium, thorium and potassium content was prepared. This
+material has been used by LBNL for more than 30 years to characterize its detectors.
+The uniformity of the radioactivity has been studied and is confirmed to be flat across
+a variety of sample sizes from ∼1 mm up to several cm. An S5 Marinelli beaker of
+this mineral was prepared and sealed. The content and activity was not known by
+the rest of the collaboration and the same beaker was subsequently analyzed by all
+groups on all their detectors. The analyses were sent to a central site, amassed and
+compared by one individual who had knowledge of the true contamination of the
+calibration source material.
+This comparison uncovered some issues with several analyses, mostly due to problems with the Monte Carlo simulations of the detectors. After discrepancies were
+highlighted by the individual who amassed the results, these issues were identified
+and corrected. The results were again compared across all the detectors. Table 3 lists
+reference values for each isotope; compares results from each detector; and gives their
+combined average and standard deviation. A visual comparison between detectors
+used in the calibration program for potassium is shown in Figure 1. It is important
+to note at this point that when a concentration is reported, in parts per value e.g.
+ppm, ppb, ppt (g of U/Th per g of material), it is no longer pertinent to refer to
+late chain or early chain values as the concentration defines the concentration of the
+progenitor isotope (238 U , 235 U, 232 Th) assuming secular equilibrium [18]. There is
+some residual disagreement between Ge-II, Ge-III and the other detectors. These
+two surface detectors were used primarily for neutron activation analysis and prescreening of samples before sending them for assay on an underground detector. We
+noted the discrepancies but because of their limited use, we chose to accept this in a
+larger systematic for these two detectors. The vast majority of the assays performed
+as part of the LZ campaign were carried out on the detectors shown in Figure 1. The
+cross-calibration effort confirmed that the modeling of detector geometries and efficiencies were correctly handled and provides a reasonable estimate on the systematic
+variation among the assays of ∼10% thus giving the collaboration confidence that
+each individual facility is able to produce consistent and accurate assay results. This
+being the case, newer detectors that were used later in the campaign (such as the SULB detectors added to BUGS) were not required to be characterized using the latite
+sample. Each facility was able to implement their own calibration and characterization methods and the subsequent assay results were accepted to be accurate within
+statistical errors and within the systematic errors of the detector used. Agreement
+between the detectors used in the cross-calibration campaign and newer detectors
+was also informally verified by assaying identical samples on different detectors.
+12
+
+Table 3: Results from the HPGe cross-calibration performed using a sample of latite. For the 238 Ue
+and 238 Ul columns, the contamination reported is that of the progenitor isotope 238 U assuming
+secular equilibrium and for the 232 The and 232 Thl columns, the contamination reported is that of
+232
+Th assuming secular equilibrium.
+
+Detector
+Reference
+Merlin
+Maeve
+Mordred
+SOLO
+Chaloner
+Lunehead
+Ge-II
+Ge-III
+Average
+Std. Dev.
+
+238
+
+Ue (ppm) 238 Ul (ppm) 232 The (ppm) 232 Thl (ppm) K (%)
+8.5(1)
+8.6(1)
+10.2(1)
+7.9(2)
+11.4(15)
+10.3(10)
+9.2(2)
+1.26
+
+8.87(4)
+8.92(9)
+8.6(1)
+7.92(5)
+6.16(1)
+8.73(5)
+8.5(1)
+9.6(13)
+9.2(9)
+7.61(3)
+0.98
+
+12.1(1)
+12.4(1)
+11.9(1)
+11.3(1)
+9.94(1)
+11.1(1)
+11.8(1)
+12.2(17)
+12.8(13)
+10.54(5)
+0.84
+
+12.1(1)
+12.4(1)
+11.9(1)
+11.3(2)
+12.5(7)
+11.1(1)
+11.8(1)
+12(16)
+12.1(12)
+11.9(1)
+0.46
+
+2.82(1)
+2.81(3)
+2.74(3)
+2.66(6)
+2.91(1)
+2.81(1)
+2.85(1)
+3.4(4)
+3.3(3)
+2.84(2)
+0.25
+
+For some materials, such as the titanium, additional steps were taken to increase
+our confidence in the assay precision. These included assaying the same sample in
+multiple locations and at different times (to allow for the decay of cosmogenically
+activated isotopes of scandium) and assaying samples using mass spectrometry. This
+cross-calibration also verified that all counters had effective Rn-reducing purge systems. Periodically, the LZ assay campaign screening of selected samples was repeated
+on different detectors to monitor for stability of assays. These ongoing comparisons
+spanned a variety of source materials and a wide range of contamination levels, while
+also probing for Th in-growth in particular LZ components. For many materials we
+complemented the HPGe assays with Inductively-Coupled Plasma Mass Spectrometry (ICP-MS) and, after their installation at Boulby, with the new S-ULB detectors
+to further verify our measured concentrations of 238 Ue and 232 The .
+Results from the assays deploying gamma spectroscopy are presented in Table A1.
+2.4. Mass Spectrometry
+Inductively-Coupled Plasma Mass Spectrometry (ICP-MS) allows very precise
+direct measurement of the elemental abundances of uranium and thorium in small
+13
+
+Potassium Content [%]
+
+Reference
+SOLO
+Ge-III
+
+MERLIN
+Chaloner
+Average ± SD
+
+MAEVE
+Lunehead
+
+MORDRED
+Ge-II
+
+4
+
+3.5
+
+3
+
+2.5
+
+2
+
+Figure 1: Cross-calibration results for potassium concentration for the detectors used in the LZ
+HPGe radioassay campaign. The reference value for potassium concentration in this sample is
+(2.82 ± 0.01)%. Excluding this, an error-weighted mean of (2.84 ± 0.02)% was derived from the
+measurements of 40 K. In this figure, the gray band represents the standard deviation of the measurements with a value of 0.25%.
+
+14
+
+samples. The assays can be very quick, taking hours to days depending on requisite
+sensitivity down to sub-ppt levels and depending on related sample preparation protocols. ICP-MS has been used extensively in LZ to quickly measure 238 U and 232 Th
+in small samples to either reject or clear materials for use, or to pre-screen materials
+prior to assay with gamma spectroscopy which can determine the complete activity through the 238 U and 232 Th decay chains. The speed of ICP-MS allowed rapid
+analysis of test pieces provided by manufacturers at specified points in the production processes to detect potential issues and to ensure radioactivity and cleanliness
+compliance. The manufacture of the Ti cryostat is one such example, highlighted in
+Section 5.2.
+The majority of ICP-MS assays for LZ were performed using a dedicated mass
+spectrometry laboratory at UCL, housed in a class 1000 cleanroom facility and operating an Agilent 7900 spectrometer installed in 2015 exclusively for LZ [19]. Sample
+preparation and analysis procedures have been developed for materials with U/Th
+concentrations in the ppt to 1 ppb range: Samples are microwave-digested in precleaned modified-PTFE vessels using ultra-high purity acids. They are then diluted,
+without further chemical treatment, into disposable 50 mL polypropylene (PP) vessels ready for ICP-MS analysis. Fractional recoveries of 230 Th and 233 U spikes added
+prior to digestion are used to correct for 232 Th and 238 U signal loss from a range
+of sources. In particular, this enables accurate analysis of samples with high total
+dissolved solids (TDS) where the instrument response degrades throughout the run.
+A full assay including digestion, ICP-MS measurement and analysis can be completed in a single day. The UCL facility was upgraded in 2019 with an Agilent 8900
+ICP-MS.
+In addition to the ICP-MS system at UCL, some material samples were assayed
+using facilities at the University of Alabama, the Centre for Underground Physics
+in Korea, and the Black Hills State University. At the University of Alabama, the
+LZ group set up a sample preparation laboratory in a class 500 cleanroom equipped
+with a cryogenic mill, microwave digestion system, and digestion bomb. Further
+processing of samples, including spiking and resin-based extraction of U/Th isotopes
+was carried out in a separate cleanroom. The samples were then given to the Department of Geological Sciences which processed the samples using a Perkin-Elmer
+SCIEX-ELAN 6000 system. In Korea and at Black Hills State University, samples
+were measured using Agilent 7900 spectrometer, as was used at UCL. Results from
+ICP-MS assays for LZ are presented in Table A2.
+Finally, in the early days of the LZ assay program, a small number of items
+were assayed using Glow Discharge Mass Spectrometry (GDMS). These assays were
+performed using a Thermo-Fisher VG 9000 GDMS instrument operated by the Na15
+
+tional Research Council of Canada (NRC). GDMS can achieve sensitivities of around
+10 ppt for conductive materials. For this reason, GDMS was used for some assays of
+titanium. Results from the GDMS assays for LZ are presented in Table A3.
+2.5. Neutron activation Analysis (NAA)
+As with ICP-MS, NAA allows sensitive analysis of small concentrations of Th
+and U in small samples. It only constrains the early decay series. It can be utilized
+for materials where the matrix does not form long-lived radioactivity after neutron
+capture. As such, it is well-suited for plastics.
+For NAA assay in LZ, the University of Alabama group utilizes the 6 MWth
+tank-type MIT Reactor II (MITR-II, located at the Massachusetts Institute of Technology) to activate samples. This technique is typically used for small size samples
+of a few mm in diameter and several cm in length. LZ samples were prepared at
+the University of Alabama in a cleanroom prior to their shipping to the reactor
+for activation. Surfaces were leached extensively in high-grade acids to distinguish
+bulk from surface activities. The polyethylene vials used for irradiation are cleaned,
+welded shut, and leak tested. Samples are typically irradiated for 10 h in the highflux sample insertion facility of MITR-II before being returned for counting analysis.
+Storage within sealed polyethylene vials serves to protect the samples from crosscontamination during transport and activation. There is a typical delay of around
+24 h between activation being completed and samples being assayed using Ge-II or
+Ge-III, but this is acceptable when compared to the half-lives of the activation products used for NAA (e.g. 42 K - τ1/2 = 22.3 h, 233 Pa - τ1/2 = 26.97 days, and 239 Np τ1/2 = 2.36 days). Assays typically lasted 2 to 4 weeks and a double-differential timeenergy analysis is used to determine elemental concentrations of samples. Neutron
+capture cross sections, averaged over the energy distributions of the three reactor
+neutron flux components, taken from the JENDL4.0 database are utilized in the
+data analysis. For each of the LZ activation campaigns the neutron fluxes were determined by activating the NIST reference material, fly ash, immediately following
+the sample. This allows to reference the elements of interest directly to a standard.
+This method is discussed in depth in [20].
+The techniques employed by the University of Alabama group routinely achieve
+a sensitivity of 10−12 g U/Th per g of material and, indeed, sensitivities as good as
+10−14 g of U/Th per g of material have been reported by the same group for assays
+related to the EXO-200 experiment [20, 21]. Such sensitivity has been key for assays
+and selection of raw materials not readily amenable to direct HPGe due to sample
+mass or minimal detectable activity requirements, or to ICP-MS due to difficulties in
+sample digestion and preparation. Selection of PTFE to manufacture the LZ TPC
+16
+
+reflectors are one such example where NAA has been deployed, with results presented
+in Table A4.
+3. Radon Emanation
+3.1. Origin of Radon Emanation
+All isotopes of radon are radioactive and only five are naturally found in minute
+quantities in nature. Those of interest for the LZ background model and often other
+experiments in search for WIMP dark matter are 222 Rn (τ1/2 = 3.82 d) from the 238 U
+decay chain and 220 Rn (τ1/2 = 55.8 s) from the 232 Th decay chain; hereafter called
+radon and thoron, respectively. Due to the long lifetime of their progenitor isotopes,
+radon and thoron are produced at a near-constant rate within detector material over
+the lifetime of an experiment. The emanation rate of a material can be broken
+down into two parts: emanation due to recoiling radon atoms and emanation due
+to diffusion. Emanation due to diffusion can vary drastically depending on chemical
+and lattice structures of a material, density, surface roughness, and temperature.
+The diffusion
+length, L(m), of radon for a given material can be represented as
+p
+L(m) = D/λ, where D is the diffusion coefficient and λ the decay constant.
+The background from radon emanation in LZ is dominated by the ground-state
+to ground-state or “naked” β-emission from the 214 Pb progeny of the 222 Rn sub-chain
+as it decays to 214 Bi. The relatively long half-life of 222 Rn leads to a homogeneous
+mixing within the target volume, resulting in a uniform ER background with a βspectrum up to 1019 keV. The background from 220 Rn is expected to be significantly
+suppressed due a much smaller diffusion length as a result of its shorter half-life,
+hence most of it is expected to decay within the material volume in comparison to
+222
+Rn before diffusing out, or before maximally mixing with the active xenon volume.
+Radon emanation accounts for ≈66% of the projected ER background in the
+WIMP search region of interest in LZ [1], predominantly from a projected 222 Rn
+specific activity of 2 µBq/kg that corresponds to approximately 20 mBq in the 10
+tonnes of xenon, from which 11 mBq is in the fiducial volume. As demonstrated by
+previous LXe-based rare-event search experiments, including LUX and ZEPLIN–III,
+the amount of radon in the target can be deduced through analysis of the 214 Pb
+β-spectrum and from coincidence tagging of decaying radon daughter 214 Bi and
+214
+Po [7, 12]. While such in-situ techniques are powerful in constraining the observed radon emanation background once the detector is closed and operational, a
+screening campaign akin to that for fixed contaminants is required to inform material selection for detector and sub-system construction, and for the experiment
+background prediction.
+17
+
+3.2. Radon Emanation Screening
+3.2.1. Screening Techniques
+Radon screening typically involves reconstructing the radon emanation rate by
+measuring the radon sub-chain daughter isotopes. An approximate way of achieving
+this uses gamma spectroscopy to measure the 214 Bi (τ1/2 = 19.9 min) and 214 Pb
+(τ1/2 = 26.8 min) decay rates, from which the radon activity is inferred. Although
+this method provides useful limits for emanation rates, it is extremely difficult to
+distinguish radon daughters decaying in the bulk of the material to those that decay
+outside. Thus, a precise emanation rate cannot be deduced without a materialspecific diffusion model.
+A more direct and precise approach, one that has been utilised in four of the
+LZ facilities, is to directly measure the activity of radon that has emanated out
+from the material. The sample material is initially enclosed in an air-tight chamber
+that is filled with a low-radon carrier gas, typically helium or nitrogen. This carrier
+gas prevents recoiling radon atoms from embedding into the chamber walls.After an
+emanation period that allows the radon concentration in the chamber to approach
+equilibrium (∼1 week), the emanated radon atoms are transferred into a detector
+that measures the rate of 218 Po (τ1/2 = 3.1 m) and 214 Po (τ1/2 = 164 µs), with a mean
+decay time of ∼71 min after the initial 222 Rn decay. A second approach of measuring
+the emanation rate is by identifying the delayed 214 BiPo coincidence. In both cases,
+the radon emanation rate is reconstructed by correcting for the detection and transfer
+efficiencies, measured during dedicated calibration runs with radon sources of known
+activity.
+The first of these reconstruction techniques determines the radon emanation rate
+by detecting the α-particles emitted from the 218 Po and 214 Po isotopes. These systems use electrostatic silicon PIN-diodes to attract and capture the predominantly
+positively charged ions (87.3 ± 1.6)% of radon daughter nuclei by using an electric
+field that is generated from the negative voltage applied on the PIN-diode [22]. The
+α-particles emitted from the 218 Po and 214 Po ions are detected by a PIN-diode as
+they undergo α-decay and are distinguished by the energies they deposit; 6.1 MeV
+and 7.9 MeV, respectively. Of the four radon-emanation screening facilities used by
+LZ, three use electrostatic PIN-diode detectors for radon emanation. The fourth
+facility collects the harvested radon by dissolving it in organic liquid scintillator by
+means of a carrier gas. The delayed 214 Bi-214 Po coincidences are then counted to
+infer the corresponding 222 Rn decay rate. All facilities operate at room temperature
+such that the expected suppression of diffusion-dominated radon emanation at low
+temperature is not probed.
+The LZ collaboration performed cross-calibrations for the four radon facilities
+18
+
+Table 4: Comparison of the key highlights of the four radon emanation facilities used by LZ. The
+chambers detailed are those used in containing the sample material, where radon is collected. Some
+facilities operate two chambers as detailed below. Chamber blank rates detail the emanation rate
+from the chambers alone and are background subtracted for sample measurements. Detector efficiency represents the fraction of activity measured from the total radon inside the detecting volume;
+independent of chamber usage and transfer efficiency. The cross-calibration figures represent the
+reconstructed emanation rate of a standard rubber sample previously used by other collaborations.
+When not stated, overall uncertainties are estimated to be 10-20%.
+Detector
+
+Type
+
+Chamber Volumes Chamber Blank Rates Transfer Efficiency Detector Efficiency
+Cross-Calibration
+[L]
+[mBq]
+[%]
+[%]
+[Measured/EXO–activity]
+
+SDSM&T
+
+PIN-diode
+
+13
+300
+
+0.2
+0.2
+
+94
+80
+
+Maryland
+
+PIN-diode
+
+4.7
+
+0.2
+
+UCL
+
+PIN-diode
+
+2.6
+2.6
+
+0.2
+0.4
+
+Alabama
+
+Liquid Scint.
+
+2.6
+2.6
+
+<0.4
+
+25
+
+0.89±0.15
+1.11±0.28
+
+96
+
+24
+
+1.13 ± 0.19
+
+97
+97
+
+30
+
+1.49±0.15
+
+34
+
+36
+
+0.83±0.17
+
+deployed as part of our assay program. A rubber sample previously screened by the
+EXO collaboration [23, 24] was assayed at each of the radon emanation facilities.
+Prior to the emanation period, the sample was prepared under the same conditions
+to reduce the chances of environmental contamination. The surface of the sample
+was scrubbed with isopropyl alcohol-soaked lint-free wipes and inspected with UVlight to ensure no presence of surface contamination. The activity of the sample was
+O(10 mBq) and was thus well above the minimal detectable activities of the radon
+systems. Table 4 presents the results of the cross-calibration and a summary of key
+details of the LZ radon screening facilities.
+LZ makes use of two portable radon collection systems for equipment that is too
+large or delicate to move to the radon emanation facilities or for assays of systems
+under construction in the SURF Surface Assembly Laboratory (SAL). Emanated
+radon is transferred to a cold trap consisting of copper beads or wool that is doublesealed and then transported by car or overnight shipping to the radon facility at South
+Dakota School of Mines and Technology (SDSM&T) or University of Maryland. The
+collected radon would then be transferred over into the respective radon detector with
+transfer efficiencies taken into account from portable-system specific calibrations.
+The activity is then reconstructed by correcting for the transportation time and
+detector efficiency. These portable systems were critical for measurements of radon
+emanation from the assembled LZ detector and from large instrumentation used in
+the circulation path. Results from the radon emanation assay campaign are presented
+in Table A5. For majority of the measurements, smaller samples are sent to the
+facilities detailed below and radon is often collected in emanation chambers and
+
+19
+
+measured with their respective detectors.
+3.2.2. SDSM&T
+The SDSM&T system uses two electropolished stainless steel chambers as the
+radon collection media: a 13 L vessel for smaller components and a 300 L vessel for
+larger components. Emanation samples are placed in the chambers with care taken
+not to introduce dust into the chambers or onto the samples. The chambers are then
+filled with nitrogen gas that has been scrubbed of radon by an activated charcoal
+trap cooled to 196 K by a mixture of dry ice and isopropyl alcohol.
+After the sample has emanated, the radon is concentrated and transferred to the
+1.7 L detection chamber in a multi-stage process. In the first stage, the radon is
+transferred from the emanation chamber to a large brass wool trap cooled to 77 K
+by liquid nitrogen (LN2 ). A high transfer efficiency is achieved even for the 300 L
+vessel by repeatedly pumping the chamber out through the trap and refilling. The
+radon is then transferred to a small brass wool trap by warming the large trap and
+cooling the small trap and flowing clean nitrogen through first the large trap and
+then the small trap. Due to the volume of gas allowed to flow, the transfer efficiency
+from the large trap to the small trap is ≈100%. Then with the small trap and
+detection chamber at low pressure, the small trap is warmed and nitrogen is allowed
+to flow through the small trap into the detection chamber to raise the pressure in
+the detection chamber to 100 Torr. This process transfers ∼95% of the radon to the
+detection chamber, for overall transfer efficiencies of 80% (94%) for the 300 L (13 L)
+chamber. The detector is an electrostatic silicon PIN-diode detector as described
+above. The detector efficiency was determined to be 23 ± 2 % for 218 Po and 25 ± 2 %
+for 214 Po under standard operating conditions. A system for performing emanations
+at LN temperatures is under construction.
+3.2.3. University of Maryland
+The Maryland system’s primary focus was to measure emanation rates from volumes that act as their own emanation chambers, such as the LZ compressor system.
+The Maryland system also contains a 4.6 L stainless steel vessel, used to calibrate
+the system and to perform measurements on smaller samples. The system uses an
+activated charcoal trap operated at LN2 temperature to initially scrub the radon
+from the helium carrier gas. The radon from the emanation volume is captured by
+a copper pellet trap also cooled to LN2 temperature. The copper trap is a 0.5”
+electropolished stainless steel tube bent into a U-shape and containing 180 g of copper pellets (Atlantic Equipment Engineers CU-131). The pellets range in size from
+1/16” to 3/32”. The radon is released from the copper at room temperature and
+transferred to a 1.7 L chamber containing an electrostatic PIN diode detector. The
+20
+
+efficiency of the copper pellet trap was determined to be near 100% by repeated
+trapping and counting of a radon sample. The absolute efficiency of the detector
+was determined to be 24% by measuring a calibrated natural rock source purchased
+from Durridge. Ion drift simulations were carried out to study the performance of
+the detector. The predicted efficiency agrees with the measurements within the systematic uncertainty for both the Maryland and the SDSM&T detection chambers,
+which have a near-identical design.
+A second electrostatic PIN diode radon counting system is operated at Maryland
+in flow-through mode to measure the elution curves of charcoal samples in helium
+carrier gas. A piece of uranium ore acts as an uncalibrated radon source for these
+measurements. Once the elution curve is determined, an appropriate radon harvesting time can be chosen for each charcoal sample during its subsequent radon
+emanation measurement.
+3.2.4. UCL
+The UCL system’s custom-made electrostatic detector was originally developed
+for high sensitivity radon measurements for the ELEGANT V and Super-Kamiokande
+experiments [25]. The detector consists of a 70 L electropolished steel chamber with
+a silicon PIN-diode located at the top, operating under the same principles as described above. By the use of a calibration source of known activity (a 1.32 kBq “flowthrough” 226 Ra source by Pylon Electronics, RN-1025), the detection efficiencies for
+214
+Po and 218 Po are determined to be (31.6 ± 1.6)% and (27.1 ± 1.4)%, respectively,
+with helium as the transfer gas. The system operates two 2.7 L stainless steel chambers as the emanation media. The larger detector volume and the small emanation
+volumes allow a single step transfer process, where helium gas is flushed through the
+emanation chambers, directly into the detector. To eliminate the contamination of
+background radon from the carrier gas, the gas is initially allowed to flow through
+an activated carbon trap stored in an ultra-low temperate freezer (193 K) and the
+entire system is purged to remove accumulated radon emanating out of the transfer
+lines.
+A second mode of operation for the system uses 57 g of activated carbon (a
+synthetic charcoal sourced from Carbo-Act International [26]) as a radon collection
+trap. In larger emanation volumes, the radon is initially absorbed into the cooled
+trap while the carrier gas passes through. The trap is then heated to release the
+radon and the carrier gas is then used to transfer the concentrated radon into the
+detector volume. The trapping efficiency for this setup has been measured to be
+≈93% at 248 K. The cold trap was not generally necessary for the results reported
+in Table A5.
+21
+
+A second facility with sensitivity to low-temperature emanation is under construction and will be operated at the Rutherford Appleton Laboratory.
+3.2.5. University of Alabama
+The radon emanation facility at Alabama operates in a similar principle to those
+of the other three detectors, with the exception of their detection technique. Two
+2.6 L electropolished emanation chambers, of the same design as those utilized by the
+UCL group, are used to accumulate the radon outgassed from samples of interest.
+Boil-off nitrogen, selected for its low intrinsic radon content, serves as a carrier to
+transfer the radon into about 150 mL of organic liquid scintillator. The carrier gas
+is flowed for 48 min at a rate of 20 mL/min. Experiments with a calibrated Pylon
+RN-1025 radon source showed that longer purge times and higher flow rates result in
+more effective radon removal from the collection vessel but, on the other hand, lead
+to radon loss in the liquid scintillator due to the dissolved radon being washed out.
+The chosen parameters constitute the optimal compromise between these two mechanisms. Measurements with cascaded scintillator collectors showed that under these
+conditions about 70% of the radon arriving at the scintillator-gas interface dissolves
+in the scintillator. Use of the calibrated radon source yields an overall radon transfer
+efficiency of 34.3%. The radon-loaded scintillator is transferred into a small acrylic
+counting cell, equipped with one low-activity 76 mm (3 inch) Hamamatsu R-1307
+PMT. The measurement of delayed 214 Bi-214 Po coincidences allows the determination of the decay rate with low background. The analysis of the delayed-coincidence
+data sets uses cuts on the β- and α-like energy deposits. The distribution of time
+differences between β- and α-like events is fit to an exponential plus a constant, with
+the correlation time frozen to the known 214 Po mean lifetime. The exponential component of the fit determines the decay rate; the constant term unfolds the random
+background. The efficiency of these cuts has been determined, by means of loading
+radon derived from the calibrated source, to be 35.9%. However, because of the need
+to transfer both the carrier gas and the scintillator, the limiting factor is not the
+detector background but the blank (radon introduced during transfer and handling).
+Repeated measures of the handling blank allowed for estimation of the blank subtraction uncertainty. A further source of background is steady state leakage of radon
+into the sealed counting cells. Counting continued after allowing the radon to decay,
+thus, quantifying this background directly. This leakage varied between counting
+cells.
+
+22
+
+4. Surface Contamination
+4.1. Origins of Surface Contamination
+Radio-pure detector materials and components selected through the LZ screening
+campaign may be contaminated during the assembly process. Indeed, exposure to
+airborne radon at any stage of the assembly process results in the contamination of
+detector materials by radon daughters (mainly the long-lived 210 Pb, τ1/2 = 22.3 y)
+that plate-out onto surfaces [27]. Environmental dust also deposits on detector material surfaces, and later, radon emanates from these surfaces and could yield daughter
+decays in the LXe volume during the LZ data-taking period.
+Of particular concern is 214 Pb, which will emit naked betas leading to a continuous ER background down to the WIMP energy window as described in Section 3.1.
+Also, 210 Pb will subsequently decay, with its granddaughter 210 Po releasing 5.3 MeV
+alphas. This induces neutrons via (α, n) reactions on low-Z nuclei in various detector materials, leading to NR backgrounds. Stable 206 Pb from the decay of 210 Po on
+material surfaces may recoil into the LXe volume producing a complicated wall background (0 to 103 keV in energy), which, despite fiducialization, could yield leakage
+nuclear recoil events in the region of interest due to poor position reconstruction because of their high radius (near wall) and low energy [28]. Surface contamination by
+radon daughters and dust thus contributes to LZ internal ER and NR backgrounds
+(at the expected level of about 3% and 38%, respectively) and should therefore be
+carefully controlled to meet the low level background requirements of the LZ experiment [1]. To this effect, a stringent cleanliness campaign was developed to monitor
+and mitigate this contamination during sub-systems assemblies, mainly the TPC
+detector assembly in the SAL.
+This section discusses the estimation of the TPC surface contamination from both
+Rn and dust accumulated during the different phases of the TPC construction, along
+with the cleanliness measures and procedures undertaken to ensure the contamination
+levels remain below LZ requirements, and to minimize the internal backgrounds.
+4.2. Dust Deposition
+The ambient dust in the SAL class 1000 cleanroom comes from two main sources:
+dust from outdoor air flowing through the air filtration system, and dust carried in
+and generated by personnel and material. The air filtration system consists of a series
+of six high-efficiency particulate air (HEPA) filters with fiber glass membranes that
+remove dust particulates from outdoor air fed into the cleanroom with an efficiency
+≥99.97% for particulates ≥0.3 µm [29]. Recorded dust level (from two Met One GT526S particle counters installed at different locations) within the cleanroom with and
+23
+
+without personnel demonstrates that outdoor dust passing through the air filtration
+system has a negligible contribution to the dust level within the cleanroom.
+The main contribution to dust therefore comes from personnel who bring in dust
+from their bodies, cleanroom garbs, or equipment they bring into the cleanroom, as
+well as the dust they generate while working in the cleanroom. While continuous air
+recirculation within the cleanroom takes part of this dust back out, a portion of it
+does deposit onto open surfaces within the room, including those of the TPC, and
+should therefore be carefully quantified and controlled. Two technical probes were
+developed to estimate dust deposition on the TPC detector components surfaces,
+and a dust fallout model was developed for the same purpose.
+4.2.1. Technical Probes: Witness Coupons
+Witness coupons are small samples ideally made of the same materials as the
+detector component that is being assembled. Since dust deposits are expected to
+accumulate at the same rate on the detector material, the coupons are then used to
+infer the dust deposition on the component. For the LZ detector, the coupons are
+mostly PTFE and glass, since these make up a vast majority of the most backgroundsensitive surfaces of the TPC.
+Although coupon surfaces should preferably be flat, PMT cable coupons with
+curved surfaces were also deployed in an effort to thoroughly probe dust deposition.
+All coupons are carefully cleaned with isopropyl alcohol (IPA) soaked non-shedding
+wipes and then deployed in pairs, as close as possible to the detector, to collect
+dust under similar conditions as the detector surfaces. They are typically harvested
+after a couple of weeks, which, based on the cleanroom level and the sensitivity
+of the assay technique, is enough time to collect the required amount of dust to
+make an assay possible. The coupons are then assayed via optical or fluorescence
+microscopy depending on material type in order to enable a contrast between the
+dust particulates and the rest of the coupon surface. For the PTFE coupons, since
+PTFE does not fluoresce but many dust particulates do, ultraviolet light is shone
+on the exposed side of the samples. Glass coupons, on the other hand, may be
+imaged under visible light. Both fluorescent or optical images are then processed
+via software written in for ImageJ [30] for further contrast to reveal smaller dust
+particulates down to 0.5 µm, and accurately determine the size distribution of these
+particulates and their contribution to the dust density accumulated on the coupons’
+surfaces. Some dust from the optics, which shows up in the same place on each
+image (of a clean or dirty coupon as seen on Figure 2), needs to be removed from
+the analysis and provides some minor calibration which ensures a consistent imageJ
+threshold is set for all images.
+24
+
+Figure 2: Optical images of clean (Left) and dirty (Right) witness coupons, post optical processing.
+The feature common to them are dust from the optics, and serves as a calibration check.
+
+The number of particulates on the coupons decreases with increasing particulate size [31], such that large particles (≥50 µm) are relatively uncommon but they
+may dominate the total mass, as seen in Figure 3. Once the dust particulates size
+distribution is determined, the dust density accumulated on the coupon surface (in
+ng/cm2 ) is calculated by dividing the accumulated mass (assuming particulates are
+spherical in shape with density of 1g/cm3 by the surface area of the coupons.
+To obtain the dust fallout rate, witness coupons are assayed both before and
+after their exposure. The pre-exposure dust concentration is subtracted from the
+post-exposure dust concentration before dividing by the coupon exposure time to
+determine the dust fallout rate. Occasionally, mishandling of coupons led to their
+results being discarded.
+4.2.2. Technical Probes: Tape lifts
+Since rough, fluorescing materials cannot be imaged accurately, and because witness coupons never have exactly the history of the material itself, another, more
+direct, probe of dust deposition was conducted. These so-called tape lifts are simple pieces of acetate or carbon tapes that are stuck to an assembly piece, and are
+lifted to remove dust for assay. Each tape lift can only be utilized on one spot and
+only lifted once. To get better statistics more tape lifts on different spots had to
+be taken. The choice of tape material depends on the surface texture/roughness of
+the component: acetate tape works better on smooth surfaces, like PTFE, while, for
+rougher surfaces like titanium, carbon tapes were found to perform better. The tape
+lifts are assayed using the same fluorescence microscopy technique utilized for the
+witness coupons. Unlike the coupons that collect dust throughout the assembly process, the tape lift assessment is conducted at the end of a main assembly. In addition
+25
+
+Total mass contribution (ng/0.5 µm)
+
+Number of particles (/0.5 µm)
+
+103
+
+102
+
+10
+
+1
+0
+
+102
+
+10
+
+1
+10
+
+20
+
+30
+
+40
+
+0
+
+Radius of dust particles in microns
+
+10
+
+20
+
+30
+
+40
+
+Radius of dust particles in microns
+
+Figure 3: Left: Dust particulate size distribution from fluorescent image analysis of a witness plate.
+Particulates of size >50 µm are rarely recorded. Right: Dust particulate mass distribution of the
+same witness coupon showing contribution of particulate size to mass. Although most particulates
+are small, most of the mass on the coupon is from a small number of larger particulates.
+
+to providing a more direct probe, tape lifts also mitigate against improper use or
+mishandling of coupons. For example, while the witness coupons are supposed to be
+wiped each time an assembly, sub-assembly or parts are being wiped, this step can
+be overlooked, in which case the coupons will collect more dust than the actual assembly. The tape lifts instead give confirmation of the dust level on a final assembly.
+However, tape lifts cannot be taken on particularly sensitive parts of the TPC, and
+therefore, they do not negate the need for coupons, but rather complement them.
+Both tape lifts and coupons are necessary for a full history of the dust deposition on
+every component during the assembly process. In addition, having two probes for
+dust deposition provided additional opportunities for the calibration and validation
+of the dust deposition models used by the LZ collaboration.
+4.2.3. Dust Deposition Modeling
+As discussed above, the dust density inside the assembly cleanroom depends on
+the influx and outflux of dust particulates in the room. Its value per unit particulate
+size D could be described by Eq.(1) originally developed by the SNO collaboration [32, 33]:
+−1
+
+S
+(1)
+n(D) = Rin (D) RAE + v(D)
+V
+where RAE is the cleanroom air exchange rate defined as the volumetric air circulation
+rate in the cleanroom divided by the volume V of the cleanroom, v(D) is the Stokes
+settling velocity which is dependent on the particulate size [34], Rin (D) is the volume-
+
+26
+
+normalized dust-particulate carry-in rate mostly from personnel, and S is the area
+of the projection of the cleanroom volume onto the horizontal plane.
+The fallout rate per particulate size in mass per unit area and time could then
+be deduced using the continuity equation as shown in Eq.(2)
+m(D) =
+
+π
+n(D)ρD3 v(D)
+6
+
+(2)
+
+where π6 D3 is the particulate volume assuming they are spherical in shape and ρ is
+their mass density (≡ 1g/cm3 ). RThe total fallout rate is then obtained by integrating
+over all particulate sizes (m = m(D) dD); which for LZ ranges between 0.5 µm to
+100 µm as determined by the witness coupons assay results.
+However, the carry-in rate per particulate size Rin (D) was not measured by LZ.
+Only the air class within the cleanroom was measured using particulate counters.
+Consequently, a model of air particulate-size distribution from dust carry-in was
+assumed based on ISO-14644-1 and the measured air class (which generally averages less than 10 particles ≥0.5 µm per cubic foot due to our developed cleanliness
+protocols) was used to constrain the model. Also, a scaling factor η was added
+to the fallout rate in Eq.(2) and was then calibrated using results of fallout rate
+measurements from witness coupon assays. Its average value was estimated to be
+η = 26.86 ± 5.09. This modified fallout rate, written in Eq.(3) will be referred to as
+the modified SNO model.
+Z
+π
+n(D)ρD3 v(D)η dD
+(3)
+m=
+6
+The new modified SNO model was then compared with independent tape lift
+measurements to ensure agreement within uncertainty between the model and the
+measurements. Table 5 shows the agreement, hence validating the modified model.
+The η factor may be influenced by several factors but the clearest observed correlation
+for an increase in particle fallout rate was with a decrease in the relative humidity
+in the cleanroom. It was observed that at the lowest relative humidity level of 25%,
+2
+the fallout rate was the highest (1.18+0.25
+−0.19 ng/cm /hour) while in normal relative
+2
+humidity levels (35-45 %), the fallout rate was as low as 0.03+0.02
+−0.01 ng/cm /hour.
+This is expected as, when the cleanroom air is drier, some surfaces like that of
+PTFE accumulate more static charges and attract more dust particulates.
+It is important to note that, while Table 5 shows the validation of the modified
+SNO model, dust densities recorded there are indicative of accumulated dust on some
+detector components at a particular period in time. These densities therefore cannot
+be used to infer the final dust density on the TPC surface since accumulated dust
+27
+
+Table 5: Comparison of calibrated modified SNO model with tape lift assay results
+Tape lift date
+09/27/2018
+11/29/2018
+
+Exposure
+time T (days)
+1
+64
+
+Air class (cts/m3
+≥0.5 µm)
+6074±600
+283±35
+
+Calculated dust density
+m ∗ T from model (ng/cm2 )
+285 ±53
+829 ± 154
+
+Measured dust density
+from tape lifts (ng/cm2 )
+220+50
+−20
+885 ± 197
+
+reduced to ∼ 20% of its value every time cleaning was performed on an assembly.
+Indeed, tape lift results taken before and after cleaning have verified that cleaning
+protocols developed by LZ (e.g. wiping surfaces under UV light with IPA soaked nonshedding wipes) consistently reduce dust to the stated level, and serve as stringent
+mitigation procedures against surface dust contamination. This is discussed in more
+detail in Section 4.4.
+4.2.4. Dust Fallout Calculation for the TPC
+The dust deposition rate in mass per unit area per unit time on the various
+TPC components was estimated using the modified SNO model. Once individual
+estimates are obtained for different components for each daily work shift, the overall
+deposited dust density for the ith surface (Mi ) is obtained by taking into account the
+exposure time T of that given surface and the mass of dust deposited per unit area
+and time (m), and is then given by Eq.(4):
+Mi = T m
+
+(4)
+
+Since different areas of the detector are exposed for different times during the
+assembly process, one must also take into account the exposed area versus total
+detector area. Therefore, the overall dust density (MO ) in ng/cm2 for the entire
+TPC is:
+P i
+Aexposed Mi
+(5)
+Mo = P i
+Atotal
+The surface areas, Aiexposed and Aitotal are obtained from a sophisticated information repository developed by LZ to smoothly manage and track detector parts,
+their surface areas, and their exposure to ambient cleanroom air during TPC construction. In addition, every instance of detector surface cleaning is recorded and
+taken into account, as described above, which allows for an accurate estimation of
+the dust contamination on TPC surfaces. The final estimation amounts to a total of (0.64 ± 0.05) g of dust accumulated on the entire TPC for a dust density of
+(214 ± 22) ng/cm2 , below LZ requirement of 500 ng/cm2 .
+
+28
+
+4.3. Rn Progeny Plate-out
+In addition to dust, another source of background in the experiment comes from
+the environmental radon-laden air itself, with radon daughters plating out onto the
+surfaces of materials [35] during assembly. To limit plate-out, most assemblies are
+done in a radon-reduced cleanroom (RCR) at the SAL. The radon-reduced system
+used in the RCR was built by ATEKO, and is a continuous filtration system constantly circulating air through a cold carbon column to filter out the radon at an overall reduction factor of 2200 leading to an ambient radon level averaging <0.5 Bq/m3
+as measured by LZ. The RCR high recirculation rate of 8500 cubic feet per minute is
+enough to mostly sweep out radon daughters (particularly 218 Po) before they plateout onto detector surfaces. Absolute plate-out prevention is however not possible,
+and the remaining 218 Po that plates out is problematic due to its long-lived 210 Pb
+daughter which will decay over time in the detector. Therefore, the plate-out rates
+on assemblies must be calculated.
+Plate-out rates onto materials are often estimated using the Jacobi model [36, 27]
+, which, similar to the original SNO model, describes particle deposition from a balance of influx and outflux of particles in the room assuming that the room contents
+are well-mixed. This Jacobi model can also be modified to reflect a cleanroom setting, as is the case here [37]. In its original version, the Jacobi model assumes that
+all surfaces within a given enclosure or a room are equivalent, with radon daughters ending up on all of them in equal concentrations. Under that assumption, the
+area-normalized plate-out rate (surface activity) depends on the conditions of the
+enclosure (air circulation rate, Rn concentration, volume, and surface area) within
+which the material surfaces are exposed. The 210 Pb plate-out rate expressed as the
+decay rate per unit area and unit time, Rp (Bq/m2 /s), is thus described by Eq.(6):
+Rp = CRn λP b210
+
+Λd V
+Λd + Λ v A
+
+(6)
+
+where CRn is the Rn concentration in the cleanroom (obtained from Durridge Rad7
+radon monitors with the monitors’ blank rates subtracted off), λP b210 is the 210 Pb
+decay rate, V is the volume of the cleanroom, A is the surface area within the
+cleanroom, Λd = v VA is the deposition rate that depends on the diffusion velocity v of
+radon daughters measured to be between 5-15 m/h [36], Λv = VR is the air ventilation
+rate obtained by dividing the recirculation rate R of the cleanroom HEPA filters by
+d
+its volume. The ratio ΛdΛ+Λ
+corresponds to the probability that a Rn daughter will
+v
+plate-out before being carried out by the ventilation; which, for the RCR, was around
+0.17.
+
+29
+
+It is worth noting that the Jacobi model in Eq.(6) is a direct analog of the
+SNO dust deposition model, as seen by expanding n(D) from Eq.(1) into Eq.(2)
+and making a number of associations of variables. While the SNO model describes
+deposition of dust onto horizontal surfaces, the Jacobi model describes deposition of
+Rn daughters on all surfaces, both controlled by a characteristic velocity in a similar
+filtration environment. In particular we can identify the particle deposition rate per
+unit area per unit time in Eq.(6) as Rp /λP b210 , whereas in Eq.(2) it is expressed
+as 6m/πρD3 . The volume-normalized influx Rin of dust particulates in Eq.(1) is
+analogous to the volume-normalized rate of production of Rn daughters in Eq.(6),
+that is, the Rn activity per unit volume, CRn . The volume-normalized filtration rate
+RAE from Eq.(1) is directly associated with λv from Eq.(6). The fallout area S from
+Eq.(1) is associated with the available Rn daughter plate-out area A from Eq.(6).
+Finally, the stokes velocity v(D) from Eq.(1) is physically similar and mathematically
+analogous to the Rn daughter diffusion velocity v in Eq.(6).
+However, the assumption in the Jacobi model that plate-out does not depend on
+material type has been shown to be incorrect, particularly for materials at the bottom
+of the triboelectric series, such as PTFE [38], which could have a plate-out rate M
+times higher than for neutral metallic materials. An experiment conducted by the
+SDSM&T measured the M factor to be between 50 and 100 [37]. So for LZ, plateout rate estimations using the Jacobi model are thus corrected with a multiplicative
+factor M which has a value of M = 1 for plate-out onto metals, and its highest value
+M = 100 for plate-out rate on PTFE material surfaces which are naturally charged.
+Much of the inner TPC is made from PTFE such that it is essential to mitigate
+against this high Rn plate-out. This is achieved by neutralizing the PTFE by using
+air deionizing fan units. These units are ISO 10 cleanroom compatible Simco 4008630
+- 3 Fan Cleanroom Overhead Air Ionizer units which produce continuous ionized air
+through corona discharge, thus neutralizing the otherwise negatively charged PTFE
+material. Usage of the fans was taken into account in the plate-out estimations by
+reducing the correction factor M to the value of 1 for PTFE surfaces, after the fans’
+deployment. Indeed, electrostatic field measurements taken at regular time intervals
+between metallic surfaces and PTFE surfaces placed under air deionizing fan units
+showed a consistent reading of 0 kV/cm within the uncertainty of the measurement
+device, while similar measurement for PTFE material not placed under these fans
+read ∼ 0.6 kV/cm, thus demonstrating the successful neutralization of PTFE under
+these deionizer units.
+The weighted plate-out rate Rw on a given TPC assembly for a single work shift
+time period (exposure time T ) is thus given by Eq.(7) where M is the plate-out rate
+multiplicative factor described above, A is the surface area of the individual parts
+30
+
+making up the assembly, and Rp is the Jacobi plate-out rate per unit area and time
+obtained from Eq.(6):
+P i
+Aexposed (M Rp )T
+P i
+Rw =
+(7)
+Atotal
+The overall plate-out accumulated for all the work shift time periods for that
+assembly is obtained by combining all the weighted rates as was done previously for
+the dust estimation.
+Plate-out rate estimations are drastically different during and outside working
+hours (overnight and during weekends). As expected, the plate-out rates outside
+working hours were found to be negligible, of the order of less than 1%. Overall,
+the average plate-out for the inner TPC PTFE surfaces in contact with the LXe
+is Ravg = (158 ± 13) µBq/m2 , which is below the LZ requirement for the TPC of
+500 µBq/m2 . After construction at the SAL, the TPC was sealed in the ICV before being transported underground where it was kept under N2 purge making its
+underground surface contamination negligible.
+4.4. Cleanliness Protocols to Mitigate against Dust and Rn-progeny Contamination
+Following manufacture, most detector components were sent to be cleaned at
+AstroPak Inc, a certified professional precision cleaning company. After cleaning,
+detector components were sealed in multiple Rn barrier bags under N2 purge. The
+redundancy in the bags also provided layers to shed, thereby helping to reduce carryin dust when components were brought into the cleanroom after transportation.
+Both aluminized mylar and nylon bags have been shown to be very efficient
+against Rn penetration, with reduction factors of 2500 ± 1042 and 130 ± 3 respectively [39]. Once properly bagged, the detector components were shipped to the
+SAL facility where they were assembled in the RCR to mitigate, as previously mentioned, against surface contamination during assembly. The cleanliness protocols
+implemented within the cleanroom allowed its air class to always be measured at a
+significantly lower level (on average less than 10 particles with a size ≥0.5 µm per
+cubic foot) than its class 1000 classification.
+Upon arrival at the SAL, the outer layer of the shipping bags was removed before
+sealed components were brought inside the RCR. Inside the cleanroom, each component was un-bagged under deionizing fans to remove static charges on polymer-like
+materials such as PTFE. They were then inspected under UV light to check for
+dust particulates, which were cleaned off using Abgenics Essence Gold non-shedding
+mono-filament wipes saturated with 99% pure IPA as a basic cleaning method. Other
+cleaning methods involved IPA spray or bath followed by blow drying with filtered N2 ,
+31
+
+ultra-sonic or high-pressure cleaning using deionized water or IPA, and CO2 blasting
+depending on the material type and the amount and type of particulates to be removed. In general, small hardware like screws and bolts were ultrasonically cleaned
+in deionized water and IPA bath. Smooth surface components, like PTFE parts,
+were wiped down using IPA saturated non-shedding wipes, but this cleaning method
+could not be used on rough surfaces, like titanium, because of shedding residues.
+Those were instead cleaned with high pressure deionized water. CO2 blasting was
+also used to clean the titanium surfaces to remove chemical residues from Astropak
+Inc cleaning. As for the PMT cables, wiping them with IPA saturated wipes was
+inefficient at removing dust. Instead, they were first sprayed with IPA within the
+droplets of which the dust accumulated. The cable was then gently blow-dried with
+N2 thus removing the IPA droplets and the dust contained within.
+All these methods have been visually investigated for efficiency before usage,
+but only the IPA cleaning was quantified, since it was the most used. Figure 4
+shows images before and after cleaning of PTFE pieces under UV light, and visually
+and qualitatively demonstrates the effectiveness of the cleaning. The quantitative
+estimates of the IPA cleaning protocol were done using tape lifts, as described in
+Section 4.2.2. The tape lifts were taken on sample coupons before and after cleaning
+for the various cleaning methods. The average dust removal efficiency was found to
+be about 80%. For instance, tape lift on sample PTFE before cleaning was of 700+700
+−100
+2
+ng/cm2 and after cleaning was 100+20
+−9 ng/cm yielding ∼ 90% efficiency.
+During assembly, several deionizing fans were used to surround the assembly
+area, and ensured complete neutralization of materials, thereby reducing plate-out
+as discussed in Section 4.3. Usage of these deionizing fans during assembly was
+particularly important as the assembly process involved extensive manipulation and
+rubbing which would have otherwise cause charging, increasing the dust and radondaughter plate-out, particularly on PTFE surfaces.
+In addition to the deionizing fans, UV light inspections were conducted at regular
+time intervals to evaluate dust accumulation on assembly surfaces, and their cleaning
+was done every day at the beginning of the work shift. When judged necessary, or
+at the end of a sub-assembly, remedial cleaning of the surfaces was conducted (IPA
+wiping, IPA bath, vacuuming) with the appropriate cleaning methods, thus removing most of the accumulated dust. Note that, as mentioned previously, remedial
+cleanings did not remove all the dust, which is why the witness coupons and tape
+lifts mentioned in Section 4.2.1 were still invaluable in assessing the actual amount
+of dust collected on the assemblies.
+Finally, cleanroom garbs worn by personnel working on the assembly were changed
+after every work shift to reduce carry-in dust, and wiped off with a lint roller multiple
+32
+
+Figure 4: Pictures of some PTFE components (used on the PMT arrays) under UV light before
+(left and center) and after (right) cleaning with IPA saturated non-shedding mono-filament wipes.
+Fluorescent specks are dust particulates which are removed after cleaning the pieces in an IPA bath
+as seen in the right picture.
+
+times during work to remove particulates that could deposit onto detector surfaces.
+At the end of all daily shifts, smaller detector components were sealed in double
+nylon bags which prevented plate-out since the components were then no longer in
+contact with the cleanroom air. Larger components like the PMT arrays, on the
+other hand, had bespoke airtight enclosures, allowing them to be kept under filtered
+and ventilated air from an extra HEPA filter unit or under N2 purge, allowing further
+mitigation against Rn plate-out.
+All of the described procedures have ensured that exposure to Rn and dust during
+the assembly process was minimal, surpassing LZ requirements, as stated, for both
+dust and plate-out of radon progeny.
+5. Selected Highlights from the Assay Program
+The LZ design sensitivity imposes limits to radioactivity from particular components, principally items such as PMTs which are close to or in contact with the
+fiducial volume, thus demanding dedicated fixed contamination screening campaigns
+to meet requirements. The assay program also included dedicated QC and QA
+elements to ensure radioactivity and cleanliness compliance throughout all manufacturing processes, such as through the construction of the Ti cryostat. Dedicated
+radon emanation measurement campaigns were performed on complete purification
+
+33
+
+and recirculation sub-systems that may contribute to radon, as well as in-situ measurements of the inner cryostat with the TPC sealed within. The assay program
+also included construction and deployment of a dedicated detector system to determine radioactivity in the GdLS for the LZ OD system. In the following sub-sections,
+we present these dedicated campaigns in order to illustrate through specific examples the deployment of fixed contaminant assays, QA, radon assays, and detector
+construction and deployment.
+5.1. Hamamatsu R11410 PMT HPGe Assay Program
+LZ employs three different models of PMT. The main active volume will be
+viewed by 494 76 mm (3-inch) Hamamatsu R11410 PMTs. Other regions containing xenon are instrumented using a combination of 30 mm Hamamatsu R8520 and
+56 mm Hamamatsu R8778 PMTs with the latter having been repurposed having been
+used in the LUX dark matter experiment [40]. Additionally, the LZ OD system is
+instrumented using 202 mm (8-inch) Hamamatsu R5912 PMTs.
+The radioactive background of the R11410 PMTs is of particular importance
+as these sit adjacent to the main active volume of LZ. In order to ensure that
+these met the intrinsic radioactivity requirements of 3.0/3.0/30/2.5 mBq/PMT for
+238
+U/232 Th/40 K/60 Co, respectively, a comprehensive screening program was conducted. Initially, a subset of the raw material used for the construction of the tubes
+was screened across detectors both at SURF and at Boulby, and from these measurements, a bottom-up prediction of the intrinsic radioactivity of the final tubes was
+calculated. This calculation is discussed in detail in [3].
+Following the raw material screening program, the collaboration was satisfied that
+PMTs of the required radiopurity could be produced. However, even with knowledge
+of the radiopurity of the raw materials, it was important to repeat the screening process for the final tubes. This required substantial gamma-ray spectroscopy detector
+time both at SURF and at Boulby. The program began with an initial batch of tubes
+being screened at Boulby between August 2016 and February 2017. Over 32 weeks,
+102 PMTs were screened and a substantial amount of background data was acquired.
+Figure 5 shows comparisons between a combination of all PMT runs on the detectors
+used in this campaign. For protection and cleanliness purposes, the R11410 PMTs
+assayed at Boulby were screened with PTFE tape wrapped around their body and
+with protective foam on the pins at the base of the PMT. Subsequently, the tape
+and foam were screened and their contribution (along with the contribution from the
+holder and detector setup backgrounds) subtracted to give final contamination levels
+for the tubes presented here. Screening of tubes at SURF was performed following
+performance testing at Brown University for which the foam and PTFE tape needed
+34
+
+Combined PMTs
+
+103
+
+Counts [/keV/day]
+
+Counts [/keV/day]
+
+to be removed. No additional correction was required for this data. The full PMT
+screening program assayed 229 of the 494 R11410 tubes used in the LZ detector.
+
+Holder Background
+
+102
+10
+
+10
+
+1
+
+10−1
+
+10−1
+
+1000
+
+10−20
+
+2000
+3000
+Energy [keV]
+
+Holder Background
+
+102
+
+1
+
+10−20
+
+Combined PMTs
+
+103
+
+1000
+
+2000
+3000
+Energy [keV]
+
+Figure 5: Combined spectra for all R11410 PMT runs using Chaloner (left) and Lunehead (right)
+at the Boulby Underground Germanium Suite. In both cases, the background spectrum includes
+the holders used to secure PMTs in place in the detector castles.
+
+The tests of individual components showed that the radioactive contaminants
+were not uniformly distributed. Not only is this the case, but the relative levels of
+238
+U, 232 Th and 40 K were different in each component. Ordinarily, when calculating
+a geometric efficiency for an assayed material or component (using GEANT4 [41] in
+this case), gamma-rays are fired uniformly from the component being studied. In
+order to allow for non-uniform distribution of radioactivity when determining specific
+activities for the assayed PMTs, geometric efficiency curves had to be calculated
+for individual isotopes. The distribution of simulated gamma-rays was determined
+using the expected contamination distribution. This is detailed in Table 6 where
+the three largest components (both by mass and, in the case of the ceramic stem,
+by radioactive content) are used to represent the whole PMT. In the case of all
+other isotopes (detailed in Tables 7 and 8), the contamination was assumed to be
+distributed uniformly.
+The expected distributions of contamination detailed in Table 6 do not take
+into account one important unknown factor: the distribution of 40 K as the process of
+forming a PMT photocathode requires the evaporation of potassium onto the inside of
+the quartz window face of the PMT. This adds a substantial systematic uncertainty to
+35
+
+the final measured values of 40 K in this study. As an approximation, the distribution
+of 40 K in the PMTs was modified in order to give a reasonable systematic error on
+each setup. The systematic error is set assuming a distribution of 0.1, 0.45 and
+0.45 for the ceramic, the Kovar and the quartz face, respectively. In the case of
+the Chaloner detector, where PMTs are placed so that the pins are the closest part
+to the front face of the detector and the quartz window the furthest, a systematic
+error of 125% is calculated. In the case of SOLO, where PMTs uniformly surround
+the detector, there is no substantial systematic error as the geometric efficiency has
+a very weak dependence on the distribution of 40 K in the PMTs. The systematic
+errors for 40 K are captured in Table 6. In all other isotopes, it was assumed that the
+distribution of radiocontaminants follows expectation so only statistical errors are
+presented.
+Table 6: Fractional contamination levels for 238 U, 232 Th and 40 K from individual R11410 component assay. The PMT is split into major components and the expected distribution of activity is
+calculated using individual component measurements. This distribution acts as weighting factor
+when determining the contribution of each individual component to the overall efficiency. In the
+238
+U and 232 Th, secular equilibrium is assumed.
+
+Isotope
+
+Ceramic
+Stem
+
+Kovar
+Bulb
+
+Quartz
+Face
+
+238
+
+0.79
+0.45
+0.71
+
+0.17
+0.45
+0.23
+
+0.04
+0.10
+0.06
+
+U
+Th
+40
+K
+
+232
+
+Overall average values are calculated for assayed tubes and these are presented in
+Table 7. Even allowing for the systematic error in the measurement, it is clear that
+there is substantial variation in the levels of 40 K found in the tubes. This is likely due
+to variability in the manufacturing process as uniformity in 40 K values is seen across
+batches of PMTs produced at similar times. Additionally, some significant variation
+in 60 Co can be seen in the various batches of tubes. The combined values were calculated using two methods. The first ignores data where only upper limits are obtained
+and relies solely on measured values whereas the second incorporates measured 90%
+CL upper limits as measured values. For 232 Th and 235 U, the incorporation of upper
+limits substantially reduces the combined value.
+In addition to values for U (238 U, 235 U, 210 Pb), 232 Th, 40 K and 60 Co, small levels
+of contamination from other isotopes are observed. This includes isotopes of cobalt
+(other than 60 Co), 137 Cs and the meta-stable 110m Ag isotope as reported in [42].
+36
+
+Table 7: Combined activities for all runs in the LZ PMT screening program. In total, 233 PMTs
+were screened across six detectors in batches of varying sizes. For each detector, all acquired
+spectra are summed and the resultant peaks fitted for use in the calculation. For the combined
+values, detection errors are combined in quadrature. Two combined values are presented. One
+(M O) uses measured values only, ignoring upper limits and the other (U L) incorporates upper
+limits as measured values. The component average comes from [3]. We include for comparison the
+results from the equivalent assay campaign of an earlier model of Hamamatsu R11410 PMT by
+Xenon1T, taken from [42].
+Detector
+
+# PMTs Total Live
+
+238
+
+Ue
+
+238
+
+Ul
+
+232
+
+Assayed Time (d)
+Chaloner
+Lunehead
+SOLO
+Mordred
+Maeve
+Morgan
+
+232
+40
+60
+The
+Thl
+K
+Co
+all values in mBq/PMT
+
+235
+
+U
+
+210
+
+Pb
+
+48
+160
+4.8 ± 1.3 1.5 ± 0.3
+< 0.3
+< 0.1
+5.4+9.9
+0.6 ± 0.3 0.7 ± 0.4 7.1 ± 2.9
+−3.1
+54
+144
+< 4.1 0.9 ± 0.3
+< 0.2
+< 0.2
+14.0+3.4
+0.7 ± 0.1 0.6 ± 0.6
+−2.0
+90
+121
+< 7.1 0.9 ± 0.1
+< 0.1
+0.5 ± 0.2 13.0 ± 0.2 1.0 ± 0.1 < 0.1
+27
+45
+5.6 ± 4.9 < 0.2
+0.9 ± 0.4 0.9 ± 0.2 6.4+3.0
+3.0 ± 0.2 1.4 ± 0.9
+< 28
+−2.8
+10
+28.7
+< 10
+0.4 ± 0.3 1.9 ± 1.5 0.9 ± 0.3 11.0+3.0
+6.2
+±
+0.3
+<
+0.3
+−4.2
+4
+17.4
+< 15
+< 0.8
+3.0 ± 1.9
+< 0.8
+6.3+6.6
+6.0
+±
+0.7
+<
+0.4
+−7.1
+Combined (MO) 5.0 ± 2.1 0.9 ± 0.2 1.4 ± 0.8 0.8 ± 0.2
+0.8
+±
+0.6
+7.1
+±
+2.9
+12.2+1.1
+1.9 ± 0.2
+−0.9
+Combined (UL) 4.3 ± 2.9 0.6 ± 0.2 0.20 ± 0.15 0.3 ± 0.1
+0.2 ± 0.2 8.3 ± 4.8
+Component Average < 13.3
+< 0.6
+< 0.6
+< 0.6
+< 2.9
+< 0.5
+< 0.1
+LZ Requirement
+< 3.0
+< 3.0
+< 3.0
+< 30
+< 2.5
+Xenon1T < 12.9 0.5 ± 0.1 0.5 ± 0.1 0.4 ± 0.1 12 ± 2 0.7 ± 0.1 0.4 ± 0.1
+-
+
+Results from measurements of these isotopes made with the Chaloner and Lunehead
+detectors at Boulby are shown in Table 8.
+Table 8: Combined contaminations from the Chaloner (BEGe) and Lunehead (p-type) detectors at
+Boulby for the less common isotopes detected when combining all PMT runs together. As we have
+no prior knowledge of the distribution of contamination for these isotopes we include a systematic
+uncertainty due to potential variations in geometric efficiency.
+137
+
+Detector
+Chaloner
+Lunehead
+
+Cs
+
+0.21+0.48
+−0.12
+0.51 ± 0.03
+
+110m
+
+57
+Ag
+Co
+all values in mBq/PMT
+
+0.07+0.19
+−0.05
+0.13 ± 0.02
+
+0.25+0.64
+−0.11
+0.25 ± 0.03
+
+58
+
+Co
+
+0.20+0.48
+−0.10
+0.37 ± 0.03
+
+As an example, the distribution of measured values of 40 K in the assayed PMTs
+along with their distribution in the upper and lower PMT arrays of LZ are shown in
+Figure 6. For those PMTs not assayed, the average value of 12.2+1.1
+−0.9 mBq/PMT, as
+given in Table 7 is used. Also shown in Figure 6 is the distribution of measured 40 K
+values. This figure incorporates both measured values and upper limits.
+
+37
+
+No. PMTs
+
+Activity - 40K
+Upper Limits
+Measured Values
+
+40
+
+20
+
+10
+20
+30
+Specific Activity (mBq/PMT)
+
+LZ PMT Top Array - 40K
+
+LZ PMT Bottom Array - 40K
+
+20
+15
+
+0
+10
+
+−500
+
+5
+
+−500
+
+0
+X (mm)
+
+500
+
+Y (mm)
+
+Y (mm)
+
+500
+
+25
+Specific Activity (mBq/PMT)
+
+25
+
+20
+15
+
+0
+10
+
+−500
+
+5
+
+−500
+
+500
+Total PMTs = 253
+Screened PMTs = 58
+
+0
+X (mm)
+
+Specific Activity (mBq/PMT)
+
+0
+0
+
+500
+Total PMTs = 241
+Screened PMTs = 171
+
+Figure 6: Top: Distribution of measured value for 40 K in the LZ PMT assay program. Measured
+values are plotted in blue and upper limits are plotted in red. Bottom, left and right: Distribution of
+40
+K contamination for the top and bottom arrays, respectively. For tubes which were not measured,
++1.1
+the calculated average value of 12.2−0.9
+mBq/PMT, as given in Table 7 is used.
+
+5.2. ICP-MS Titanium QC and QA assays
+In the early stages of the LZ experiment, an extensive R&D campaign was conducted to source and produce enough titanium for the cryostat vessels of the detector.
+The inner and the outer cryostat vessels (ICV and OCV, respectively), containing
+the TPC and the 10 tonnes of LXe, make up a significant bulk of the LZ detector.
+38
+
+Due to their scale and proximity to the TPC, it was necessary to ensure ultra-low
+levels of radiopurity for the 238 U and 232 Th isotopes as well as 40 K and 60 Co. A detailed analysis using ICP-MS and gamma-ray spectroscopy of 22 different titanium
+samples was conducted, and the sample of the HN3469 product manufactured by
+TIMET was found to have the lowest background. The measured activities for 238 U,
+232
+Th, 60 Co and 40 K from the sample are significantly lower than requirements and
+were the lowest reported to date [14].
+The titanium R&D campaign was followed by a radiopurity screening program to
+monitor and mitigate the risk of radioactive contamination during the construction
+process of the vessels. Although the bulk titanium was found to be ultra-pure,
+the manufacturing stage of the vessels possessed a large risk for contamination. In
+assessing the radiopurity of the welding process a welding sample issued to the project
+as one of the many regular samples for assessment in the LZ QC and QA program,
+was measured to have 6 ppb of thorium—equating to roughly 100 times higher than
+the concentration initially measured in the TIMET HN3469. Material used for the
+test sample was from the LZ titanium stock and the welding was performed with
+an automatic tungsten inert gas (TIG) machine purportedly using the lanthanated
+tungsten electrodes commonly used by the manufacturer (Loterios).
+The high levels of thorium found in the sample prompted a suspension of the
+cryostat production and the start of a screening campaign to identify the source
+of the contamination. Over a period of two months, the campaign performed 24
+radioassays with HPGe detectors and 67 ICP-MS measurements, screening representative samples from the titanium stock, welding wires and electrodes used by
+Loterios. Assays of two welding electrodes used by Loterios and removed from the
+TIG and plasma machines located in the cryostat production area showed a very
+high level of thorium. The 232 The levels, as measured by the ICP-MS system, resulted in (3.20 ± 0.16) ppb of Th, in comparison to (0.069 ± 0.007) ppb measured for
+the TIMET HN3469 stock. This indicated that the unexpected excess in Th activity
+was due to an isolated and erroneous use of a small number of thoriated electrodes,
+as opposed to the pre-agreed lanthanated tungsten electrodes throughout.
+Additionally, it was found that the standard lanthanated tungsten electrodes
+used do contain a small amount of thorium which, in the welding process, gets
+into the weld at the level of 0.7 ppb. Although this is not ideal, it would not have
+explained the observed increase of thorium in the welded sample which prompted
+this contamination study.
+The rapid turnaround for uranium and thorium assays at sub-ppb levels made
+possible by the ICP-MS system allowed LZ to arrest production, thoroughly investigate and precisely identify the contaminant introduced by the manufacturing
+39
+
+process. Upon these findings, appropriate control measures were implemented in
+the cryostat manufacturing process to avoid additional inadvertent use of thoriated
+welding electrodes. This is a key example of how the LZ QA program identified a potentially serious manufacturing error which otherwise would have had the potential
+to substantially increase the overall thorium background in LZ.
+5.3. Radon Emanation Studies
+Sensitivity projections for LZ presented in [1] include the effect of the online
+charcoal-based radon-removal system, operating continuously to scrub gaseous Xe
+[3, 26]. Projections also assume the expected suppression of radon diffusion in certain
+materials at low temperatures. In this article, Table A5 presents the as-measured
+results from room temperature assays of individual materials and components. Room
+temperature measurements from fully assembled LZ systems and contributions from
+individually screened components within those systems are highlighted in Figure 7.
+Measurements for three of these assemblies are discussed in the following sub-sections,
+with radon emanation results.
+5.3.1. Inner Cryostat Vessel
+Radon emanation from the ICV was measured several times during various integration stages of the construction of the skin veto region and the TPC installation.
+The final assay was made following after the ICV was fully complete and sealed. The
+cryostat at this stage housed both the top and the bottom PMT arrays for the TPC
+and the skin veto regions, and their corresponding PMT bases and cables. Furthermore, the entire field cage, PTFE coating, various sensors, and conduit volumes of
+the cables were a part of these measurement.
+A portable radon trapping system was deployed underground at SURF with minimal plumbing due to space constraints. After leak-checking and purging, the trapping system was opened to the ICV and the emanated gas was harvested over a
+6.3 hour period—equivalent to 18.25% of the gas within the ICV. After the harvest,
+the trap was carefully disconnected and transported to SDSM&T radon facility for
+screening. The radon trap also captures outgassing molecular species that would
+serve as neutralisers of positively charged radon-daughters, leading to a drop in detection efficiency. An in-house procedure was followed to separate out these species
+by transferring the sample from a cold trap held at -109◦ C to one at -196◦ C with
+sufficient flow to effectively transfer all of the radon atoms while leaving most of the
+contaminants behind. This process was repeated until measurements with a residual gas analyzer indicated no further reduction in contaminant concentration, after
+which the sample was transferred to the detection chamber via a secondary small
+cold trap.
+40
+
+Results indicate a room-temperature emanation rate of 46.1+4.0
+−3.8 mBq under the
+assumption of an even sampling of the radon within the ICV.
+5.3.2. Xenon Circulation System
+The xenon gas circulation system brings together multiple components and surfaces that are potential radon emitters. The system consists of two gas compressors,
+a heated zirconium getter, and a main valve and instrumentation panel. The compressors (model A2-5/15 from Fluitron) have two heads, each enclosing a flexible
+all-metal diaphragm sealed with copper plating. Check valves, accumulation bottles,
+and associated plumbing and instrumentation are also included in the compressor
+assemblies. The compressors operate in parallel to achieve a gas flow rate of 500
+standard liters per minute. Much of the system was fabricated at the University of
+Wisconsin’s Physical Sciences Laboratory. Whilst there, a portable radon trapping
+system was used to harvest emanation samples that were then shipped to shipped to
+the U. Maryland radon facility for counting. Initial radon emanation measurements
+of compressor 2 found that the heads emanated <1 mBq each; however, the integrated
+compressor skid assembly presented ∼17 mBq. After replacing most of the welded
+stainless steel plumbing and etching the accumulation bottles in citric acid, the rate
+was reduced to 1.48 ± 0.31 mBq. A similar treatment was applied to compressor 1
+but this compressor was not radon emanated and hence is assumed to have the same
+rate as compressor 2. The main circulation panel contains most of the valves and
+instrumentation exposed to the xenon in gas phase, and it was found to contribute
+0.74 mBq of radon. The fully loaded getter (model PS5-MGT50-R-535 from SAES)
+was emanated at its operational temperature of 400◦ C using helium carrier gas and
+its emanation rate was determined to be 2.26 mBq. The entire circulation system
+amounted to a total emanation rate of 5.22 ± 0.75 mBq.
+5.3.3. Xenon Tower
+The xenon tower is a cryogenic system that thermally couples the gaseous and
+LXe portions of the purification circuit for efficient heat transfer, serving to vaporize
+and re-condense the liquid for continuous purification. It consists of a two-phase
+heat exchanger (supplied from Standard Xchange), three cryogenic valves (manufactured by WAKE), a sub-cooler/phase-separator vessel to hold LXe returning to
+the detector, a reservoir vessel to hold liquid exiting the detector, two liquid xenon
+purity monitors, and several custom liquid xenon heat exchangers. The tower can
+be viewed as having two sides: the heat exchanger assembly on one side and the
+weir reservoir, sub-cooler and purity monitor on the other. Radon emanation from
+sub-components was measured prior to full integration of the xenon tower and was
+found to contribute a total of <1 mBq.
+41
+
+A preliminary measurement of the tower after integration found a very high radon
+activity in the reservoir side, possibly due to a leak into the system from laboratory
+air. As a precautionary measure, the reservoir vessel was flushed with a concentrated
+solution designed for removing radioactive contamination (RadiacwashTM ) and rinsed
+with deionized water. The portable radon trap was then deployed underground to
+measure the two sides of the complete xenon tower prior to the installation of the
+purity monitor and found a total emanation rate of 3.14+0.86
+−0.81 mBq.
+
+Figure 7: Approximate schematic of LZ highlighting key sub-systems and xenon circulation paths
+in and out of the ICV. The diagram condenses some of the key radon emanation measurements that
+will contribute to the overall radon budget of LZ. The results presented in green text are directly
+from measurements and those in black show summed results for that particular component. All
+of the results shown are measurements made at room temperature and do not include any radon
+removal or cold temperature suppression expected under operational conditions.
+
+5.4. GdLS screener for the Outer Detector (OD)
+Achieving a low level of radioimpurities in the 17.3 t of GdLS used in the LZ
+OD is crucial for its performance as both an effective monitor of the experiment’s
+42
+
+backgrounds and as an efficient veto for coincident events in the TPC. The admissible
+radioactive impurity levels in the GdLS are derived from the LZ requirement for a
+false veto rate of <5% assuming an energy threshold of 200 keV and a maximum
+coincidence window of 500 µs between an interaction in the TPC and the OD. This
+restricts the event rate in the full 17.3 t of GdLS to be <100 Hz. Approximately
+39 Hz is expected from a combination of radioactivity in LZ construction materials
+and the flux of gamma-rays in the experimental hall which penetrate the water shield
+to reach the OD [43]. This allows for at most 61 Hz of rate to arise from impurities
+dissolved in the GdLS.
+GdLS generally features a combination of common radioimpurities and more exotic isotopes which enter during the Gd-loading process. Common radioisotopes
+include 14 C, 85 Kr, 40 K, and those in the 238 U and 232 Th chains, while the more unusual isotopes include 138 La, 176 Lu, 147 Sm, 152 Gd, and those in the 235 U decay chain.
+Chemical processing and purification of the components of GdLS alters the relative
+abundance of these isotopes, often resulting in out-of-equilibrium activities within
+decay chains [44].
+Before it is added to LS, the raw gadolinium product (in the form of GdCl3 ) is
+purified via pH-controlled partial hydrolysis. During this process, certain actinides
+including uranium and thorium are precipitated out of solution, but others such as
+actinium itself tend to remain in solution [44]. The purified Gd is then combined
+with the chelating ligand TMHA, or 3,5,5-trimethylhexanoic acid. The resulting
+Gd(TMHA)3 compound is dissolved in the non-polar LS solvent, linear alkylbenzene,
+to achieve a final concentration of 0.1% Gd by mass.
+Measurements of the radioactive impurity concentrations in both Gd-loaded and
+unloaded scintillator samples were made using a dedicated liquid scintillation counter
+known as the “LS Screener”. The LS Screener was comprised of an acrylic vessel containing approximately 23 kg of scintillator and three R11410 PMTs. For each sample
+measurement, the detector was lowered into the ultra-low background environment
+at the center of the filled LZ water tank. A detailed description of that detector and
+the results from those measurement campaigns are published in [4]. Two results from
+that work yielded results particularly significant for the OD’s performance. First, a
+fit using the 14 C β shape (Q = 156 keV) to the low-energy spectrum collected with
+the unloaded scintillator sample measured the 14 C/12 C atom fraction in the LS to
+be (2.83 ± 0.06(stat.) ± 0.01(sys.)) × 10−17 . This concentration of 14 C validates that
+hydrocarbons used for the GdLS chemicals are suitably derived from underground
+sources (as opposed to biogenic sources). As a result, the expected rates of single
+and pile-up pulses from 14 C near the OD threshold are negligible. Second, pulse
+shape discrimination and delayed coincidence counting were used to measure the
+43
+
+concentrations of α and β-emitting radioisotopes with relatively small uncertainties.
+In particular, a significant amount of activity from the 235 U series was measured by
+identifying the unique pulse pair from 219 Rn-215 Po in the GdLS sample. No such
+activity was observed in the unloaded LS sample, confirming that this activity is
+introduced with the Gd.
+To further characterize the impact of loading with Gd, a 0.307 kg sample of the
+same purified Gd(TMHA)3 compound used in the LS Screener was counted by HPGe
+at the BHUC. A large activity from 176 Lu was easily detected above background
+confirming the presence of rare earth impurities. Additionally, the strong γ-line
+from 235 U was not detected, suggesting that equilibrium is broken during purification
+causing either 231 Pa or 227 Ac to serve as the head of the decay chain.
+These findings motivated a modification to the Gd purification procedure in which
+a higher pH was used to more aggressively precipitate out impurities at the cost of
+a slightly lower Gd yield. To confirm the effectiveness of this procedure, a larger,
+1.44 kg sample of the newly purified Gd(TMHA)3 was counted using HPGe at the
+BHUC. Table 9 reports the results before and after the new purification as well as the
+reduction factor in each isotope’s central value or quoted upper limit. Concentrations
+are given per kg of Gd(TMHA)3 and per kg of LZ GdLS, doped to 0.1% Gd by
+mass. The observed reduction in the detected 176 Lu concentration demonstrates
+the effectiveness of the purification on rare earth metals. No significant signatures
+from 227 Ac and its daughters in the newer sample were observed. By applying the
+reduction factors in Table 9 to the results in [4], the total OD rate from GdLS
+radioimpurities above 200 keV is predicted to be <10 Hz, well below the requirement.
+https://www.overleaf.com/project/5c5310397a978a1f50a01c1c
+6. Conclusion
+The LZ collaboration has concluded one of the most wide ranging and sensitive
+assay programs performed to-date for a rare event search experiment, successfully
+meeting requirements on fixed contaminants, radon emanation, and surface cleanliness. This program began in October 2013 and has continued for more than six
+years, building a database of over 1200 entries. The results obtained in the screening
+program have been used to select the materials used in the final construction of the
+LZ detector, to ensure radioactivity compliance through to detector assembly, and
+to inform the background model used to determine the predicted sensitivity of LZ.
+In parallel to these assay efforts, a comprehensive set of cleanliness quality assurance protocols were developed and implemented. These sought to ensure that
+additional radiocontaminants were not introduced into the detector in the construction period, particularly during the time when the TPC was being constructed, up
+44
+
+Table 9: Results from HPGe counting of two purified Gd(TMHA)3 powder samples given in mBq/kg
+of Gd(TMHA)3 . For GdLS, loaded to 0.1% Gd by mass, the values listed can be reduced by a factor
+of 250. The reduction factors of the limits/central values for the improved purification results are
+also given. Limits are given at 1σ confidence level. The late 235 U chain is defined as starting at
+231
+Pa as discussed in [4].
+Isotope or 0.307 kg, Initial Purification 1.44 kg, Improved Purification
+Reduction
+Subchain
+mBq/(kg Gd(TMHA)3 )
+mBq/(kg Gd(TMHA)3 )
+238
+Ue
+< 259
+< 4.36
+59.4
+238
+23(5)
+2.6(9)
+8.8
+Ul
+235
+Ue
+< 2.8
+< 4.5
+0.6
+235
+Ul
+26(10)
+< 3.0
+8.7
+232
+< 6.7
+< 0.89
+7.5
+The
+232
+< 5.1
+< 0.76
+6.7
+Thl
+40
+K
+< 56
+< 2.29
+24.5
+138
+La
+< 1.4
+< 0.42
+3.3
+176
+Lu
+75(18)
+2.03(46)
+36.9
+
+until the point where it was sealed within the inner cryostat vessel for transportation
+to the underground laboratory at SURF.
+Comprehensive tables of results for the LZ assay program are presented in Appendix A, documenting the results from the LZ assays performed since 2013.
+7. Acknowledgements
+The LZ collaboration lost one of its dedicated researchers this year and the father of low background assay at Berkeley Lab, Al Smith. For more than sixty years,
+he pursued low background assays and identification of materials in support of rare
+search experiments including CDMS, SNO, KamLAND, Daya Bay, KATRIN, Majorana Demonstrator, LUX, and LZ. We also wish to acknowledge the contributions
+from Emma Meehan at the Boulby Underground Laboratory for her help. The
+research supporting this work took place in whole or in part at the Sanford Underground Research Facility (SURF) in Lead, South Dakota. Funding for this work is
+supported by the U.S. Department of Energy, Office of Science, Office of High Energy Physics under Contract Numbers DE-AC02-05CH11231, DE-SC0020216, DESC0012704, DE-SC0010010, DE-AC02-07CH11359, DE-SC0012161, DE-SC0014223,
+DE-FG02-13ER42020, DE-SC0009999, DE-NA0003180, DE-SC0011702,
+DE-SC0010072, DE-SC0015708, DE-SC0006605, DE-FG02-10ER46709,
+UW PRJ82AJ, DE-SC0013542, DE-AC02-76SF00515, DE-SC0019066, DE-AC5245
+
+07NA27344, & DE-SC0012447. This research was also supported by U.S. National
+Science Foundation (NSF); the U.K. Science & Technology Facilities Council under
+award numbers, ST/M003655/1, ST/M003981/1, ST/M003744/1, ST/M003639/1,
+ST/M003604/1, and ST/M003469/1; Portuguese Foundation for Science and Technology (FCT) under award numbers PTDC/FIS-ÂPAR/28567/2017; the Institute
+for Basic Science, Korea (budget numbers IBS-R016-D1); University College London and Lawrence Berkeley National Laboratory thank the U.K. Royal Society for
+travel funds under the International Exchange Scheme (IE141517). We acknowledge
+additional support from the STFC Boulby Underground Laboratory in the U.K.,
+the GridPP Collaboration [45, 46], in particular at Imperial College London and additional support by the University College London (UCL) Cosmoparticle Initiative.
+This research used resources of the National Energy Research Scientific Computing
+Center, a DOE Office of Science User Facility supported by the Office of Science
+of the U.S. Department of Energy under Contract No. DE-AC02-05CH11231. The
+University of Edinburgh is a charitable body, registered in Scotland, with the registration number SC005336. The assistance of SURF and its personnel in providing
+physical access and general logistical and technical support is acknowledged.
+References
+[1] D. S. Akerib, et al., Projected WIMP sensitivity of the LUX-ZEPLIN (LZ) dark
+matter experiment, Phys. Rev. D 101 (5) (2018) 052002. arXiv:{1802.06039},
+doi:{10.1103/PhysRevD.101.052002}.
+[2] D. S. Akerib, et al., The LUX-ZEPLIN (LZ) experiment, Nucl. Instrum.
+Meth. A953 (2020) 163047. arXiv:{1910.09124}, doi:{10.1016/j.nima.
+2019.163047}.
+[3] B. J. Mount, et al., LUX-ZEPLIN (LZ) technical design report (2017). arXiv:
+{1703.09144}.
+[4] S. J. Haselschwardt, et al., A liquid scintillation detector for radioassay of
+gadolinium-loaded liquid scintillator for the LZ outer detector , Nucl. Instrum.
+Meth. A937 (2019) 148–163. arXiv:{1808.05595}, doi:{10.1016/j.nima.
+2019.05.055}.
+[5] P. R. Scovell, et al., Low background gamma spectroscopy at the Boulby Underground Laboratory, Astropart. Phys. 97 (2018) 160–173. arXiv:{1708.06086},
+doi:{10.1016/j.astropartphys.2017.11.006}.
+
+46
+
+[6] B. J. Mount, et al., Black Hills State University Underground Campus, Appl.
+Radiat. Isot. 126 (2017) 130–133. doi:{10.1016/j.apradiso.2017.02.025}.
+[7] D. S. Akerib, et al., Radiogenic and muon-Induced backgrounds in the LUX
+dark matter detector, Astropart. Phys. 62 (2015) 33–46. arXiv:{1403.1299},
+doi:{10.1016/j.astropartphys.2014.07.009}.
+[8] D. S. Akerib, et al., First results from the LUX dark matter experiment at the
+Sanford Underground Research Facility, Phys. Rev. Lett. 112 (2014) 091303.
+arXiv:{1310.8214}, doi:{10.1103/PhysRevLett.112.091303}.
+[9] D. S. Akerib, et al., Results from a search for dark matter in the complete
+LUX exposure, Phys. Rev. Lett. 118 (2) (2017) 021303. arXiv:{1608.07648},
+doi:{10.1103/PhysRevLett.118.021303}.
+[10] A. Alessandrello, et al., Measurements on radioactivity of ancient roman lead to
+be used as shield in searches for rare events, Nuclear Instruments and Methods in
+Physics Research Section B: Beam Interactions with Materials and Atoms 61 (1)
+(1991) 106 – 117. doi:{https://doi.org/10.1016/0168-583X(91)95569-Y}.
+[11] G. J. Alner, et al., First limits on WIMP nuclear recoil signals in ZEPLIN-II: A
+two phase xenon detector for dark matter detection, Astropart. Phys. 28 (2007)
+287–302.
+arXiv:{astro-ph/0701858}, doi:{10.1016/j.astropartphys.
+2007.06.002}.
+[12] H. M. Araújo, et al., Radioactivity backgrounds in ZEPLIN-III, Astropart. Phys.
+35 (2012) 495–502. arXiv:{1104.3538}, doi:{10.1016/j.astropartphys.
+2011.11.001}.
+[13] D. Yu. Akimov, et al., WIMP-nucleon cross-section results from the second
+science run of ZEPLIN-III, Phys. Lett. B709 (2012) 14–20. arXiv:{1110.4769},
+doi:{10.1016/j.physletb.2012.01.064}.
+[14] D. S. Akerib, et al., Identification of radiopure titanium for the LZ dark matter
+experiment and future rare event searches, Astropart. Phys. 96 (2017) 1–10.
+arXiv:{1702.02646}, doi:{10.1016/j.astropartphys.2017.09.002}.
+[15] R. Noel, et al., Measuring and understanding radon adsorption in microporous
+materials, AIP Conf. Proc. 1672 (1) (2015) 070001. doi:{10.1063/1.4927992}.
+[16] A. R. Smith, et al., Low background counting at LBNL, Phys. Procedia 61
+(2015) 787–795. doi:{10.1016/j.phpro.2014.12.101}.
+47
+
+[17] R. H. M. Tsang, et al., GEANT4 models of HPGe detectors for radioassay, Nucl.
+Instrum. Meth. A935 (2019) 75–82. arXiv:{1902.06847}, doi:{10.1016/j.
+nima.2019.04.085}.
+[18] D. C. Malling, et al., Dark matter search backgrounds from primordial radionuclide chain disequilibrium (2013). arXiv:{1305.5183}.
+[19] J. Dobson, et al., Ultra-low background mass spectrometry for rare-event
+searches, Nucl. Instrum. Meth. AarXiv:{1708.08860}, doi:{https://doi.
+org/10.1016/j.nima.2017.10.014}.
+[20] D. S. Leonard, et al., Trace radioactive impurities in final construction materials
+for EXO-200, Nucl. Instrum. Meth. A871 (2017) 169–179. arXiv:{1703.10799},
+doi:{10.1016/j.nima.2017.04.049}.
+[21] D. S. Leonard, et al., Systematic study of trace radioactive impurities in candidate construction materials for EXO-200, Nucl. Instrum. Meth. A591 (2008)
+490–509. arXiv:{0709.4524}, doi:{10.1016/j.nima.2008.03.001}.
+[22] P. Pagelkopf, et al., Neutralisation rate and the fraction of the positive 218Poclusters in air, Atmospheric Environment 37 (8) (2003) 1057 – 1064. doi:
+{https://doi.org/10.1016/S1352-2310(02)00997-4}.
+[23] J. B. Albert, et al., Investigation of radioactivity-induced backgrounds in EXO200, Phys. Rev. C92 (1) (2015) 015503. arXiv:{1503.06241}, doi:{10.1103/
+PhysRevC.92.015503}.
+[24] E. H. Miller, et al., Constraining radon backgrounds in LZ, AIP Conf. Proc.
+1921 (1) (2018) 050003. arXiv:{1708.08533}, doi:{10.1063/1.5018996}.
+[25] C. Mitsuda, et al., Development of super-high sensitivity radon detector for
+the Super-Kamiokande detector, Nucl. Instrum. Meth. A497 (2003) 414–428.
+doi:{10.1016/S0168-9002(02)01923-X}.
+[26] K. Pushkin, et al., Study of radon reduction in gases for rare event search
+experiments, Nucl. Instrum. Meth. A903 (2018) 267–276. arXiv:{1805.11306},
+doi:{10.1016/j.nima.2018.06.076}.
+[27] W. Jacobi, Activity and potential alpha-energy of 222 radon and 220 radondaughters in different air atmospheres, Health Physics 22 (5) (1972) 441–450.
+
+48
+
+[28] D. Akerib, S. Alsum, H. Araújo, X. Bai, A. Bailey, J. Balajthy, P. Beltrame,
+E. Bernard, A. Bernstein, T. Biesiadzinski, et al., Position reconstruction in lux,
+Journal of Instrumentation 13 (02) (2018) P02001.
+[29] US Department of Energy (DOE), Specification for HEPA filters used by DOE
+contractors (1997).
+[30] C. T. Rueden, et al., ImageJ2: ImageJ for the next generation of scientific image
+data, CoRR abs/1701.05940. arXiv:{1701.05940}.
+[31] E. Borson, IEST-STD-CC1246D: product cleanliness levels and contamination
+control program, Institute of Environmental Sciences and Technology.
+[32] J. Boger, et al., The Sudbury Neutrino Observatory, Nucl. Instrum. Meth. A449
+(2000) 172–207. arXiv:{nucl-ex/9910016}, doi:{10.1016/S0168-9002(99)
+01469-2}.
+[33] E. D. Hallman, R. G. Stokstad, Establishing a cleanliness program and specifications for the Sudbury Neutrino Observatory, Tech. Rep. SNO-STR-91-009,
+Sudbury Neutrino Observatory, Department of Physics, Stirling Hall, Queen’s
+University at Kingston, Kingston, Ontario, Canada K7L 3N6 (1991).
+[34] T. A. Barber, Control of particulate matter contamination in healthcare manufacturing, CRC Press, 1999.
+[35] M. Leung, Surface contamination from radon progeny, AIP Conf. Proc. 785 (1)
+(2005) 184. doi:{10.1063/1.2060470}.
+[36] E. O. Knutson, Modeling indoor concentrations of radon decay products, Radon
+and its decay products in indoor air (1988) 161–202.
+[37] E. S. Morrison, et al., Radon daughter plate-out onto Teflon, AIP Conf. Proc.
+1921 (1) (2018) 090002. arXiv:{1708.08534}, doi:{10.1063/1.5019012}.
+[38] H. Zou, et al., Quantifying the triboelectric series, Nature Communications
+10 (1) (2019) 1427. doi:{10.1038/s41467-019-09461-x}.
+[39] Y. Meng, et al., A new method for evaluating the effectiveness of plastic
+packaging against radon penetration, Applied Radiation and Isotopes 156
+(2020) 108963. arXiv:{1903.02643}, doi:{https://doi.org/10.1016/j.
+apradiso.2019.108963}.
+
+49
+
+[40] D. S. Akerib, et al., The Large Underground Xenon (LUX) experiment, Nucl.
+Instrum. Meth. A704 (2013) 111–126. arXiv:{1211.3788}, doi:{10.1016/j.
+nima.2012.11.135}.
+[41] S. Agostinelli, et al., GEANT4: a simulation toolkit, Nucl. Instrum. Meth. A506
+(2003) 250–303. doi:{10.1016/S0168-9002(03)01368-8}.
+[42] E. Aprile, et al., Lowering the radioactivity of the photomultiplier tubes for
+the XENON1T dark matter experiment, Eur. Phys. J. C75 (11) (2015) 546.
+arXiv:{1503.07698}, doi:{10.1140/epjc/s10052-015-3657-5}.
+[43] D. S. Akerib, et al., Measurement of the gamma ray background in the Davis
+cavern at the Sanford Underground Research Facility, Astropart. Phys. 116
+(2020) 102391. arXiv:{1904.02112}, doi:{10.1016/j.astropartphys.2019.
+102391}.
+[44] M. Yeh, et al., Purification of lanthanides for large neutrino detectors: thorium
+removal from gadolinium chloride, Nucl. Instrum. Meth. A618 (2010) 124–130.
+doi:{10.1016/j.nima.2010.02.124}.
+[45] P. J. W. Faulkner, et al., GridPP: development of the UK computing grid for
+particle physics, J. Phys. G32 (2006) N1–N20. doi:{10.1088/0954-3899/32/
+1/N01}.
+[46] D. Britton, et al., GridPP: the UK grid for particle physics, Phil. Trans. Roy.
+Soc. Lond. A367 (1897) (2009) 2447–2457. doi:{10.1098/rsta.2009.0036}.
+Appendix A. Assay Results Tables
+In this section, the results from the assay campaign of the LZ experiment are
+captured. The tables are split into the various techniques which were used. Table A1
+details all assays completed using the HPGe detectors available to the collaboration.
+For this table, there are a number of repeat measurements. Where this is the case,
+items are grouped with a single entry having multiple results. Each named item in
+the table is unique even if it shares the same name as another. Tables A4,A2 and
+A3 detail results from NAA, ICP-MS and GD-MS, respectively. Finally, Table A5
+details results from the radon emanation assay campaign.
+For ease of interpretation, the tables are further subdivided to detail locations
+within the LZ experiment where specific items were either used or where there intended use would be. Those items which are constructed “in-house” by the LZ
+50
+
+collaboration are highlighted as such. Not all isotopes are detailed for all items as
+the ability to do this may depend on the ability of the detector or method employed
+or if the isotope is of particular interest (e.g. for 60 Co in stainless steel components).
+The upper limits reported are generally at 90% confidence level but upper limits
+from the LBNL and BHUC detectors (Merlin, Maeve, Morgan, Mordred, and
+SOLO) are quoted at 1σ.
+
+51
+
+FoamOrder
+
+Supra Alloy
+PTG
+Supra Alloy
+PTG
+METTEC
+METTEC
+Timet
+Timet
+Timet
+Ilsenburg
+Handi Foam
+Titanium Metal Supply Inc.
+Titanium Metal Supply Inc.
+VSMPO
+VSMPO
+Timet
+Foam Factory
+Timet
+Nironit
+Nironit
+Nironit
+
+0.375-in Ti Sheet Stock Grade CP-1
+0.3125-in Ti Sheet Stock Grade CP-1
+0.375-in Ti Sheet Stock Grade CP-2
+0.3125-in Ti Sheet Stock Grade CP-2
+Ti alloy bolts 0.5-in x 3.5-in
+0.5-in Ti alloy nuts and washers
+Ti Sheet Stock
+Ti Sheet Stock
+Ti Sheet Stock
+
+Gerda D6 Stainless Steel Plate
+
+Polyurethane Foam Sealant
+LUX Titanium 3/16
+LUX Titanium 3/16
+Titanium Sponge
+Titanium Wafers
+Titanium Plate
+Polyethylene Foam
+Titanium Sheet
+
+Stainless Steel Sheet
+
+Stainless Steel Sheet
+
+Stainless Steel Sheet
+
+Cryostat
+
+Commercial Supplier
+
+PVC Tubing
+
+Midwest Tungsten
+Midwest Tungsten
+
+Supplier
+
+Closed-Cell Polyethylene Foam 1/4-inch
+
+Conduits
+
+Tungsten Pig
+Tungsten Alloy
+
+Calibration
+
+Sample
+
+Maeve
+Maeve
+Maeve
+Maeve
+Merlin
+Merlin
+Maeve
+Merlin
+Maeve
+Ge-II
+Maeve
+Merlin
+Merlin
+Merlin
+Maeve
+Maeve
+Maeve
+Ge-III
+Maeve
+Ge-II
+Merlin
+Ge-III
+Merlin
+Ge-II
+Merlin
+
+Merlin
+Merlin
+Morgan
+
+Merlin
+Merlin
+
+8.5
+
+10
+
+10
+
+0.44
+3.6
+2.9
+1.0
+0.53
+7.1
+0.79
+6.9
+
+6.0
+
+5.8
+5.4
+7.6
+6.7
+0.99
+0.29
+6.4
+4.3
+4.3
+
+0.05
+
+6.0
+
+0.89
+0.98
+
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+
+mBq/kg
+mBq/kg
+mBq/kg
+
+mBq/kg
+Bq/kg
+
+Units
+
+continued
+
+Detector Mass [kg]
+
+Ue
+
+31(5)
+46(7)
+110(24)
+<9.6
+1300(100)
+500(100)
+4.9(25)
+<1.2
+11(4)
+<1.5
+5.7(33)
+<49
+<11
+<6.2
+17(9)
+62(25)
+8.0(19)
+57(13)
+<8.5
+<14
+<9.5
+<3.8
+-
+
+0.27(7)
+<309
+<290
+
+-
+
+238
+
+Table A1: HPGe Screening Results.
+Ul
+
+4.1(6)
+2.8(6)
+<2.4
+3.6(12)
+<6.0
+<8.4
+3.3(5)
+<25
+<0.60
+<1.5
+<0.16
+<2.5
+<1.2
+12(1)
+<6.2
+<0.12
+57(13)
+<0.37
+4.9(10)
+1.1(3)
+2.5(5)
+<0.60
+2.2(8)
+<0.60
+
+0.16(1)
+<138
+<42
+
+<1200
+1.7(10)
+
+238
+
+The
+
+2.8(8)
+0.37(4)
+<4.1
+<4.1
+6.8(12)
+<0.9
+<5.0
+-
+
+0.04(1)
+<177
+<60
+
+<690
+0.15(1)
+
+232
+
+Thl
+
+2.8(4)
+2.8(4)
+170(4)
+2.4(8)
+160(20)
+80(20)
+0.81(41)
+<4.1
+<0.60
+<1.1
+<0.30
+<41
+<1.6
+<1.2
+<4.1
+<4.1
+<0.12
+<9.0
+<0.61
+4.9(10)
+4.1(5)
+0.52(37)
+<0.80
+<1.0
+<0.90
+
+0.04(1)
+<107
+<36
+
+<610
+0.14(1)
+
+232
+
+K
+
+<1.8
+<1.8
+2.4(3)
+<2.1
+<60
+<60
+<1.5
+<6.0
+<2.4
+<13
+<0.80
+<310
+<0.01
+<0.01
+<6.2
+<31
+<0.62
+<80
+<0.53
+1.7(36)
+<3.0
+0.69(183)
+<3.0
+<2.7
+<3.0
+
+0.40(60)
+<490
+<236
+
+<150
+77(5)
+
+40
+
+210
+
+-
+
+-
+
+-
+
+Pb
+
+-
+
+-
+
+Co
+
+8.4(3)
+6.2(6)
+3.7(2)
+<6.0
+15(2)
+8.2(5)
+14(2)
+7.4(4)
+9.7(13)
+6.5(5)
+
+60
+
+Supplier
+
+Nironit
+Nironit
+Nironit
+Nironit
+Nironit
+Nironit
+Nironit
+Nironit
+Nironit
+Nironit
+FKM
+Timet
+Helicoflex
+Helicoflex
+eFoam UK
+eFoam UK
+eFoam UK
+Barnwell
+Oxford Bearings Ltd
+RUAG
+eFoam UK
+Dichtomatik
+O-Rings Ltd
+Italy #422511
+
+Sample
+
+Stainless Steel Sheet
+
+Stainless Steel Sheet
+
+Stainless Steel Sheet
+
+Stainless Steel Sheet
+
+Stainless Steel Sheet
+
+Stainless Steel Sheet
+
+Stainless Steel Sheet
+Stainless Steel Sheet
+Stainless Steel Sheet
+Stainless Steel Sheet
+Viton O-ring
+Titanium Sheet
+Helicoflex Nimonic Spring
+Helicoflex Aluminium/Inconel
+Polyamide Foam
+Armaflex Foam
+Plastazone Foam
+Silicone Gasket
+Stainless Steel Fasteners
+Multi-Layer Insulation
+Plastazone Foam
+Viton O-Rings
+Viton O-Rings
+Stainless Steel Cryostat Flange
+
+9.6
+11
+9.6
+9.6
+0.30
+10
+0.37
+0.42
+0.01
+0.10
+0.03
+0.04
+0.69
+0.05
+0.10
+0.27
+0.40
+9.2
+
+9.5
+
+9.4
+
+9.4
+
+11
+
+10
+
+continued
+
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+
+Maeve
+Merlin
+Maeve
+Merlin
+Merlin
+Maeve
+Maeve
+Merlin
+Merlin
+Maeve
+Maeve
+Merlin
+Merlin
+Merlin
+Merlin
+Merlin
+Chaloner
+Maeve
+Chaloner
+Lunehead
+Lunehead
+Lunehead
+Lunehead
+Lunehead
+Lunehead
+Lunehead
+Lunehead
+Lunehead
+Lumpsey
+Morgan
+10
+
+Units
+
+Detector Mass [kg]
+
+Ue
+
+7.3(25)
+<1.0
+1.2(5)
+1.9(11)
+0.50(20)
+1.4(6)
+2630(280)
+<1.6
+850(78)
+443(131)
+701(212)
+2049(607)
+59(30)
+1289(362)
+<118
+159(24)
+8.6(12)
+
+238
+
+Ul
+
+0.35(5)
+<0.70
+0.54(10)
+<0.60
+<0.60
+0.27(5)
+0.38(5)
+<0.70
+<0.50
+1.9(1)
+0.50(10)
+<0.60
+4.0(6)
+<0.60
+<0.80
+<1.4
+2490(70)
+<0.09
+16(5)
+<4.6
+1693(230)
+704(36)
+333(67)
+294(37)
+26(2)
+3346(457)
+446(44)
+40(11)
+<56
+0.32(6)
+
+238
+
+The
+
+1.1(2)
+0.49(8)
+0.33(4)
+0.81(8)
+1.7(2)
+0.50(6)
+220(20)
+0.28(3)
+27(6)
+18(4)
+<211
+<78
+<64
+<43
+<1.3
+<272
+146(93)
+<37
+<49
+6.5(4)
+
+232
+
+Thl
+
+4.0(3)
+6.3(10)
+1.1(2)
+<1.3
+0.90(20)
+0.49(4)
+0.73(8)
+<0.03
+2.0(1)
+1.5(1)
+0.32(4)
+2.1(3)
+2.2(3)
+4.8(6)
+2.1(4)
+<1.5
+220(20)
+0.23(2)
+2.0(17)
+139(4)
+<192
+<25
+<58
+<31
+<1.3
+<98
+133(81)
+<33
+58(11)
+6.5(4)
+
+232
+
+K
+
+<0.80
+<3.0
+<0.59
+<3.0
+<4.0
+<0.40
+<0.46
+<3.0
+<5.0
+<0.50
+<0.50
+<3.0
+<4.0
+<2.0
+5.0(7)
+<4.0
+2510(290)
+<0.54
+84(59)
+32(33)
+3756(2135)
+732(263)
+<469
+836(350)
+<6.0
+21(11)
+<438
+1522(169)
+1503(90)
+<0.40
+
+40
+
+Pb
+3140(170)
+226(82)
+6914(246)
+-
+
+210
+
+Co
+14.5(3)
+16(1)
+1.7(1)
+1.7(3)
+2.2(3)
+1.6(1)
+5.6(2)
+5.9(4)
+1.6(3)
+4.5(2)
+2.6(1)
+2.2(4)
+26(1)
+32(1)
+32(1)
+335(3)
+10(10)
+32(3)
+<0.84
+<18
+<12
+10(1)
+<9.0
+<23
+<8.0
+<4.0
+3.0(1)
+
+60
+
+Italy #422511
+Italian
+Coulter
+Timet
+Timet
+Nironit
+Nironit
+Technetics
+Technetics
+Technetics
+RUAG
+Loterios
+Loterios
+Nironit
+Nironit
+Nironit
+Nironit
+Timet
+Loterios
+Loterios
+Nironit
+Loterios
+Nironit
+Axon
+Technetics
+Tube Supply Intl.
+Stainless UK Ltd
+
+Stainless Steel Cryostat Flange
+
+Stainless Steel Round Stock
+
+Stainless Steel Plate
+3.2 mm Titanium Welding Wire
+7 mm Titanium Coupons
+5 mm Stainless Steel Plate
+5 mm Stainless Steel Plate
+Aluminium Plate
+Stainless Steel Wire
+
+Inconel 600 Plate For Helicoflex Seal
+
+Multi-Layer Insulation
+
+12 mm Titanium Plate
+9 mm Titanium Plate
+7.5 mm Stainless Steel Plate
+12 mm Stainless Steel Plate
+20 mm Stainless Steel Plate
+25 mm Stainless Steel Plate
+Forged and Machined Weir Ports
+1.6 mm Titanium Welding Wire
+1.6 mm Titanium Welding Wire
+1-inch Stainless Steel Rods
+3.2 mm Titanium Welding Wire
+50 mm Stainless Steel Plates
+Cable For LZ Sensors
+Aluminium Sheets
+Stainless Steel Tubes
+Stainless Steel Threaded Rod
+
+Supplier
+
+Sample
+Merlin
+Morgan
+Merlin
+Merlin
+Merlin
+Merlin
+SOLO
+Merlin
+Merlin
+Merlin
+Maeve
+Merlin
+Merlin
+SOLO
+Merlin
+Merlin
+Merlin
+Merlin
+Merlin
+Merlin
+Merlin
+Merlin
+Merlin
+Maeve
+Mordred
+Merlin
+Maeve
+Lumpsey
+Lumpsey
+Lumpsey
+8.2
+5.0
+12
+8.6
+9.9
+9.1
+1.6
+1.1
+1.1
+2.1
+1.0
+9.1
+1.7
+0.17
+0.77
+1.0
+
+0.12
+
+0.34
+
+13
+0.95
+5.0
+7.1
+7.1
+0.32
+0.20
+
+3.4
+
+1.0
+
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+
+Units
+
+continued
+
+Detector Mass [kg]
+
+Ue
+
+2.5(12)
+<0.99
+37(12)
+<6.2
+<123
+<25
+<3.4
+<6.2
+1235(247)
+1111(247)
+115(65)
+494(123)
+0.99(37)
+<123
+<7.4
+<25
+<6.2
+<3.7
+<12
+<12
+<37
+136(37)
+<123
+10(5)
+<6.2
+<12
+37(7)
+640(110)
+90(50)
+70(30)
+
+238
+
+Ul
+
+1.9(4)
+<0.86
+12(1)
+<2.5
+<12
+<12
+0.83(54)
+<1.2
+<12
+<123
+<2.5
+<12
+<62
+<10
+<1.2
+<1.2
+<1.2
+<1.2
+<1.2
+<1.2
+<12
+64(5)
+37(12)
+3.2(6)
+85(16)
+<1.2
+5.0(10)
+60(20)
+31(13)
+<17
+
+238
+
+The
+
+4.9(8)
+3.3(4)
+3.7(12)
+<2.0
+<8.1
+<4.1
+2.1(19)
+122(41)
+<41
+<8.9
+<8.1
+<15
+<4.1
+<4.1
+<4.1
+<4.1
+2.0(12)
+<2.0
+<4.1
+<4.1
+8.1(41)
+10(1)
+<6.9
+<2.0
+<1.4
+64(34)
+<30
+<20
+
+232
+
+Thl
+
+4.9(8)
+4.9(4)
+3.7(12)
+<2.0
+<8.1
+<4.1
+2.3(11)
+2.4(4)
+102(8)
+<41
+<5.3
+<41
+<8.1
+<9.0
+<4.1
+<4.1
+<4.1
+<4.1
+2.0(12)
+<2.0
+<4.1
+<4.1
+8.1(41)
+9.0(10)
+<4.1
+<2.0
+<2.7
+580(30)
+<20
+<9.0
+
+232
+
+K
+
+<31
+<1.0
+<31
+<31
+<31
+<31
+<2.3
+<6.2
+2694(93)
+<7121
+<13
+<155
+372(248)
+<77
+<3.1
+<31
+<3.1
+<3.1
+<3.1
+<15
+<31
+<31
+<31
+<1.3
+<9.3
+<15
+39(8)
+<240
+43(35)
+
+40
+
+Pb
+12000(400)
+-
+
+210
+
+Co
+3.1(3)
+6.7(4)
+9.0(40)
+12.1(4)
+1.5(3)
+0.40(10)
+2.5(10)
+0.40(10)
+<11
+-
+
+60
+
+Supplier
+Loterios
+McMaster Carr
+McMaster Carr
+McMaster Carr
+Direct Plastics
+Direct Plastics
+Dichtomatik
+Technetics
+Panel Systems
+TE Connectivity
+Whitney Steelstock
+Oxford Bearings Ltd
+Stainless UK Ltd
+Stainless UK Ltd
+Stainless UK Ltd
+Astropak
+A. G. Layne Inc.
+Weld Craft
+Solid Spot
+Solid Spot
+Avesta
+GoPrint3D
+GoPrint3D
+Stainless UK Ltd
+Techapps (CuTS brand)
+Stainless UK Ltd
+Oxford Bearings Ltd
+Product Components Corporation
+
+Sample
+
+1.6 mm Titanium Welding Wire
+PEEK Rods 3/8 & 1/2
+PEEK Rods 1/4
+PEEK 1/4 Threaded Rod
+UMHW Polyethylene Blocks
+High Density Polyethylene Blocks
+Viton O-Rings
+Helicoflex Seal Aluminium
+Styrofoam
+MMCX Connectors
+Stainless Steel Tubes
+Stainless Steel Nuts
+Stainless Steel Threaded Rod
+Large Stainless Steel Cylinder
+Small Stainless Steel Cylinders x4
+Deionised Water
+IPA 99%
+Welding Tips
+PEEK Cable Ties
+PEEK Cable Ties
+Metal Treatment Spray
+Black 3D Printed Material
+White 3D Printed Material
+Stainless Steel Pipe
+Thermal Flexible Links
+Stainless Steel Threaded Rod
+Stainless Steel Nuts
+PTFE Screws
+Morgan
+Merlin
+Merlin
+Merlin
+Chaloner
+Lumpsey
+Lunehead
+Lunehead
+Lunehead
+Chaloner
+Lumpsey
+Lumpsey
+Lumpsey
+Lumpsey
+Lunehead
+Merlin
+Merlin
+Merlin
+Merlin
+Maeve
+Merlin
+Roseberry
+Roseberry
+Roseberry
+Merlin
+Chaloner
+Lunehead
+Morgan
+
+1.1
+0.60
+0.23
+0.12
+1.5
+1.3
+0.29
+0.07
+0.35
+0.03
+0.77
+0.44
+1.0
+3.9
+4.7
+1.0
+1.0
+0.15
+0.39
+0.39
+0.60
+0.04
+0.04
+0.57
+1.1
+2.5
+0.73
+0.08
+
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+
+Units
+
+continued
+
+Detector Mass [kg]
+
+Ue
+
+<6.0
+<38
+<18
+<25
+<24
+<40
+<80
+1050(300)
+<199
+525(85)
+1000(550)
+<850
+<180
+<40
+<50
+<185
+<25
+<227
+<75
+<81
+<12
+15(10)
+15(11)
+14(7)
+<12
+<47
+<71
+<85
+
+238
+
+Ul
+
+<0.80
+21(5)
+<15
+<12
+<1.0
+<4.0
+250(20)
+125(30)
+130(16)
+48(23)
+50(20)
+60(40)
+<25
+8.0(40)
+8.0(10)
+<8.5
+<9.0
+35(31)
+70(18)
+45(3)
+<10
+17(9)
+<8.0
+4.0(20)
+<6.0
+<1.0
+4.0(20)
+<12
+
+238
+
+The
+
+<0.90
+<3.2
+<9.0
+<16
+<1.0
+<7.0
+710(55)
+<90
+85(24)
+<95
+<40
+<73
+<23
+<6.0
+4.0(10)
+<4.1
+<4.0
+504(66)
+80(96)
+28(5)
+<4.0
+35(20)
+30(15)
+5.0(20)
+<8.0
+<2.0
+4.0(30)
+<15
+
+232
+
+Thl
+
+<2.7
+<2.9
+<6.0
+<11
+<0.50
+<4.0
+680(30)
+1200(50)
+59(14)
+12(11)
+<50
+<61
+<20
+<5.0
+4.0(10)
+<4.5
+<4.0
+323(35)
+40(12)
+32(4)
+<4.0
+5.0(30)
+20(3)
+7.0(10)
+<6.0
+1.7(40)
+3.0(20)
+<17
+
+232
+
+K
+
+<4.3
+<19
+<51
+<94
+<24
+<24
+3900(220)
+<320
+<150
+<332
+<100
+<190
+41(33)
+<16
+<8.0
+112(27)
+<25
+<100
+<80
+71(18)
+2200(90)
+1360(150)
+<60
+12(7)
+44(6)
+<13
+<19
+<89
+
+40
+
+Pb
+35542(1427)
+<12
+<12
+<128
+<19
+1060(80)
+75(25)
+550(80)
+<62
+-
+
+210
+
+Co
+2.0(10)
+8.0(10)
+11(1)
+-
+
+60
+
+Supplier
+Product Components Corporation
+Palatine Precision Ltd
+Dichtomatik
+Dichtomatik
+Accu-Glass Products Inc
+Chemours
+Hydro Aluminium Rolled Products
+Product Components Corporation
+eFoam UK
+eFoam UK
+Nironit
+RUAG
+Loterios
+Loterios
+Genesis Alkali
+Nironit
+BuyAerogel
+GoPrint3D
+Oxford Bearings Ltd
+RUAG
+Timet
+Direct Plastics
+GoPrint3D
+GoPrint3D
+McMaster Carr
+Loterios
+Mouser Electronics
+Fralock (McMaster Carr)
+
+Sample
+
+PTFE Screws
+Bellows
+Viton O-Rings
+Elastomer Cord
+
+PEEK Monofilament
+
+Krytox
+Aluminium Sheet
+PTFE Screws
+Styrodur Foam
+Polyisocyanurate Foam
+20mm Stainless Steel Sheet
+Multi-Layer Insulation
+Titanium Lathe Swarf
+Titanium Drill Swarf
+Sodium Bicarbonate
+Stainless Steel Plates
+AeroGel Thermal Wrap 8 mm
+Cream 3D Printed Material
+Stainless Steel Fasteners
+Aluminium Tape
+Titanium Coupons
+HDPE Plates
+Blue 3D Printed Material
+Yellow 3D Printed Material
+PTFE Screws & Washers
+Welding Wire
+Cable Ties
+Kapton Tiles
+
+Merlin
+Roseberry
+Lunehead
+Chaloner
+Merlin
+Chaloner
+Roseberry
+Chaloner
+Merlin
+Chaloner
+Lunehead
+SOLO
+Roseberry
+Lunehead
+Chaloner
+Merlin
+Merlin
+Morgan
+Lunehead
+Lunehead
+Merrybent
+Morgan
+Chaloner
+Chaloner
+Merrybent
+Merlin
+Belmont
+SOLO
+Morgan
+0.07
+0.37
+0.07
+0.22
+0.20
+9.9
+0.66
+0.16
+0.46
+0.39
+9.7
+0.10
+0.03
+1.5
+0.29
+2.0
+0.55
+0.04
+0.03
+0.05
+0.03
+0.06
+0.18
+
+0.02
+
+0.08
+0.54
+0.37
+0.35
+
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+
+Units
+
+continued
+
+Detector Mass [kg]
+
+Ue
+
+<145
+14(7)
+171(26)
+<19
+<1060
+1500(500)
+<43
+293(100)
+<154
+<33
+<150
+<7.4
+18(8)
+<109
+7.0(40)
+<27
+<2.5
+<181
+<1000
+<75
+<7.0
+<9.7
+14(5)
+<25
+<12
+<142
+<21
+<182
+<25
+
+238
+
+Ul
+
+<44
+8.0(20)
+62(8)
+572(20)
+<320
+1200(500)
+46(12)
+64(16)
+<74
+45(20)
+<28
+0.87(43)
+10(3)
+<19
+8.0(50)
+123(25)
+<0.70
+<25
+100(42)
+<4.0
+40(6)
+<1.1
+<6.9
+<23
+150(25)
+<80
+<37
+<13
+<4.6
+
+238
+
+The
+
+<52
+12(4)
+19(7)
+1776(45)
+<710
+<400
+14(10)
+<20
+<141
+<28
+<44
+0.99(75)
+<3.0
+<21
+<5.0
+<12
+<1.1
+<30
+186(49)
+8.0(30)
+20(5)
+<2.9
+<7.9
+<14
+<8.0
+<70
+35(16)
+<20
+<6.2
+
+232
+
+Thl
+
+<31
+15(1)
+15(3)
+1747(15)
+<760
+300(100)
+11(3)
+<13
+<138
+29(5)
+<15
+1.5(6)
+<1.0
+<11
+5.0(10)
+<11
+<0.76
+<20
+161(16)
+8.0(20)
+25(2)
+<1.6
+1.8(10)
+<12
+<4.0
+<55
+22(4)
+<16
+<5.2
+
+232
+
+K
+
+<188
+<8.0
+3267(105)
+7895(172)
+<2030
+<4400
+137(54)
+<121
+<287
+<268
+57200(800)
+<1.7
+50(20)
+<121
+<43
+<39
+<3.1
+1588(221)
+<280
+<14
+130(23)
+<6.8
+<36
+<160
+<74
+<209
+<81
+<84
+<32
+
+40
+
+Pb
+140(51)
+<900
+<500
+<120
+<119
+150(30)
+29(12)
+<14
+<25
+-
+
+210
+
+Co
+10(2)
+<3.0
+<2.0
+<170
+<6.0
+<5.0
+<11
+<8.0
+<2.0
+<6.0
+<2.0
+<12
+13(1)
+<2.0
+<5.0
+350(17)
+-
+
+60
+
+BAL-SEAL from BSE-3 SS stock
+Smalley
+McMaster Carr
+McMaster Carr
+Protolabs from PolyOne stock
+McMaster Carr
+McMaster Carr
+McMaster Carr
+McMaster Carr
+Kurt J. Lesker
+McMaster Carr
+Kurt J. Lesker
+Kurt J. Lesker
+Grainger
+Chip Quik
+LBNL Fabrication
+Lee Spring
+Blue Demon
+Harris Products via McMaster
+
+Canted Coil Springs
+
+Wave Springs
+Xenon Displacer
+PEEK Rods 3/8
+CHV Insulating Boomerangs
+Stainless Steel Bars 1-7/16
+Tellurium Copper Bars 1/2
+Tellurium Copper Bars 1
+3/4 Stainless Steel Adapters
+Conflat Flanges
+Stainless Steel Swarf
+1-1/3 Conflat Blanks
+2-1/8 Conflat Half Nipples
+Stainless Steel Bars
+Solder Paste
+Copper Plates
+Stainless Steel Spring
+Tungsten Welding Electrodes
+Stainless Steel Welding Wire
+
+Polyethylene Bead Stock
+Polyethylene Bead Stock
+Polyethylene Bead Stock
+
+Bay Cable
+Bay Cable
+Bay Cable
+
+Silicon Valley MFG
+Digikey/TE Connectivity
+Made in house
+Tube Supply Intl.
+Tube Supply Intl.
+McMaster Carr
+NorCal & Penn Stainless
+
+Copper Block
+Terminal Ring Connectors
+Vacuum RTD Screws
+Stainless Steel Tubes
+Stainless Steel Tubes
+M8 Bolts & Washers
+ISO 200-800-OF Flanges & Stainless 304L
+
+High Voltage
+
+Supplier
+
+Sample
+
+Merlin
+Merlin
+Merlin
+Maeve
+Merlin
+Merlin
+Merlin
+Merlin
+Merlin
+Merlin
+Merlin
+Merlin
+Merlin
+Merlin
+Merlin
+Merlin
+Merlin
+Merlin
+Merlin
+Merlin
+Merlin
+Merlin
+Merlin
+
+Merlin
+Merlin
+Roseberry
+Lunehead
+Lunehead
+Morgan
+SOLO
+
+0.18
+0.30
+0.21
+0.20
+2.6
+1.6
+1.6
+0.27
+0.34
+0.94
+2.7
+0.23
+1.0
+0.19
+0.93
+
+0.10
+
+3.4
+3.8
+4.2
+
+0.35
+0.04
+0.08
+0.92
+1.5
+0.59
+2.3
+
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/Unit
+mBq/Unit
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/Unit
+mBq/kg
+mBq/kg
+
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+
+Units
+
+continued
+
+Detector Mass [kg]
+
+Ue
+
+1.3(31)
+6.6(27)
+6.0(30)
+<120
+<308
+1482(942)
+<35
+<56
+<116
+<10
+<7.4
+<7.4
+<49
+<49
+<15
+<1.6
+<7.2
+<12
+<55
+<12
+<3.1
+<124
+<29
+
+<24
+<343
+58(14)
+<25
+40(20)
+<27
+<14
+
+238
+
+Ul
+
+3.4(5)
+<0.40
+<0.37
+54(15)
+182(56)
+107(20)
+<3.3
+<7.0
+20(14)
+<4.3
+<3.7
+<3.7
+<18
+<13
+<6.0
+<0.40
+<1.8
+<4.9
+<18
+<5.0
+<1.2
+<22
+<7.0
+
+<8.6
+<120
+29(6)
+<4.0
+<3.0
+<3.5
+4.6(10)
+
+238
+
+The
+
+<0.30
+0.55(23)
+0.63(24)
+43(22)
+171(73)
+<14
+<6.6
+<10
+<11
+6.0(50)
+<5.7
+<5.7
+<26
+<15
+<11
+<0.60
+<2.8
+<4.1
+<18
+<5.0
+<1.9
+<39
+<7.0
+
+<9.3
+<110
+6.0(40)
+<4.0
+<4.0
+<5.0
+<6.1
+
+232
+
+Thl
+
+<0.49
+<0.55
+<0.62
+<16
+<18
+<11
+<3.8
+<6.0
+<10
+9.3(20)
+<4.9
+<4.9
+<19
+<18
+<9.0
+0.70(60)
+3.3(30)
+<4.9
+<16
+<4.0
+<1.7
+56(36)
+15(14)
+
+<8.5
+<121
+14(3)
+<3.0
+<5.0
+<4.1
+5.4(18)
+
+232
+
+K
+
+5.3(31)
+3.0(28)
+3.4(28)
+<130
+<163
+<74
+<36
+<65
+<56
+<16
+<22
+<22
+<67
+<56
+<28
+<1.7
+<7.5
+<16
+<70
+<19
+<4.9
+<108
+<31
+
+<28
+<359
+30(18)
+<18
+<17
+<19
+<14
+
+40
+
+-
+
+Pb
+
+<95
+<62
+<43
+-
+
+210
+
+Co
+
+7.2(11)
+0.30(20)
+1.5(9)
+5.0(20)
+-
+
+18(4)
+172(3)
+15(1)
+6.5(34)
+15(2)
+
+60
+
+Ge-II
+Merlin
+Merlin
+Merlin
+Merlin
+Merlin
+Merlin
+Lunehead
+Ge-III
+Lunehead
+Chaloner
+Chaloner
+Lumpsey
+Maeve
+
+N/A
+N/A
+N/A
+Alconox
+Alconox
+McMaster Carr
+McMaster Carr
+N/A
+N/A
+Imperial College London Fabrication
+Imperial College London Fabrication
+Carboact
+MINCO
+
+HEPA Dust (unvented)
+
+HEPA Dust (vented)
+Isopropyl Alchohol
+Acetone
+Carboact Activated Charcoal
+Thermofoil Heaters
+
+Chaloner
+
+Morgan
+Merlin
+Merlin
+Merlin
+Merlin
+Merlin
+SOLO
+Merlin
+Merlin
+Merlin
+Merlin
+Merlin
+Merlin
+Merlin
+Merlin
+
+0.86
+0.90
+1.0
+0.01
+0.04
+
+0.86
+
+1.8
+0.88
+0.38
+0.27
+
+0.39
+
+0.39
+
+0.06
+
+0.29
+
+0.32
+0.30
+0.49
+0.63
+1.4
+1.6
+0.07
+0.46
+0.04
+0.26
+0.06
+
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+Bq/kg
+Bq/kg
+Bq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+
+Bq/kg
+
+Bq/kg
+
+Bq/kg
+
+mBq/kg
+
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/Unit
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/Unit
+mBq/Unit
+mBq/kg
+mBq/Unit
+mBq/kg
+
+Units
+
+continued
+
+Detector Mass [kg]
+
+Deionised Water
+Environmental Dust From 4850L SURF
+Cleanroom
+Environmental Dust From 4850L SURF
+Cleanroom (vented)
+Environmental Dust From 4850L SURF
+Cleanroom (un-vented)
+Alconox Detegent-8
+Alconox Powdered Detergent
+Rope
+High Voltage Cables
+
+Amazon UK
+
+McMaster Carr
+McMaster Carr
+McMaster Carr
+McMaster Carr
+McMaster Carr
+McMaster Carr
+Quadrant From Boedeker Stock
+McMaster Carr
+Quadrant From Boedeker Stock
+Shapeways.com
+Ohmite
+Kurt J. Lesker
+Vendor Supplied SS 304
+Vendor Supplied SS 304
+McMaster Carr
+
+Stainless Steel Mount
+Pure and Ceriated Tungsten Welding Electrodes
+Stainless Steel Welding Wire
+PEEK Cylinder 2-1/2 Diameter
+FEP Compression To Conflat Adaptor
+Cold Grading Structure Mount
+Black TIVAR Discs
+Copper Desoldering Braid
+CHV Cables
+3D Printed Brass Connectors
+Grading Resistors
+Bellows
+Bellows Clamp Collar
+Clamp Collar Split Ring
+Stainless Steel Set Screws
+
+Misc
+
+Supplier
+
+Sample
+
+Ue
+
+247(37)
+543(247)
+309(123)
+49(25)
+16(11)
+<30
+21(11)
+<7.0
+<7.0
+<280
+<227
+
+12.59(4)
+
+17.53(6)
+
+11(2)
+
+<5.6
+
+<19
+<52
+<28
+<34
+<64
+<148
+<18
+<93
+<34
+<247
+2.2(6)
+<16
+<106
+<11
+<154
+
+238
+
+Ul
+
+<12
+222(25)
+62(12)
+235(49)
+11(2)
+<4.8
+9.0(20)
+<3.0
+<3.0
+<130
+457(49)
+
+12.10(1)
+
+15.09(2)
+
+10(1)
+
+<9.0
+
+<3.6
+156(35)
+<12
+<17
+<3.0
+<4.9
+<6.2
+<32
+56(15)
+<89
+0.50(10)
+<3.1
+<33
+<3.4
+<33
+
+238
+
+The
+
+<4.1
+61(24)
+<20
+8.0(30)
+7.4(23)
+6.0(30)
+<4.0
+<5.0
+<240
+<27
+
+7.68(1)
+
+9.63(2)
+
+4.4(4)
+
+<7.8
+
+<6.0
+506(107)
+<13
+<17
+89(9)
+<8.9
+<3.0
+<55
+<21
+<89
+0.20(20)
+<5.6
+<37
+<5.4
+<35
+
+232
+
+Thl
+
+<4.1
+138(20)
+<20
+285(41)
+3.0(10)
+11(2)
+5.0(10)
+<2.0
+<2.0
+<130
+<17
+
+7.68(1)
+
+9.63(2)
+
+4.4(4)
+
+<3.4
+
+<4.1
+303(34)
+34(15)
+<13
+101(6)
+<7.3
+<2.4
+<44
+16(17)
+<97
+0.30(10)
+<5.1
+<26
+<4.2
+<40
+
+232
+
+K
+
+1115(62)
+21672(310)
+<310
+402(155)
+177(14)
+187(30)
+172(13)
+<35
+<37
+<460
+<68
+
+197(1)
+
+251(3)
+
+156(23)
+
+<67
+
+<20
+<102
+<36
+<45
+<10
+<22
+<22
+<142
+<34
+<368
+<0.30
+<17
+<100
+<17
+392(538)
+
+40
+
+Pb
+
+1119(175)
+974(152)
+<22
+35(31)
+<480
+-
+
+-
+
+-
+
+-
+
+<16
+
+<432
+-
+
+210
+
+Co
+
+<1.0
+<1.0
+-
+
+-
+
+-
+
+-
+
+-
+
+24(7)
+6.5(15)
+-
+
+60
+
+City Special Metals
+N/A
+Imperial College London Fabrication
+Alconox
+Imperial College London Fabrication
+Imperial College London Fabrication
+Powder Technology
+Powder Technology
+Powder Technology
+Powder Technology
+AstroPak
+Lincoln Plastics
+P&G
+Malin
+MMC
+PENN STAINLESS
+American Boa
+
+OFHC Copper
+Deionised Water From SURF Faucet
+Superwash 2000
+Citranox
+Deionised Water
+Deionised Water
+A4 Coarse Dust
+A1 Ultrafine Dust
+AFRL-02 Dust
+AFRL-03 Dust
+Isopropyl Alchohol
+MMC Black Rubber
+DAWN Ultra Washing Up Liquid
+Mixed Stainless Steel Hardware
+Mixed Stainless Steel Hardware
+Stainless Steel Offcuts
+Stainless Steel Bellows Material
+
+Reynolds Polymer Technology
+Ventura Steel
+Endure Braid
+McMaster Carr
+3M
+Reynolds
+Reynolds
+Reynolds
+TORAY(Japan)
+Microgrit
+Sigma-Aldrich
+Sigma-Aldrich
+
+Adhesive Epoxy
+Stainless Steel Unistrut
+Rope
+Stainless Steel 1/4-20 Nuts
+Polishing Compound (Finesse-It)
+Sandpaper 5-inch
+Sandpaper 7-inch
+Gemac Film
+Lumirror Reflector
+Microgrit Aluminum Oxide
+GdLS Exposed To Mine Air
+
+GdCl (Gadolinium Chloride)
+
+Outer Detector
+
+Supplier
+
+Sample
+
+Ge-III
+Merlin
+Merlin
+Merlin
+Ge-II
+Ge-II
+Ge-II
+Ge-II
+LBNL
+Ge-II
+Morgan
+Mordred
+Merlin
+
+Merlin
+Roseberry
+Chaloner
+Chaloner
+Chaloner
+Chaloner
+Ge-II
+Ge-II
+Ge-II
+Ge-II
+Merlin
+Merlin
+Merlin
+Merlin
+Merlin
+SOLO
+Mordred
+
+0.31
+
+0.08
+1.0
+0.42
+0.52
+0.59
+0.04
+0.13
+1.1
+0.69
+0.68
+0.69
+
+2.3
+1.2
+1.1
+1.1
+1.1
+1.2
+0.12
+0.10
+0.30
+0.32
+0.52
+0.41
+0.63
+0.20
+0.92
+0.40
+0.21
+
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+Bq/kg
+Bq/kg
+Bq/kg
+Bq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+
+Units
+
+continued
+
+Detector Mass [kg]
+
+Ue
+
+<640
+<1.0
+86(12)
+<12
+<329
+15(2)
+4.5(7)
+405(99)
+<133
+11(2)
+<12
+<7.4
+<12
+
+<15
+2.0(10)
+<7.0
+<6.0
+<6.0
+<5.0
+<28
+<993
+3.0(21)
+<98
+<17
+<62
+<74
+
+238
+
+Ul
+
+123(41)
+<1.0
+86(12)
+<12
+<39
+13(1)
+4.3(5)
+187(22)
+1708(32)
+5.0(5)
+58(1)
+21(2)
+25(13)
+
+<11
+3.0(10)
+<2.0
+3.0(20)
+3.0(20)
+<3.0
+29.1(4)
+47(1)
+4.9(1)
+6.6(1)
+<26
+1616(105)
+<0.5
+137(80)
+<9.2
+<10
+<12
+
+238
+
+The
+
+<35
+<1.0
+<20
+<8.1
+<29
+19(2)
+8.7(8)
+303(34)
+<55
+7.6(7)
+2.4(8)
+<3.3
+<4.0
+
+<10
+2.0(10)
+<3.0
+<4.0
+<3.0
+<3.0
+<14
+<49
+<0.9
+<36
+<7.5
+<17
+<20
+
+232
+
+Thl
+
+<35
+<1.0
+<20
+<8.1
+<1.9
+17(1)
+8.1(7)
+289(28)
+58(17)
+7.0(6)
+<1.6
+<1.2
+<4.0
+
+<8.0
+1.1(20)
+2.0(10)
+<2.0
+<2.0
+<2.0
+<11
+152(86)
+<0.5
+<41
+<8.0
+<11
+<15
+
+232
+
+K
+
+99(158)
+300(200)
+712(31)
+<93
+<198
+11(2)
+9.9(15)
+936(156)
+329(106)
+5.6(9)
+<9.3
+<28
+<31
+
+<28
+9.0(60)
+1280(40)
+147(25)
+<25
+<27
+<47
+1607(526)
+2080(91)
+<134
+<25
+<65
+<59
+
+40
+
+Pb
+
+-
+
+<11
+19(6)
+<18
+<18
+<16
+<31
+<198
+<25
+-
+
+210
+
+Co
+
+<9.0
+-
+
+2.7(19)
+-
+
+60
+
+Super ESKA
+Alconox
+UCSB Fabrication
+Reynolds
+UCSB Fabrication
+Brulin
+University of Liverpool Fabrication
+Super ESKA
+Super ESKA
+Super ESKA
+Super ESKA
+iPolymer
+Pure Blue USA
+iPolymer
+McMaster Carr
+Foam Factory
+Foam Factory
+LZ Fabrication
+University of Liverpool Fabrication
+Reynolds
+
+Fiberoptic Cable
+Alconox Detegent-8
+Deionized Water
+Bonding Syrup
+Machining Water
+Aquavantage 1990 GD / BRULIN 1900 GD
+Fiberoptic Cable Mounts
+Fibreoptic Cable
+Fibreoptic Cable
+Fibreoptic Cable
+Fibreoptic Cable
+PTFE Tubing
+PTFE Tubing
+PTFE Cylinder
+FEP Tube 5/8 ID & 3/4 OD
+Cross-Linked Polyethylene Sheet
+Cross-Linked Polyethylene Sheet
+SS303 Inserts
+OCS Fibre Supports
+OD Acrylic Powder
+
+Farnell
+Farnell
+Hamamatsu
+Cirlex
+ELSOLD
+Farnell
+Farnell
+Farnell
+Farnell
+
+Capacitors KEMET 10 nF - 0603
+
+Resistors BOURNS 4.99M - 0805
+Hamamatsu 10-inch PMT Glass
+Cirlex Sheets
+SnCu 0.7 flux 3064 2.2%
+Capacitors AVX 10 nF - 0805
+Capacitors Yageo 10 nF - 0805
+Resistors VISHAY 4.99M - 0805
+Resistors Welwyn 10M - 0805
+
+PMTs, PMT bases and their components
+
+Supplier
+
+Sample
+
+Lunehead
+Chaloner
+Chaloner
+Merlin
+Chaloner
+Lunehead
+Lunehead
+Chaloner
+Chaloner
+Chaloner
+
+Lumpsey
+Chaloner
+Chaloner
+Chaloner
+Chaloner
+Merlin
+Lumpsey
+Lunehead
+Lunehead
+Lunehead
+Lunehead
+Merlin
+Merlin
+Merlin
+Merlin
+Merlin
+Morgan
+Belmont
+Lunehead
+Lunehead
+
+0.02
+1.0
+0.99
+0.26
+0.03
+0.02
+0.02
+0.01
+
+0.02
+
+0.94
+0.32
+0.88
+0.41
+0.82
+1.0
+0.82
+0.82
+0.82
+0.82
+0.70
+0.64
+1.1
+0.77
+0.09
+0.09
+0.01
+1.9
+1.4
+
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/Unit
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+
+Units
+
+continued
+
+Detector Mass [kg]
+
+Ue
+
+5030(1190)
+4050(350)
+2070(260)
+1506(49)
+24(4)
+<58
+<320
+<370
+1166(86)
+2420(157)
+
+<74
+<15
+8.0(110)
+12(21)
+7.0(90)
+57(53)
+<75
+140(50)
+84(30)
+84(27)
+58(30)
+<18
+<335
+<26
+<31
+<177
+<132
+1400(300)
+31(16)
+<186
+
+238
+
+Ul
+
+12130(140)
+11300(150)
+1340(40)
+1506(49)
+19(2)
+<12
+39650(360)
+86180(710)
+369(39)
+414(49)
+
+22(6)
+<5.0
+2.0(40)
+11(8)
+3.0(40)
+7.0(60)
+12(3)
+9.0(30)
+7.0(30)
+7.0(30)
+9.0(30)
+<7.0
+<10
+<6.0
+<9.0
+<72
+<23
+1700(210)
+<2.7
+8.1(190)
+
+238
+
+The
+
+4180(80)
+3890(80)
+860(30)
+262(6)
+3.2(15)
+<11
+1780(70)
+1770(100)
+227(28)
+226(36)
+
+14(12)
+<7.0
+<2.0
+13(11)
+5.0(50)
+39(28)
+<9.0
+8.0(50)
+10(6)
+9.0(50)
+15(6)
+<10
+<14
+<11
+<11
+<107
+<33
+<120
+6.1(21)
+<3.1
+
+232
+
+Thl
+
+4180(80)
+3890(80)
+860(30)
+1065(24)
+3.2(15)
+<11
+1780(70)
+1770(100)
+227(28)
+226(36)
+
+13(6)
+<2.0
+6.0(20)
+6.0(30)
+3.0(20)
+7.0(140)
+<5.0
+5.0(30)
+<3.0
+<5.0
+5.0(30)
+<6.0
+21(19)
+<9.0
+<10
+<77
+<19
+70(20)
+<2.6
+<2.6
+
+232
+
+K
+
+400(340)
+300(300)
+1360(270)
+3901(124)
+<15
+<32
+1000(370)
+<290
+4358(545)
+987(456)
+
+411(28)
+86000(1300)
+21(31)
+510(70)
+100(30)
+106378(403)
+<20
+293(34)
+303(35)
+230(30)
+384(33)
+<31
+<48
+<26
+167(50)
+<302
+<147
+660(520)
+330(20)
+38(11)
+
+40
+
+Pb
+
+11590(940)
+22940(400)
+25(7)
+<1170
+39787(763)
+21613(544)
+
+<210
+<46
+<11
+<18
+<9.0
+<11
+-
+
+210
+
+Co
+
+<10
+<10
+<10
+<0.63
+<2.2
+<40
+<10
+<9.3
+<12
+
+<1.5
+<2.0
+<0.50
+4.0(30)
+<0.70
+<1.0
+<2.0
+<1.0
+<1.0
+<3.0
+<110
+<0.50
+<0.60
+
+60
+
+Supplier
+Farnell
+TE Connectivity
+Mill-Max
+Hamamatsu
+Hamamatsu
+Hamamatsu
+Hamamatsu
+Hamamatsu
+Hamamatsu
+Hamamatsu
+Hamamatsu
+Hamamatsu
+Hamamatsu
+Hamamatsu
+Mill-Max
+Harwin
+KEMET
+Multicomp
+VISHAY
+Harwin
+Harwin
+Harwin
+Harwin
+Harwin
+Hamamatsu
+Hamamatsu
+Hamamatsu
+Hamamatsu
+Hamamatsu
+
+Sample
+
+Resistors VISHAY 7M5 - 0805
+PMT Pin Receptacles
+Receptacles For PMT HV
+R11410-20 Insulator Plate (2013)
+R11410-20 Metal Bulb (2013)
+R11410-20 Sapphire (2013)
+R11410-20 Quartz Faceplate (2013)
+R11410-20 Aluminum Ring 99.85% (2013)
+R11410-20 Aluminum Ring (2013)
+R11410-20 Faceplate Flange (2013)
+R11410-20 Shield Plate (2013)
+R11410-20 Electrode Disk (2013)
+R11410-20 Dynodes (2013)
+R11410-20 Ceramic Stem (2013)
+Gold Plated Pins
+Receptacles
+Capacitors 3uF
+Resistors 5M1
+Resistors 0805 4M99
+CuBeNi2 Foil
+Receptacles 0.8 mm
+Receptacles 0.8 mm
+Receptacles 1.0 mm
+Receptacles 1.0 mm
+R11410-20 Ceramic Stem (2015)
+R11410-20 Metal Bulb (2015)
+R11410-20 Metal Bulb (2015)
+R11410-20 Dynode (2015)
+R11410-20 Shield Plate (2015)
+
+Chaloner
+Lunehead
+Chaloner
+SOLO
+SOLO
+SOLO
+SOLO
+SOLO
+SOLO
+SOLO
+SOLO
+SOLO
+SOLO
+SOLO
+Lunehead
+Chaloner
+Lunehead
+Chaloner
+Chaloner
+Chaloner
+Chaloner
+Chaloner
+Chaloner
+Chaloner
+Chaloner
+SOLO
+Maeve
+SOLO
+SOLO
+
+0.01
+0.21
+0.02
+0.21
+0.20
+0.09
+0.21
+0.24
+0.24
+0.20
+0.20
+0.20
+0.21
+0.25
+0.01
+0.04
+0.01
+0.01
+0.01
+0.05
+0.38
+0.07
+0.14
+0.12
+0.76
+0.51
+0.51
+0.53
+0.52
+
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+
+Units
+
+continued
+
+Detector Mass [kg]
+
+Ue
+
+1097(102)
+1706(770)
+1252(220)
+<306
+<389
+<107
+<150
+<150
+<111
+<70
+<109
+<89
+<350
+<1015
+589(112)
+7008(2810)
+4142(1379)
+965(76)
+4578(309)
+833(73)
+1178(177)
+389(86)
+568(75)
+105(8)
+<190
+<18
+<216
+<77
+
+238
+
+Ul
+
+389(47)
+<15
+<24
+<10
+<7.7
+34(3)
+<1.3
+25(2)
+<1.5
+<1.6
+<12
+<2.4
+<1.4
+16(3)
+98(42)
+<18
+11638(606)
+2747(204)
+284(41)
+38(12)
+7.0(20)
+<6.9
+24(5)
+21(4)
+20(2)
+<2.9
+<0.90
+<2.0
+<5.1
+
+238
+
+The
+
+106(22)
+<21
+<17
+<16
+<10
+<4.0
+<8.3
+<8.3
+<2.4
+<2.8
+4.9(18)
+<2.8
+11(4)
+<39
+16(14)
+4126(593)
+2216(247)
+240(41)
+50(14)
+13(3)
+22(11)
+12(4)
+17(6)
+7.8(18)
+<5.5
+<1.7
+<4.1
+<5.0
+
+232
+
+Thl
+
+106(22)
+<21
+<17
+<16
+<10
+14(3)
+<4.0
+200(8)
+<8.3
+<2.4
+<2.8
+4.9(18)
+<2.8
+11(4)
+<39
+3.3(37)
+1587(218)
+1035(84)
+172(31)
+75(11)
+15(2)
+15(5)
+9.1(27)
+8.0(30)
+7.5(11)
+13(5)
+<1.3
+<3.4
+<3.2
+
+232
+
+K
+
+3082(608)
+159(240)
+<107
+<104
+<72
+<24
+<9.3
+<55
+13(3)
+<16
+<1.8
+15(2)
+<11
+89(13)
+353(401)
+172(124)
+<1923
+1027(1358)
+3249(477)
+131(126)
+77(25)
+110(87)
+63(49)
+<19
+123(20)
+<15
+<6.4
+<4.6
+<6.0
+
+40
+
+Pb
+41600(830)
+34971(1283)
+21664(715)
+39943(1639)
+35475(597)
+1364(467)
+21171(524)
+22393(741)
+23677(661)
+29112(603)
+5.6(81)
+-
+
+210
+
+Co
+<16
+<5.1
+18(8)
+<2.1
+8.3(11)
+<0.75
+4.9(12)
+<1.1
+<10
+<6.9
+<104
+<139
+<18
+<6.6
+<2.0
+4.0(20)
+<1.0
+4.0(10)
+4.6(15)
+
+60
+
+Supplier
+Hamamatsu
+Hamamatsu
+Hamamatsu
+Hamamatsu
+Hamamatsu
+Hamamatsu
+VISHAY
+VISHAY
+VISHAY
+Hamamatsu
+Hamamatsu
+Hamamatsu
+Hamamatsu
+Circuit Works
+Various Suppliers
+Various Suppliers
+Gore
+Hamamatsu
+Hamamatsu
+LZ Fabrication
+Hamamatsu
+Imperial College London Fabrication
+McMaster Carr
+McMaster Carr
+Imperial College London Fabrication
+Photonic Cleaning
+Abbott Ball
+McMaster Carr
+
+Sample
+
+R11410-20 Faceplate (2015)
+R11410-20 Insulator Plate (2015)
+R11410-20 Electrode Disk (2015)
+R11410-20 Faceplate Flange (2015)
+R11410-20 Ceramic Stem (2015)
+R11410-20 Stem Flange (2015)
+Resistors 0805 100k
+Resistors 0805 2M49
+Resistors 0805 49.9R
+R11410-20 Aluminum Ring (2015)
+R11410-20 Getter (2015)
+Hamamatsu 3-inch PMT
+Hamamatsu 3-inch PMT
+Flux For PMT bases
+General Routing Material
+Router Back Material
+Gore PMT Cable
+Hamamatsu Washing Powder
+Hamamatsu Water
+3-inch PMT Bases
+
+Co-Free Kovar
+
+3-Inch PMT Bases
+Stainless Steel Rods
+Stainless Steel Rods
+1-inch PMT Bases
+First Contact Polymer
+Stainless Steel Sheet
+PEEK Plates
+
+Maeve
+Maeve
+SOLO
+SOLO
+SOLO
+SOLO
+Chaloner
+Chaloner
+Chaloner
+SOLO
+SOLO
+Maeve
+Maeve
+Lumpsey
+Lunehead
+Lunehead
+Lunehead
+Merlin
+Merlin
+Lunehead
+Merlin
+Maeve
+Morgan
+Merlin
+Morgan
+Lunehead
+Chaloner
+Merlin
+Merlin
+1.0
+1.1
+0.13
+0.27
+2.0
+
+0.51
+
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/Unit
+mBq/Unit
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/Unit
+mBq/kg
+mBq/kg
+mBq/Unit
+mBq/kg
+mBq/kg
+mBq/Unit
+mBq/kg
+mBq/kg
+mBq/kg
+
+Units
+
+continued
+
+1.2
+0.84
+0.52
+0.53
+0.76
+1.6
+0.003
+0.004
+0.004
+0.51
+0.01
+0.03
+0.10
+0.19
+0.28
+0.51
+2.0
+-
+
+Detector Mass [kg]
+
+Ue
+
+<11
+<21
+<203
+<162
+247(175)
+<198
+3460(317)
+1787(282)
+3430(475)
+<2508
+<24
+<18
+<140
+2008(535)
+<225
+<262
+173(74)
+<12
+1.9(7)
+74(25)
+<24
+1.6(5)
+<37
+<25
+1.9(7)
+<140
+<62
+<19
+
+238
+
+Ul
+
+<0.67
+<1.0
+9.5(36)
+<2.8
+20(4)
+<0.63
+1036(107)
+571(73)
+670(98)
+<1.2
+<39
+<2.0
+<1.5
+<240
+99(10)
+93(5)
+22(5)
+173(12)
+<12
+0.39(5)
+<12
+<2.5
+0.45(6)
+25(5)
+<22
+0.39(5)
+<40
+27(18)
+4.0(20)
+
+238
+
+The
+
+<1.0
+<1.6
+<4.3
+<3.8
+18(5)
+<2.3
+510(209)
+645(168)
+314(184)
+<2.3
+<133
+<2.1
+<2.3
+<240
+23(16)
+75(7)
+<11
+110(16)
+<2.0
+0.20(5)
+<4.1
+<6.9
+0.19(3)
+<8.1
+6.0(20)
+0.20(5)
+<70
+<17
+<2.0
+
+232
+
+Thl
+
+<0.80
+<1.2
+14(4)
+<4.2
+11(4)
+<0.84
+144(70)
+150(53)
+264(77)
+<0.94
+<102
+2.5(4)
+<1.5
+<150
+20(9)
+97(5)
+<18
+110(16)
+<2.0
+0.17(2)
+<4.1
+<2.8
+0.18(2)
+12(4)
+4.0(10)
+0.17(2)
+<20
+<12
+3.0(80)
+
+232
+
+K
+
+<4.0
+<6.3
+<9.6
+<14
+96(21)
+<3.3
+6118(1724)
+7069(1344)
+5425(1672)
+<8.5
+<173
+<9.1
+24(5)
+<375
+<153
+19810(222)
+<77
+370(123)
+<74
+0.26(20)
+<31
+<22
+<0.20
+<124
+<5.0
+<2.5
+<540
+<70
+<15
+
+40
+
+Pb
+97516(2157)
+52702(1292)
+61140(1914)
+<350
+-
+
+210
+
+Co
+8.5(21)
+13(3)
+12(2)
+<169
+<65
+<29
+<0.34
+<9.4
+1.0(6)
+1.6(4)
+<2.6
+9.5(26)
+<0.005
+<1.0
+<0.01
+9.7(8)
+-
+
+60
+
+Merlin
+
+McMaster Carr
+
+LZ Calibration LEDs
+Stainless Steel 10/32 NF X 5/16 Nuts
+ELSOLD SnCu 0.7 flux 3064 2.2%
+R11410-20 - Ceramic Stem Body (2018)
+R11410-20 Kovar Sheet Stem Flange (2018)
+R11410-20 - Silver Brazing Plate (2018)
+R11410-20 - Silver Brazing Wire (2018)
+Stainless Steel Fasteners
+Lead Free Solder
+Loop Antennae
+
+PEEK Cable Ties
+
+Merlin
+
+McMaster Carr
+
+Merlin
+Merlin
+Merlin
+Merlin
+Merlin
+Solid Spot
+Maeve
+Everlight
+Morgan
+McMaster Carr
+Merlin
+ELSOLD
+Chaloner
+Hamamatsu
+Morgan
+Hamamatsu
+SOLO
+Hamamatsu
+Mordred
+Hamamatsu
+Morgan
+McMaster Carr
+Merlin
+Institute for Basic Science Fabrication Merlin
+University of Oxford Fabrication
+Morgan
+
+McMaster Carr
+McMaster Carr
+McMaster Carr
+McMaster Carr
+
+Merlin
+Merlin
+Morgan
+Maeve
+Morgan
+Merlin
+Merlin
+Merlin
+Maeve
+Merlin
+Merlin
+Merlin
+
+McMaster Carr
+RediVac
+Craftech
+Hamamatsu
+Hamamatsu
+McMaster Carr
+McMaster Carr
+McMaster Carr
+McMaster Carr
+McMaster Carr
+McMaster Carr
+McMaster Carr
+
+PEEK Fasteners
+Set Screws
+Teflon Screws
+Kovar KV-2
+Co-Free Kovar YFE42
+Perimeter Trifoil Bolts HHCS #10-32 .75
+Trifoil Washers
+PTFE Nuts, Bolts & Washers
+PTFE Nuts, Bolts & Washers
+Perimeter Trifoil Washers For #10 Screw
+Perimeter Trifoil Nuts #10-32
+PEEK Key Handle Nuts #10-32 Narrow Nuts
+PEEK Key Handle Bolt #10-32 .75 Pan Handle
+(Philips-Head)
+PEEK Key Handle Bolt #10-32 .75 Pan Handle
+(Philips-Head)
+PEEK Key Handle Nuts #10-32 Narrow Nuts
+PEEK Key Handle Nuts #10-32 Narrow Nuts
+PEEK Key Handle Nuts #10-32 Narrow Nuts
+PEEK Key Handle Nuts #10-32 Narrow Nuts
+
+0.01
+0.16
+0.26
+1.6
+3.4
+0.30
+0.34
+2.7
+0.25
+-
+
+0.41
+
+0.05
+0.16
+-
+
+-
+
+0.33
+
+mBq/kg
+mBq/kg
+mBq/Unit
+mBq/Unit
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/Unit
+
+mBq/Unit
+
+mBq/kg
+
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/Unit
+mBq/Unit
+mBq/kg
+mBq/kg
+mBq/Unit
+mBq/Unit
+mBq/kg
+
+Units
+
+continued
+
+0.48
+0.07
+0.94
+0.58
+0.51
+0.09
+0.09
+0.004
+
+Detector Mass [kg]
+
+Supplier
+
+Sample
+
+Ue
+
+<185
+<125
+<0.10
+<0.14
+<37
+<32
+<260
+<125
+77(30)
+<37
+<126
+<105
+<4.2
+<81
+<6.2
+
+<0.16
+
+<49
+
+<19
+<388
+<18
+<36
+<48
+<0.08
+0.003(2)
+<99
+<46
+<0.04
+<0.04
+16223(8277)
+
+238
+
+Ul
+
+<62
+<25
+<0.02
+<0.04
+25(21)
+34(6)
+<123
+<25
+15(1)
+2.5(12)
+<11
+<5.6
+<2.5
+<23
+<0.30
+
+<0.05
+
+<16
+
+17(8)
+<19
+3.9(13)
+7.0(20)
+<2.2
+<0.03
+<0.003
+<31
+<21
+<0.01
+<0.01
+6354(1553)
+
+238
+
+The
+
+<85
+<33
+<0.03
+<0.06
+<23
+24(6)
+<348
+<33
+12(1)
+<3.1
+<18
+<5.0
+<2.5
+<28
+0.80(30)
+
+<0.07
+
+<20
+
+<10
+<24
+2.9(16)
+<7.4
+<4.2
+<0.03
+0.0004(6)
+<37
+<23
+<0.01
+<0.01
+16612(7832)
+
+232
+
+Thl
+
+<87
+<31
+<0.03
+<0.06
+27(10)
+33(5)
+<335
+<31
+5.0(13)
+<3.0
+<17
+<4.2
+<3.0
+<24
+0.60(30)
+
+<0.05
+
+<16
+
+<6.0
+<10
+9.8(33)
+<3.1
+<2.2
+<0.03
+0.0005(4)
+<33
+<8.0
+<0.01
+<0.01
+14210(1805)
+
+232
+
+K
+
+<277
+<106
+<0.08
+<0.20
+107(68)
+73(31)
+<376
+<106
+55(8)
+<5.0
+<155
+<22
+<6.3
+<83
+<2.3
+
+<0.23
+
+<71
+
+<45
+<186
+839(24)
+<15
+64(18)
+<0.19
+<0.002
+<236
+<52
+<0.10
+<0.08
+<9460
+
+40
+
+-
+
+-
+
+-
+
+Pb
+
+<350
+10208(912)
+-
+
+210
+
+-
+
+-
+
+-
+
+Co
+
+57(4)
+5.3(7)
+-
+
+60
+
+University of Oxford Fabrication
+Gore
+Axon
+Axon
+Axon
+MG Chemicals
+Brown University Fabrication
+Axon
+Harwin
+Harwin
+koax24
+Fralock
+
+Semi-Rigid Cabling
+PMT Cable (2015)
+FEP Pellets
+Central Copper Conductor Wire
+Ground Braid Copper Wire
+Lead Free Solder
+OFHC Copper Cable Clips
+PMT Signal Cable
+
+Cable Pins - Ground Pins
+
+Signal/HV Pins
+
+RG196 A/U Cable
+
+Cirlex PCBs
+
+PMT Cabling
+Chaloner
+SOLO
+Morgan
+Maeve
+Maeve
+Maeve
+Morgan
+Maeve
+Merlin
+Maeve
+Merlin
+Morgan
+Morgan
+Merlin
+Maeve
+
+SOLO
+Morgan
+Merlin
+
+Merlin
+Merlin
+Merlin
+Roseberry
+Roseberry
+Roseberry
+Roseberry
+Roseberry
+Roseberry
+Mordred
+Morgan
+
+All-States
+iPolymer
+
+MMC
+Solid Spot
+McMaster Carr
+Hamamatsu
+Hamamatsu
+Hamamatsu
+Hamamatsu
+Hamamatsu
+Hamamatsu
+McMaster Carr
+All-States
+
+PTFE Screws
+PEEK Nuts and Washers
+PEEK Hex Nuts
+1-inch PMT Batch 1
+1-inch PMT Batch 2
+1-inch PMT Batch 3
+1-inch PMT Batch 4
+1-inch PMT Batch 5
+1-inch PMT Batch 6
+PMT Top Array Cable Strain Relief Screws
+High Density Polyethylene Blocks
+Cable Ties For Top PMT Array Cable Strain
+Relief
+High Density Polyethylene Blanks
+PTFE Connectors
+
+0.42
+
+1.7
+
+0.08
+
+0.10
+
+0.26
+0.81
+0.97
+1.1
+0.69
+0.07
+1.1
+
+0.33
+
+0.16
+
+0.06
+0.53
+0.01
+0.29
+-
+
+mBq/Unit
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+
+mBq/Unit
+mBq/kg
+
+mBq/kg
+
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/Unit
+mBq/Unit
+mBq/Unit
+mBq/Unit
+mBq/Unit
+mBq/Unit
+mBq/kg
+mBq/Unit
+
+Units
+
+continued
+
+Detector Mass [kg]
+
+All-States
+
+Supplier
+
+Sample
+
+Ue
+
+<6.0
+<516
+<2.7
+<1.0
+<10
+66(30)
+<207
+<2.0
+<473
+<86
+<123
+<72
+28(23)
+<112
+<35
+
+<5.5
+<40
+
+<68
+
+<194
+<45
+12000(5000)
+0.34(11)
+0.16(6)
+0.33(9)
+0.44(13)
+0.50(13)
+0.33(12)
+<39
+<5.5
+
+238
+
+Ul
+
+<8.1
+<13
+<0.90
+1.1(5)
+9.0(10)
+29(2)
+<14
+3.9(13)
+<16
+185(12)
+153(29)
+<15
+<1.2
+<4.6
+18(4)
+
+<0.90
+<9.0
+
+<11
+
+<83
+<10
+9000(700)
+<0.12
+<0.08
+<0.12
+<0.14
+<0.18
+<0.16
+<4.9
+<0.90
+
+238
+
+The
+
+<16
+<16
+<0.80
+1.5(9)
+<1.8
+2.8(19)
+41(26)
+<1.4
+<33
+<10
+<82
+25(17)
+2.7(10)
+<1.6
+<4.9
+
+<1.0
+<13
+
+<11
+
+<100
+<12
+6200(1000)
+<0.06
+<0.05
+<0.07
+0.06(4)
+<0.09
+<0.15
+<10
+<1.0
+
+232
+
+Thl
+
+<4.8
+<18
+<0.90
+0.31(48)
+<0.70
+3.4(27)
+21(22)
+<0.60
+<42
+12(10)
+<48
+<5.0
+<0.80
+<2.0
+16(8)
+
+<1.0
+<13
+
+<13
+
+134(117)
+37(17)
+8200(700)
+0.08(2)
+0.05(1)
+0.06(1)
+0.08(2)
+0.11(2)
+0.08(2)
+<8.9
+<1.0
+
+232
+
+K
+
+58(104)
+<52
+<24
+10(6)
+<4.5
+<11
+84(87)
+<9.0
+<210
+<62
+<125
+113(75)
+17(10)
+<7.3
+<16
+
+<5.2
+1094(84)
+
+68(48)
+
+<306
+<49
+13000(5000)
+6.4(5)
+6.5(4)
+7.2(5)
+6.6(5)
+6.0(5)
+7.2(6)
+<78
+<5.2
+
+40
+
+Pb
+
+161(42)
+<4100
+<10
+-
+
+-
+
+-
+
+<0.60
+0.90(20)
+1.7(3)
+1.7(4)
+1.0(3)
+1.9(4)
+-
+
+210
+
+Co
+
+<4.8
+23(5)
+-
+
+-
+
+-
+
+0.30(3)
+0.33(2)
+0.32(3)
+0.30(3)
+0.29(3)
+0.33(3)
+-
+
+60
+
+Axon
+Axon
+Axon
+Axon
+Axon
+Axon
+McMaster Carr
+
+LZ PMT Cable Offcuts (1)
+LZ PMT Cable Offcuts (2)
+LZ PMT Cable Offcuts (3)
+LZ PMT Cable Offcuts (4)
+FEP Pellets
+LZ PMT Cable Offcuts (all)
+AWG-6 Heat Shrink
+
+Gore
+Timet (LZ Stock)
+Apogee Imaging Systems
+Ohmite
+Ohmite
+Ohmite
+Harris
+Edmund Optcs
+Omega
+Victrex
+City Special Metals
+Hamamatsu
+MAES
+Heraeus
+IST
+RS Components
+Ohmite
+Molex
+Measurement Specialties
+DuPont
+
+TPC High Voltage Cable
+
+Titanium Field Shaping Ring
+
+TPC Digital Camera
+Resistor - MC104825007JE
+Resistor - MC102822007FE
+Resistor - MOX93021007GTE
+Resistor - V3902AOS
+Compact Telecentric Lens (40 mm)
+PT100
+PEEK
+Copper
+R11410-20 - Cr2O3 (2015)
+Acoustic Sensors
+PT100
+PT100
+Ceramic Acoustic Sensors
+Resistors SLIM-MOX10803
+MMCX Connectors
+PVDF Sensor
+PTFE Powder
+
+TPC
+
+Supplier
+
+Sample
+
+Merlin
+Merlin
+Maeve
+Ge-III
+Merlin
+Merlin
+Merlin
+Merlin
+Ge-III
+Lunehead
+Lunehead
+Lunehead
+Chaloner
+Chaloner
+Chaloner
+Chaloner
+Chaloner
+Merlin
+Chaloner
+Chaloner
+Lunehead
+
+Chaloner
+Chaloner
+Chaloner
+Chaloner
+Roseberry
+Belmont
+Morgan
+
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/unit
+mBq/kg
+
+mBq/m
+mBq/m
+mBq/m
+mBq/m
+mBq/kg
+mBq/kg
+mBq/kg
+
+Units
+
+continued
+
+1.4
+0.18
+0.10
+0.08
+0.19
+0.03
+0.002
+1.3
+0.85
+0.10
+0.02
+0.02
+0.002
+0.03
+0.33
+0.06
+1.4
+
+2.4
+
+1.3
+
+0.67
+0.34
+0.21
+
+Detector Mass [kg]
+
+Ue
+
+<2.4
+<2.5
+<6.1
+11247(1566)
+6667(247)
+1605(370)
+8642(1235)
+617(247)
+27276(5066)
+4038(1095)
+17(17)
+<14
+<22
+1710(787)
+1581(674)
+<20
+1852(25)
+2034(389)
+<700
+<37
+
+<0.15
+<0.21
+<0.22
+<0.12
+<0.50
+<1.0
+<67
+
+238
+
+Ul
+
+<2.4
+<2.5
+22(1)
+1392(141)
+1605(123)
+494(123)
+2099(1235)
+247(37)
+1570(174)
+3433(307)
+17(2)
+<1.7
+178(12)
+595(68)
+4107(387)
+5325(426)
+602(39)
+556(37)
+<30
+<81
+4.0(10)
+
+<0.15
+<0.20
+<0.20
+<0.10
+6.6(90)
+13(3)
+<7.8
+
+238
+
+The
+
+1672(169)
+1098(81)
+160(20)
+970(40)
+30(10)
+1272(140)
+1439(387)
+16(3)
+<1.3
+<9.0
+2179(122)
+1500(372)
+5006(459)
+864(54)
+374(24)
+<26
+<52
+<3.0
+
+<0.10
+<0.15
+<0.12
+<0.10
+<0.80
+<2.6
+<10
+
+232
+
+Thl
+
+<2.0
+<1.6
+<1.2
+1672(169)
+1098(81)
+650(81)
+3943(163)
+122(41)
+1272(140)
+1042(240)
+8.5(22)
+<1.2
+<7.5
+1951(91)
+1949(297)
+5065(339)
+488(34)
+374(24)
+<25
+<50
+<3.0
+
+<0.03
+<0.04
+<0.04
+<0.05
+0.40(10)
+<0.50
+<9.9
+
+232
+
+K
+
+Pb
+<0.25
+<0.58
+<0.45
+<0.36
+<2.6
+-
+
+210
+
+<15
+<12
+<9.5
+2533(281)
+1393(248)
+1022(31)
+396.3(3)
+<186
+1372(354)
+156416(5925)
+48(21)
+<7.0
+<61
+539(178)
+1389(585)
+1962(251)
+83168(6335)
+8439(1265)
+15449(3633) 707129(7862)
+142(236)
+48189(647)
+867(93)
+<222
+255340(8412)
+<340
+<13
+-
+
+<1.2
+<0.98
+<0.91
+<0.59
+6.6(3)
+<27
+147(66)
+
+40
+
+Co
+
+<196
+<0.52
+<0.40
+15(8)
+<13
+25(10)
+<0.60
+
+<0.06
+<0.06
+<0.04
+0.03(1)
+<0.30
+<2.5
+-
+
+60
+
+McMaster Carr
+City Special Metals
+Riedon
+
+Hexapod Copper
+Grading Resistors
+
+Bowlin
+J&M
+City Special Metals
+UC Santa Barbara Fabrication
+Axon
+Axon
+
+Stainless Steel Fasteners
+Stainless Steel Fasteners
+Copper Tubes
+PTFE Tubing
+TPC Grid Cable
+TPC Grid Cable
+
+Grading Resistor Nuts
+
+McMaster Carr
+
+Stainless Steel Fasteners
+
+Newark/TE Connectivity
+
+Ohmite
+Loctite
+California Fine Wire
+McMaster Carr
+
+HV Resistors
+2-Part Epoxy
+Stainless Steel Grid Wire
+Stainless Steel 316 Screws
+
+RAL Space Fabrication
+City Special Metals
+Essentra
+Ohmite
+
+Quadrant From Boedeker Stock
+
+Tivar 1000 ESD
+
+Small Titanium Pieces
+Copper For Acoustic Sensors
+PEEK Fasteners
+Ceramic Resictors
+
+Boedeker Plastics Inc
+TECAPEEK
+Boedeker Plastics Inc
+American Elements
+Taimei
+Mill-Max
+
+PEEK Stock Material
+PEEK For TPC
+PEEK Flat Stock Material
+Silicon Dioxide Powder
+Synthetic Alumina Powder
+Pin Connectors
+
+Grading Resistor Lugs
+
+Supplier
+
+Sample
+Merlin
+Merlin
+SOLO
+Merlin
+Morgan
+Merlin
+Merlin
+Morgan
+Merlin
+Maeve
+Morgan
+Merlin
+Merlin
+Morgan
+Merlin
+Merlin
+Lunehead
+Merlin
+Maeve
+Morgan
+Merlin
+Mordred
+Lumpsey
+Chaloner
+Lumpsey
+Merlin
+Mordred
+Merlin
+Lumpsey
+Merlin
+0.06
+0.02
+
+0.06
+
+0.04
+0.08
+0.01
+0.06
+
+0.13
+
+2.8
+3.3
+1.1
+0.94
+1.2
+0.91
+
+2.7
+
+0.07
+0.10
+0.11
+0.06
+
+1.6
+
+1.0
+0.15
+2.4
+0.33
+0.33
+0.01
+
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+
+Units
+
+continued
+
+Detector Mass [kg]
+
+Ue
+
+<12
+741(247)
+<14
+617(123)
+<63
+9.9(12)
+247(62)
+<18
+5926(617)
+<93
+<57
+<31
+<7.0
+<21
+<37
+<18
+<130
+<168
+123(86)
+960(210)
+<13
+<188
+2600(600)
+<114
+<63
+<115
+6135(1050)
+
+238
+
+Ul
+
+<12
+198(37)
+4.6(7)
+49(12)
+<35
+<12
+<12
+<6.2
+988(123)
+<15
+23(6)
+73(23)
+14(4)
+<1.0
+7.4(37)
+21(5)
+<3.0
+19(4)
+11(2)
+5.0(20)
+<12
+<8.8
+52(30)
+44(7)
+190(80)
+1100(100)
+<25
+<18
+20(12)
+2500(160)
+
+238
+
+The
+
+<4.1
+<41
+5.0(10)
+<4.1
+4.8(41)
+0.41(41)
+<4.1
+<3.0
+650(41)
+<9.0
+22(15)
+<19
+4.2(7)
+12(4)
+<4.0
+<12
+<1.5
+<1.5
+<12
+<7.2
+180(60)
+<10
+<196
+1400(200)
+<44
+<18
+29(16)
+3626(350)
+
+232
+
+Thl
+
+<4.1
+<41
+3.0(3)
+28(16)
+<2.5
+0.41(41)
+<4.1
+<2.4
+650(41)
+<6.0
+26(9)
+<21
+4.1(20)
+3.6(5)
+5.7(33)
+10.5(4)
+<3.0
+14(10)
+<1.5
+<2.2
+<11
+<5.3
+220(30)
+<4.0
+<85
+1700(100)
+<16
+<13
+<8.0
+3626(170)
+
+232
+
+K
+
+<31
+402(124)
+19(5)
+<31
+61(26)
+<31
+<31
+<22
+4025(62)
+<46
+34(48)
+<120
+35(4)
+<28
+<18
+58(11)
+80(20)
+<77
+<69
+170(180)
+<81
+<378
+<250
+<138
+<113
+<38
+2786(1115)
+
+40
+
+Pb
+<1000
+<113
+<475
+-
+
+210
+
+Co
+<0.20
+6.0(6)
+8.9(7)
+21(1)
+<1.0
+<3.0
+<2.0
+-
+
+60
+
+0.10
+0.24
+
+Merlin
+Merlin
+Merlin
+Merlin
+Merlin
+Merlin
+Morgan
+Lunehead
+
+Technetics
+EMD Millipore
+Korea
+Solid Spot
+Ohmite
+Weller
+McMaster Carr
+Various
+Ohmite
+McMaster Carr
+UC Components
+VWR International
+McMaster Carr
+McMaster Carr
+UC Components
+RediVac
+City Special Metals
+
+PTFE Resin 8764
+
+Isopropyl Alcohol
+High Purity Lead
+M5 PEEK Fasteners
+Forward Field Region Tuning Resistors
+Pb-Free Tip Tinner
+Stainless Steel Screws
+Stainless Steel Fasteners
+Current Monitoring Resistors
+PTFE Screws
+Silver Plated Stainless Steel Pan Head Screw
+#4-40 x .25
+Isopropyl Alcohol
+PTFE Screws
+Pan-Head PTFE Screws #6-32x0.25
+Silver Plated Stainless Steel Pan Head Screw
+#4-40 x .3125
+
+Stainless Steel Screws
+
+RTD Copper Enclosures
+
+0.26
+
+1.4
+0.07
+0.01
+
+-
+
+0.78
+0.08
+0.29
+0.06
+0.01
+0.86
+1.5
+0.04
+0.10
+
+8.3
+
+0.09
+0.42
+2.4
+2.1
+0.07
+0.59
+0.42
+0.94
+0.09
+0.10
+0.04
+
+Merlin
+Merlin
+Merlin
+Merlin
+Roseberry
+Merlin
+Merlin
+Merlin
+Merlin
+Merlin
+Merlin
+Maeve
+Roseberry
+Merlin
+Roseberry
+Merlin
+Merlin
+Belmont
+Merlin
+Merlin
+Merlin
+Merlin
+
+Riedon
+Craftech
+Boedeker Plastics Inc
+Boedeker Plastics Inc
+Dupont
+Craftech
+Craftech
+Craftech
+Ohmite
+Ohmite
+Ohmite
+
+Grading Resistors
+PTFE Washers
+PEEK Virgin Natural Sheet 1.000
+PEEK Virgin Natural Sheet 1.500
+PTFE Powder
+PTFE Screws
+PTFE Screws
+PTFE Screws
+Resistors
+Resistors
+Forward Field Region Tuning Resistors
+
+Ue
+
+<123
+<47
+<25
+<178
+
+mBq/kg
+mBq/kg
+mBq/kg
+
+<11
+<216
+<639
+
+<0.29
+
+4100(400)
+<50
+<10
+<10
+8.0(50)
+<40
+<62
+<24
+2704(405)
+2700(300)
+931(649)
+<5.9
+<0.10
+<15
+<106
+<62
+757(265)
+7300(700)
+<20
+<12
+2300(1300)
+<135
+
+238
+
+mBq/kg
+
+mBq/kg
+mBq/kg
+mBq/kg
+
+mBq/Unit
+
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+
+Units
+
+continued
+
+Detector Mass [kg]
+
+Supplier
+
+Sample
+
+Ul
+
+<16
+<5.8
+<9.0
+
+<35
+
+<5.0
+<35
+<240
+
+1.4(2)
+
+3700(200)
+<19
+16(3)
+<5.0
+13(5)
+<12
+28(19)
+<6.2
+1678(85)
+2100(100)
+1282(175)
+<0.18
+0.40(20)
+<6.5
+<6.0
+62(25)
+457(94)
+350(120)
+<6.0
+<5.0
+1200(300)
+<34
+
+238
+
+The
+
+<23
+<10
+<9.0
+
+<57
+
+<7.0
+<65
+<373
+
+<0.16
+
+5300(200)
+<22
+18(6)
+<6.0
+4.0(50)
+<20
+<20
+<6.5
+2511(191)
+2600(100)
+2053(316)
+<0.16
+<0.20
+<10
+<6.0
+133(53)
+<130
+100(70)
+<10
+<4.0
+1800(600)
+<41
+
+232
+
+Thl
+
+<14
+<2.9
+<11
+
+<31
+
+<7.0
+<52
+<387
+
+0.33(15)
+
+5900(200)
+<12
+13(3)
+<6.0
+5.0(20)
+14(8)
+16(10)
+11(5)
+2557(98)
+3000(100)
+2428(195)
+<0.17
+<0.04
+<9.8
+<4.0
+25(13)
+229(63)
+<20
+<8.0
+13(6)
+2200(300)
+<65
+
+232
+
+K
+
+<77
+<35
+<68
+
+<135
+
+<19
+<210
+<1264
+
+<0.49
+
+4500(700)
+820(115)
+39(6)
+<31
+45(25)
+787(100)
+830(100)
+785(120)
+<332
+1300(400)
+<1137
+<0.51
+2.9(13)
+<27
+<25
+156(91)
+<401
+2100(500)
+<31
+<19
+1800(2300)
+<195
+
+40
+
+Pb
+
+-
+
+-
+
+<81
+-
+
+-
+
+274(37)
+<22
+<1.6
+<93
+54000(3600)
+-
+
+210
+
+Co
+
+<3.0
+
+-
+
+-
+
+-
+
+<3.0
+<0.10
+<4.0
+<24
+6.0(40)
+43(5)
+-
+
+60
+
+Merlin
+
+McMaster Carr
+Solid Spot
+LBNL Fabrication
+LBNL Fabrication
+LBNL Fabrication
+LBNL Fabrication
+McMaster Carr
+McMaster Carr
+All States
+University of Oxford Fabrication
+University of Oxford Fabrication
+University of Oxford Fabrication
+University of Oxford Fabrication
+Associated Springs
+LZ Chosen PTFE
+McMaster Carr
+McMaster
+Mouser Electronics
+TE connectivity
+Newark/3M
+McMaster Carr
+Silicon Valley MFG
+California Fine Wire
+RS Components
+City Special Metals
+Timet (LZ Stock)
+University of Oxford Fabrication
+
+Stainless Steel Fasteners
+PEEK Fasteners
+PEEK Resistor Tap
+Stainless Steel HV Connector
+Extraction Region Stainless Steel Plates
+Extraction Region T-Washer
+Extraction Region Misc Stainless Steel
+Components
+Field Cage PTFE Washers
+Cable Ties
+Long Level Sensor 300mm
+Position Sensor
+Cu Coupon
+PEEK Coupon
+Washers
+Combined PTFE Skin System
+Stainless Steel Skin System Repair Kit
+PTFE Washers & Screws
+Cable Ties
+
+Heat Shrink For LZ Gate/Anode
+
+Copper Cable Connection Lugs
+PTFE Screw Pan Head Slotted #10-32 x 1
+Heater Block Plate
+Stainless Steel Grid Wire
+Hexapod Springs
+Hexapod Copper
+Hexapod Titanium Parts
+Position Sensors
+
+Merlin
+SOLO
+Merrybent
+Lunehead
+Chaloner
+Lunehead
+Merlin
+Maeve
+Merlin
+Maeve
+Maeve
+Merlin
+Morgan
+Merlin
+Merlin
+Merlin
+Merlin
+Roseberry
+SOLO
+Mordred
+Maeve
+
+Lunehead
+Merrybent
+Merlin
+Merlin
+Merlin
+Merlin
+Merlin
+Merlin
+
+Digikey
+
+Harwin Pins
+
+0.04
+0.07
+0.47
+0.05
+1.7
+2.4
+-
+
+0.18
+
+0.08
+1.9
+0.31
+0.19
+1.9
+0.11
+0.18
+
+0.72
+
+2.5
+0.53
+0.13
+0.63
+0.12
+
+0.01
+
+mBq/kg
+mBq/Unit
+mBq/Unit
+mBq/Unit
+mBq/kg
+mBq/kg
+µBq/Unit
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/Unit
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/Unit
+
+mBq/kg
+
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/Unit
+mBq/kg
+mBq/kg
+mBq/kg
+
+Units
+
+continued
+
+Detector Mass [kg]
+
+Supplier
+
+Sample
+
+Ue
+
+<180
+<93
+<20
+<24
+<23
+<270
+3.3(24)
+<109
+<9.9
+<96
+<123
+<78
+<86
+<430
+<142
+<1.9
+<17
+<7.0
+<27
+<8.9
+<3.1
+
+<18
+
+450(220)
+420(260)
+26(19)
+<45
+<2.3
+<108
+<18
+<110
+
+238
+
+Ul
+
+<49
+<27
+<1.5
+<1.2
+<1.8
+<17
+<0.03
+32(5)
+<4.9
+29(8)
+26(7)
+<23
+<8.6
+<108
+<56
+<0.70
+<5.6
+23(8)
+<3.7
+<1.1
+5.3(3)
+
+36(6)
+
+200(90)
+730(210)
+<2.5
+<10
+<0.60
+<51
+204(15)
+679(29)
+
+238
+
+The
+
+<94
+<25
+<0.70
+1.4(10)
+<2.3
+13(10)
+0.42(62)
+36(12)
+<3.7
+<17
+<8.9
+<37
+<12
+<170
+<76
+<0.80
+<8.1
+33(12)
+2.0(14)
+<2.4
+<1.0
+
+<8.5
+
+<100
+<40
+2.4(50)
+<12
+<1.3
+<36
+<16
+<33
+
+232
+
+Thl
+
+<61
+<16
+<0.40
+<1.0
+<1.9
+<10
+0.51(38)
+51(6)
+<2.6
+63(12)
+<7.4
+<30
+<11
+<195
+88(74)
+<0.70
+<8.5
+22(4)
+<4.5
+<1.7
+<0.64
+
+<9.5
+
+80(25)
+90(30)
+4.0(30)
+37(17)
+<0.90
+<32
+38(12)
+145(25)
+
+232
+
+K
+
+<327
+<117
+<4.1
+<6.5
+<16
+<90
+<1.2
+<70
+<16
+<98
+<34
+<98
+<56
+<465
+<533
+<2.6
+<34
+<51
+<25
+<5.0
+<1.9
+
+<31
+
+<630
+<580
+<9.3
+<49
+<4.1
+<134
+<28
+<169
+
+40
+
+Pb
+
+480(180)
+<45
+<96
+-
+
+-
+
+<36
+-
+
+210
+
+Co
+
+<0.30
+<0.30
+<0.60
+<4.0
+0.82(6)
+5.1(12)
+302(19)
+-
+
+-
+
+<40
+<17
+6.5(5)
+12(4)
+-
+
+60
+
+ST707 Getter Material (Used)
+ST707 Getter Material (Fresh)
+Getter Raw Material ‘Standard Zr’
+Getter Raw Material ‘Non-Standard Clean Zr’
+Getter Raw Material Fe-V Alloy
+Citric Acid Powder
+Calcium-Carbide Getter
+Carboact Charcoal
+Extruded PTFE Tubing
+PTFE Barbed Fittings
+Cable Ties
+Stainless Steel Transfer Lines & Weir Drains
+Stainless Steel Transfer Lines & Weir Drains
+PEEK Screws #4-40 x 0.25 Pan Head
+5/16 OD PTFE Tube
+Xe Fluid Nozzle Sleeve
+Valves For Xe Supply & Return
+Xe Thermosiphon Hardware
+Stainless Steel VCR adaptors M/F
+
+SAES
+SAES
+SAES
+SAES
+SAES
+Sigma Aldrich
+Sigma Aldrich
+Carboact
+ZEUS
+ZEUS
+All States
+Tecnifab
+Tecnifab
+McMaster Carr
+ZEUS
+Technifab
+Technifab
+Technifab
+Swagelok
+
+University of Oxford Fabrication
+University of Oxford Fabrication
+Boedeker
+Measurement Specialties
+McMaster Carr
+Panduit
+Chemis
+
+Position Sensors
+Weir Precision Sensors (WPS)
+PEEK Grid Spacer Replacement Parts
+Acoustic Sensors
+Hardware For Vent Tube Assembly
+PEEK Cable Ties
+M3 PEEK Screws
+
+Xenon Circulation System
+
+Supplier
+
+Sample
+
+Merlin
+Merlin
+Merlin
+Merlin
+Merlin
+Merlin
+Merlin
+Chaloner
+Merlin
+Merlin
+Merlin
+Maeve
+Maeve
+Merlin
+Merlin
+Merlin
+Morgan
+Morgan
+Maeve
+
+Maeve
+Maeve
+Merlin
+Maeve
+Morgan
+Maeve
+Maeve
+
+3.2
+1.4
+1.5
+
+0.45
+0.10
+0.10
+0.11
+0.11
+1.0
+0.10
+1.0
+0.42
+0.07
+0.05
+0.81
+0.72
+0.41
+
+0.18
+0.48
+0.17
+0.06
+
+Detector Mass [kg]
+
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/Unit
+mBq/kg
+mBq/Unit
+mBq/kg
+mBq/kg
+mBq/kg
+
+mBq/Unit
+mBq/Unit
+mBq/Unit
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+
+Units
+
+Ue
+
+2600(600)
+11000(2000)
+481(111)
+<247
+<173
+<1.0
+10819(5208)
+20(9)
+<62
+<154
+<330
+<45
+<43
+<0.12
+<41
+<8.3
+<8.6
+<9.5
+<4.8
+
+<3.1
+<1.9
+<0.80
+<433
+<39
+<120
+<1096
+
+238
+
+Ul
+
+<10
+<50
+<37
+<37
+<37
+<1.0
+17785(220)
+36(8)
+<13
+<44
+<67
+8.6(37)
+24(2)
+0.21(4)
+<12
+<1.7
+<1.1
+<1.5
+2.1(8)
+
+5.3(3)
+3.7(5)
+<0.30
+<58
+<4.9
+<15
+<142
+
+238
+
+The
+
+130(20)
+20(10)
+<53
+73(24)
+<41
+<1.0
+4821(285)
+<4.0
+<12
+<100
+<137
+<6.1
+<5.3
+0.30(8)
+<12
+<3.6
+2.2(13)
+<2.0
+2.1(12)
+
+<1.0
+2.3(4)
+<0.50
+<78
+<6.5
+<14
+<327
+
+232
+
+Thl
+
+70(20)
+30(10)
+<24
+<20
+<20
+<1.0
+6462(194)
+16(2)
+<16
+<93
+<165
+11(2)
+12(5)
+0.37(5)
+<12
+<4.2
+2.2(13)
+<1.9
+1.0(5)
+
+<0.64
+2.9(3)
+<0.50
+71(67)
+<4.4
+4.0(32)
+<203
+
+232
+
+K
+
+<80
+220(30)
+155(22)
+898(62)
+164(22)
+<1000
+<288
+780(55)
+<61
+<231
+<465
+<9.3
+<16
+<0.16
+<55
+<12
+<13
+<10
+<3.1
+
+<1.9
+19(2)
+<1.4
+<216
+<28
+<41
+<739
+
+40
+
+-
+
+Pb
+
+25(18)
+-
+
+210
+
+Co
+
+3.0(20)
+14(4)
+58(5)
+3.5(6)
+6.0(5)
+7.9(7)
+
+27(8)
+-
+
+60
+
+Titanium Welding Wire 1.6 mm
+Titanium Welding Wire 1.6 mm
+Titanium Welding Wire 3.2 mm
+Ti Cryostat Weld Chips; Support Leg; Etched
+Ti Cryostat Weld Chips; Support Leg; Cleaned
+Ti Cryostat Weld Chips; Support Leg; Uncleaned
+Ti Cryostat Weld Chips; Welded Coupon Location 3; Cleaned
+Ti Cryostat Weld Chips; Welded Coupon Location 3; Cleaned
+Ti Cryostat Weld Chips; Welded Coupon Location 3; Uncleaned
+Ti Cryostat Weld Chips; Welded Coupon Location 2; Etched
+Ti Cryostat Weld Chips; Welded Coupon Location 2; Cleaned
+Ti Cryostat Weld Chips; Welded Coupon Location 2; Uncleaned
+Ti Cryostat Weld Chips; Welded Coupon Location 1; Etched
+Ti Cryostat Weld Chips; Welded Coupon Location 1; Cleaned
+Ti Cryostat Weld Chips; Welded Coupon Location 1; Uncleaned
+Ti Cryostat Weld Chips; Plasma Welds; Etched
+Ti Cryostat Weld Chips; Plasma Welds; Cleaned
+Ti Cryostat Weld Chips; Plasma Welds; Uncleaned
+Ti Cryostat Weld Chips; TIG Welds; Etched
+Ti Cryostat Weld Chips; TIG Welds; Cleaned
+
+Cryostat
+
+Sample
+
+Timet (LZ Stock)
+Timet (LZ Stock)
+Timet (LZ Stock)
+Timet (LZ Stock)
+Timet (LZ Stock)
+Timet (LZ Stock)
+Timet (LZ Stock)
+Timet (LZ Stock)
+Timet (LZ Stock)
+Timet (LZ Stock)
+Timet (LZ Stock)
+Timet (LZ Stock)
+Timet (LZ Stock)
+Timet (LZ Stock)
+Timet (LZ Stock)
+Timet (LZ Stock)
+Timet (LZ Stock)
+Timet (LZ Stock)
+Timet (LZ Stock)
+Timet (LZ Stock)
+
+Supplier
+
+continued
+
+Table A2: ICP-MS Screening Results.
+
+UCL
+UCL
+UCL
+UCL
+UCL
+UCL
+UCL
+UCL
+UCL
+UCL
+UCL
+UCL
+UCL
+UCL
+UCL
+UCL
+UCL
+UCL
+UCL
+UCL
+
+Detector
+
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+
+Units
+
+U
+
+2.6(4)
+66(1)
+2.9(4)
+2.7(3)
+2.7(2)
+3.2(1)
+2.0(3)
+1.8(3)
+2.7(3)
+1.9(2)
+1.9(4)
+2.0(3)
+2.1(2)
+2.2(5)
+2.4(6)
+2.5(1)
+2.4(2)
+2.4(8)
+3.3(4)
+3.8(4)
+
+238
+
+Th
+
+0.63(6)
+13(1)
+0.27(10)
+2.3(2)
+2.7(1)
+3.8(3)
+42(39)
+28(1)
+96(2)
+13(3)
+12(1)
+16(1)
+0.12(3)
+0.13(17)
+0.48(16)
+2.5(10)
+3.4(10)
+3.6(3)
+1.2(1)
+1.7(4)
+
+232
+
+Supplier
+Timet (LZ Stock)
+Timet (LZ Stock)
+Timet (LZ Stock)
+Timet (LZ Stock)
+Timet (LZ Stock)
+Timet (LZ Stock)
+Timet (LZ Stock)
+Timet (LZ Stock)
+Timet (LZ Stock)
+Timet (LZ Stock)
+Timet (LZ Stock)
+Timet (LZ Stock)
+Timet (LZ Stock)
+Timet (LZ Stock)
+Timet (LZ Stock)
+Timet (LZ Stock)
+Technetics
+Technetics
+Technetics
+Styrodure
+
+Sample
+
+Ti Cryostat Weld Chips; TIG Welds; Uncleaned
+Welding Electrode; 4.0 mm W-La From Wolfram; Etched
+Welding Electrode; 4.0 mm W-La From Wolfram; Cleaned
+Welding Electrode; 4.0 mm W-La From Wolfram; Uncleaned
+Welding Electrode; Pure W From Plansee; Etched
+Welding Electrode; Pure W From Plansee; Cleaned
+Welding Electrode; Pure W From Plansee; Uncleaned
+Ti cryostat OCV Weld Chips; Cleaned
+Ti cryostat OCV Weld Chips; Cleaned
+Ti cryostat OCV Weld Chips; Uncleaned
+Welding Electrode; 3.2 mm OD W-La From Wolfram; Cleaned
+Welding Electrode; 3.2 mm OD W-La From Wolfram; Uncleaned
+Welding Electrode; 4.0 mm OD W-La From Wolfram; Cleaned
+Welding Electrode; 4.0 mm OD W-La From Wolfram; Unleaned
+Welding Electrode; 4.0 mm OD W-La From Plansee; Cleaned
+Welding Electrode; 4.0 mm OD W-La From Plansee; Unleaned
+Helicoflex Seal Aluminium
+Helicoflex Seal Nimonic90
+Helicoflex Seal Inconel
+Polystyrene Foam
+continued
+
+UCL
+UCL
+UCL
+UCL
+UCL
+UCL
+UCL
+UCL
+UCL
+UCL
+UCL
+UCL
+UCL
+UCL
+UCL
+UCL
+UCL
+UCL
+UCL
+UCL
+
+Detector
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+
+Units
+
+U
+4.1(3)
+2.1(2)
+2.1(2)
+2.1(2)
+2.1(1)
+2.1(3)
+2.4(2)
+2.6(3)
+2.8(2)
+2.9(3)
+2.2(2)
+2.4(1)
+2.3(1)
+2.6(2)
+3.0(3)
+3.5(2)
+998(82)
+275(7)
+337(37)
+4.2(8)
+
+238
+
+Th
+1.5(2)
+4.7(7)
+5.9(3)
+6.2(2)
+36(2)
+41(1)
+47(1)
+3.6(12)
+2.4(4)
+3.9(7)
+0.42(8)
+1.5(2)
+6.2(2)
+8.2(3)
+25(2)
+33(1)
+280(23)
+5.6(4)
+4.0(4)
+1.2(2)
+
+232
+
+Loop Antennae Sensor Cu Wire
+
+TPC
+
+Tinned-Cu Cable Sample
+Cable - Cu Sheath Material
+Cable - Cu Conductor
+
+PMT Cabling
+
+Outer Detector Tank Acrylic
+Outer Detector Tank Acrylic
+Acrylic Sheet
+Cast Acrylic Slab
+Adhesive
+
+Outer Detector
+
+SNO Acrylic
+JUNO Acrylic
+JUNO Acrylic
+
+Scientific Wire Company
+
+AXON
+AXON
+AXON
+
+Reynolds (from Thailand)
+Reynolds
+Reynolds
+Reynolds
+Reynolds
+
+RPT
+Juno Experiment
+Juno Experiment
+
+Styrodure
+Timet
+Timet
+Timet
+Timet
+RUAG (Vienna)
+Foam Factory
+Timet
+
+Polystyrene Foam
+Forward Field Region Titanium Weld Sample
+Forward Field Region Titanium Weld Sample
+Ti weld sample from CHAMP; Material Adjacent To Weld
+Ti weld sample from CHAMP; Weld Material
+Multi-Layer Insulation
+Polyethylene Foam
+Titanium Plate 4 x 6 0.125
+
+Misc
+
+Supplier
+
+Sample
+
+UCL
+
+UCL
+UCL
+UCL
+
+UCL
+UCL
+University of Alabama
+University of Alabama
+University of Alabama
+
+University of Alabama
+University of Alabama
+University of Alabama
+
+UCL
+UCL
+UCL
+UCL
+UCL
+University of Alabama
+University of Alabama
+PNNL
+
+Detector
+
+mBq/kg
+
+mBq/kg
+mBq/kg
+mBq/kg
+
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+
+mBq/kg
+mBq/kg
+mBq/kg
+
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+
+Units
+
+U
+
+0.19(8)
+
+0.22(4)
+0.87(11)
+0.23(7)
+
+0.04(4)
+0.11(11)
+0.13(3)
+0.31(5)
+<0.10
+
+0.30(12)
+0.27(5)
+0.66(11)
+
+3.3(10)
+2.1(2)
+2.4(3)
+2.3(4)
+2.9(3)
+14(2)
+20(3)
+9.8(2)
+
+238
+
+Th
+
+0.05(4)
+
+0.11(2)
+0.16(4)
+0.07(1)
+
+0.02(3)
+0.03(3)
+0.26(8)
+0.20(7)
+<0.13
+
+0.36(7)
+0.03(1)
+0.15(2)
+
+0.57(21)
+0.14(4)
+4.3(2)
+0.59(13)
+15(1)
+31(6)
+2.6(4)
+0.09(1)
+
+232
+
+Ti Plate HN3469
+Ti Plate HN3469
+Ti Plate 4 x 6 0.125
+Ti Plate 4 x 6 0.125
+Ti Plate 0.125 HN2470
+NEXT100 50 mm SS Flange Material
+NEXT100 SS 15 mm Cryostat Cover Material
+NEXT100 SS 10 mm For Shell
+Titanium - Timet Japanese Mill
+Stainless Steel Plate - Gerda G2
+Stainless Steel Plate - Gerda G1
+Stainless Steel Plate - Gerda D6
+LUX Ti sample
+Ti Sheet Stock
+0.3125 Ti Sheet Stock Grade CP-2
+0.375 Ti Sheet Stock Grade CP-1
+
+Cryostat
+
+Sample
+
+Timet
+Timet
+Timet
+Timet
+Timet
+Nironit
+Nironit
+Nironit
+Timet
+Ilsenburg
+Ilsenburg
+Ilsenburg
+Supra Alloy
+Timet
+PTG
+Supra Alloy
+
+Supplier
+
+NRC
+NRC
+NRC
+NRC
+NRC
+NRC
+NRC
+NRC
+NRC
+NRC
+NRC
+NRC
+NRC
+NRC
+NRC
+NRC
+
+Detector
+
+0.35
+0.35
+1.0
+1.0
+1.0
+1.0
+1.0
+1.0
+1.0
+1.0
+1.0
+1.0
+0.30
+0.40
+0.40
+0.40
+
+Mass [g]
+
+Table A3: GDMS Screening Results.
+
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+
+Units
+
+Ue
+
+<2.5
+<2.5
+<1.2
+<1.2
+<4.0
+∼12
+∼12
+∼7.4
+7.4+7.4
+−3.7
+∼5.0
+∼5.0
+∼5.0
+11+11
+−5
+11+11
+−5
+12+12
+−6
+36+36
+−18
+
+238
+
+The
+
+<0.81
+<0.81
+<0.41
+<0.41
+<1.2
+<0.20
+<0.20
+<0.20
+<0.80
+<0.40
+<0.40
+<0.40
+<0.40
+<0.80
+4.0+4.0
+−2.0
+3.2+3.2
+−1.6
+
+232
+
+K
+
+<0.31
+<0.34
+<0.15
+<0.22
+<0.60
+<0.60
+<0.60
+<0.60
+<0.10
+<0.30
+∼3.0
+<2.0
+<0.10
+<0.15
+<7.0
+<7.0
+
+40
+
+PTFE 8764 For Skin Region
+PTFE FLON008
+Teflon NXT85
+Teflon 807NX
+PTFE 8764
+
+TPC
+
+Raw FEP Pellets
+Raw FEP Pellets
+FEP Inner Cable Jacket
+FEP Outer Cable Jacket
+
+PMT Cabling
+
+Sample
+
+Boedeker Plastics
+Flontech
+DuPont
+DuPont
+Boedeker Plastics
+
+Axon
+Axon
+Axon
+Axon
+
+Supplier
+
+University of Alabama
+University of Alabama
+University of Alabama
+University of Alabama
+University of Alabama
+
+University of Alabama
+University of Alabama
+University of Alabama
+University of Alabama
+
+Detector
+
+Table A4: NAA Screening Results.
+
+8.0
+2.8
+2.9
+2.8
+2.8
+
+3.1
+3.1
+2.6
+2.6
+
+Mass [g]
+
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+
+mBq/kg
+mBq/kg
+mBq/kg
+mBq/kg
+
+Units
+
+Ue
+
+0.018(40)
+<0.027
+<0.021
+0.038(10)
+<0.043
+
+<0.017
+<0.005
+<0.057
+<0.024
+
+238
+
+The
+
+0.029(1)
+0.051(3)
+0.028(2)
+0.029(2)
+0.013(3)
+
+0.036(2)
+0.037(2)
+0.083(8)
+0.096(6)
+
+232
+
+K
+
+0.076(1)
+0.33(2)
+0.122(10)
+0.096(5)
+0.066(4)
+
+0.168(4)
+0.175(4)
+5.053(78)
+10.7(20)
+
+40
+
+HV Umbilical Epoxy
+Umbilical Cable (Rejected)
+
+High Voltage
+
+LZ Inner Cryostat Vessel (fully constructed)
+PEEK Flat Stock
+PEEK Samples
+LZ Sensors
+Teflon (PTFE)
+Sensor Cable
+Cryostat Seals
+Titanium Sheets (untreated)
+Titanium Sheets (etched)
+
+Cryostat
+
+PMT Signal Feedthrough
+PMT HV Feedthrough (Before Potting)
+PMT Signal Feedthrough
+PMT Signal Feedthrough
+Anode/Gate Feedthrough
+
+Conduits
+
+Welding Rods
+
+Calibration
+
+Sample
+
+Stycast
+Dielectric Sciences
+
+Loterios
+Boedeker
+Boedeker
+University of Oxford Fabrication
+Technetics
+Axon
+Technetics
+Timet
+Timet
+
+Accuglass
+CeraTec
+Accuglass
+Accuglass
+CeraTec
+
+HTP from USAWeld
+
+Supplier
+
+continued
+
+University of Alabama
+SDSM&T
+
+SDSM&T
+SDSM&T
+SDSM&T
+SDSM&T
+SDSM&T
+SDSM&T
+University of Alabama
+UCL
+UCL
+
+University of Alabama
+University of Maryland
+University of Maryland
+University of Alabama
+SDSM&T
+
+SDSM&T
+
+Detector
+
+Table A5: Radon Emanation Results.
+
+0.11 m2
+12 unit
+
+1 unit
+2993.54 cm2
+20858 cm2
+1 unit
+17 m
+454 m
+1 unit
+2350 cm2
+2350 cm2
+
+5 unit
+21 unit
+16 unit
+9 unit
+4 unit
+
+1 unit
+
+Quantity Screened
+
+µBq/m2
+µBq/unit
+
+µBq/unit
+µBq/cm2
+µBq/cm2
+µBq/batch
+µBq/m2
+µBq/m
+µBq/unit
+µBq/cm2
+µBq/cm2
+
+µBq/unit
+µBq/unit
+µBq/unit
+µBq/unit
+µBq/unit
+
+µBq/unit
+
+Units
+
+Rn
+
+7106 ± 2007
+995 ± 694
+
+46100+4000
+−3800
+0.056+0.041
+−0.053
+0.0053+0.0078
+−0.0053
+324+116
+−185
+12+5
+−10
+1.7+1.3
+−1.2
+<741
+0.17 ± 0.04
+0.29 ± 0.04
+
+<110
+17.0 ± 4.1
+5.1+4.7
+−3.5
+104 ± 36
+12+23
+−12
+
+185+104
+−81
+
+222
+
+Calibration Source (2016)
+Dust From SURF 4850L - Warm And Vented
+Helicoflex Aluminum Sheet
+Mobile Xenon Sampling System
+Test Cryostat
+A1 Ultrafine Dust
+A4 Coarse Dust
+
+University of Alabama
+N/A
+Technetics
+Various
+NorCal
+Powder Technology
+Powder Technology
+
+DuPont
+Dichtomatik
+Various
+Dielectric Sciences
+Stycast
+Accuglass
+Ceramtech
+
+Delrin (Polyoxymethylene)
+Viton O-Rings
+HV Cathode System Components
+Umbilical Cables
+HV Umbilical Epoxy
+PMT HV Feedthrough
+Epoxy Potted HV Flanges
+
+Misc
+
+Supplier
+
+Sample
+
+continued
+
+SDSM&T
+University of Alabama
+SDSM&T
+University of Maryland
+SDSM&T
+University of Alabama
+University of Alabama
+
+UCL
+UCL
+UCL
+SDSM&T
+University of Alabama
+University of Alabama
+University of Maryland
+
+Detector
+
+µBq/unit
+µBq/g
+µBq/cm2
+µBq/unit
+µBq/unit
+µBq/g
+µBq/g
+
+µBq/m2
+µBq/unit
+µBq/batch
+µBq/m
+µBq/m2
+µBq/unit
+µBq/unit
+0.54 m2
+90 unit
+1 unit
+25 m
+0.11 m2
+5 unit
+4 unit
+
+1 unit
+163.4 g
+5000 cm2
+1 unit
+1 unit
+103.1 g
+124.1 g
+
+Units
+
+Quantity Screened
+
+Rn
+
+787 ± 174
+1550 ± 200
+60+28
+−38
+450+125
+−106
+405+220
+−174
+6750 ± 410
+3300 ± 310
+
+440 ± 116
+17 ± 2.3
+369 ± 85
+52+8.1
+−12
+5010 ± 2630
+<174
+37+13
+−10
+
+222
+
+Powder Technology
+Powder Technology
+N/A
+N/A
+Loterios
+Loterios
+Omega
+U. Maryland Fabrication
+Western States Fire Protection
+
+AFRL-02 Dust
+AFRL-03 Dust
+Dust From SURF 4850L
+Dust From SURF 4850L
+TIG Welded Titanium Block (untreated)
+TIG Welded Titanium Block (etched)
+PT100 RTDs
+Compressor Maintenance Cart
+Surface Assembly Lab Sprinkler Head
+
+KEMET
+KEMET
+VISHAY
+VISHAY
+Hamamatsu
+Imperial College London Fabrication
+
+PMT Capacitors (After Cooling In Jar)
+PMT Capacitors (After Cooling)
+PMT Resistors
+PMT Resistors
+
+PMTs (2-inch)
+
+PMT Bases (1-inch)
+
+PMTs, PMT bases and their components
+
+Supplier
+
+Sample
+
+continued
+
+UCL
+
+SDSM&T
+
+University of Alabama
+University of Alabama
+UCL
+UCL
+
+University of Alabama
+University of Alabama
+University of Alabama
+University of Alabama
+UCL
+UCL
+UCL
+University of Maryland
+SDSM&T
+
+Detector
+
+0.5 kg
+0.5 kg
+25000 unit
+3650 unit
+42 PMTs 14 bases
+unit
+100 unit
+
+295.7 g
+323.6 g
+0.2172 kg
+0.2172 kg
+325 cm2
+325 cm2
+150 unit
+1 unit
+1 unit
+
+Quantity Screened
+
+Rn
+
+729 ± 486
+1080 ± 544
+1550 ± 116
+324 ± 81
+100+190
+−100
+4.4 ± 0.9
+
+µBq/unit
+µBq/unit
+
+330 ± 110
+190 ± 110
+739 ± 125
+900 ± 153
+1.7 ± 0.3
+1.1 ± 0.2
+231 ± 35
+260 ± 60
+2600 ± 104
+
+222
+
+µBq/kg
+µBq/kg
+µBq/batch
+µBq/batch
+
+µBq/g
+µBq/g
+µBq/g
+µBq/g
+µBq/cm2
+µBq/cm2
+µBq/batch
+µBq/unit
+µBq/unit
+
+Units
+
+Loop Antenna & Screws
+Tivar 1000 ESD
+
+TPC
+
+Gore PMT Cables
+Axon Cables
+Connector Boards
+PMT Signal Flanges
+PMT Signal Flanges
+
+University Of Oxford Fabrication
+Quadrant From Boedeker Stock
+
+Gore
+Axon
+Imperial College London Fabrication
+Accuglass
+CeramTec
+
+Imperial College London Fabrication
+Cirlex
+KEMET
+Ceramaseal
+Hamamatsu
+Hamamatsu
+
+PMT Bases (3-inch)
+PCB/Cirlex
+PMT Capacitors (Before Cooling)
+PMT HV Feedthrough (After Potting)
+PMTs (3-inch)
+PMTs (1-inch)
+
+PMT Cabling
+
+Supplier
+
+Sample
+
+continued
+
+SDSM&T
+SDSM&T
+
+UCL
+SDSM&T
+University of Alabama
+University of Maryland
+University of Maryland
+
+UCL
+UCL
+University of Alabama
+University of Maryland
+SDSM&T
+SDSM&T
+
+Detector
+
+10 unit
+12536 cm2
+
+0.957 kg
+3000 m
+1200 unit
+4 unit
+4 unit
+
+124 unit
+421 g
+0.5 kg
+21 unit
+93 unit
+95 unit
+
+Quantity Screened
+
+µBq/unit
+µBq/m2
+
+µBq/kg
+µBq
+µBq/unit
+µBq/g
+µBq/unit
+
+µBq/unit
+µBq/g
+µBq/kg
+µBq/unit
+µBq/unit
+µBq/unit
+
+Units
+
+Rn
+
+1+8
+−1
+35+69
+−35
+
+< 130
+613 ± 127
+<0.35
+23+13
+−10
+17 ± 8.1
+
+5 ± 0.87
+1.4 ± 0.35
+3510 ± 961
+5.2 ± 2.4
+1.9+1.7
+−1.9
+7.1+2.5
+−3
+
+222
+
+Heat Exchanger
+Compressor Head
+Getter Cabinet
+PCB 4 x 8 Charcoal
+OVC 4 x 8 Charcoal
+Conditioning Heat Exchangers
+Cryogenic Valve
+Heat Exchanger
+Adsorbant
+Adsorbant (Pre-Eteching)
+OVC 4 x 8 Charcoal
+Synthetic Charcoal
+Synthetic Charcoal
+Synthetic Adsorbant
+
+FNAL Fabrication
+Fluitron
+SAES
+Calgon
+Calgon
+Standard Xchange
+WEKA
+Xylem US
+Saratech
+Saratech
+Calgon
+Carbo-Act
+MAST
+Saratech/Blouecher
+
+Fralock (McMaster Carr)
+
+Kapton
+
+Xenon Circulation System
+
+Supplier
+
+Sample
+
+continued
+
+SDSM&T
+University of Maryland
+SDSM&T
+University of Maryland
+University of Maryland
+University of Maryland
+University of Maryland
+University of Maryland
+University of Maryland
+University of Maryland
+University of Maryland
+University of Maryland
+University of Maryland
+University of Maryland
+
+SDSM&T
+
+Detector
+
+µBq/unit
+µBq/unit
+µBq/unit
+µBq/kg
+µBq/kg
+µBq/unit
+µBq/unit
+µBq/unit
+µBq/kg
+µBq/kg
+µBq/kg
+µBq/kg
+µBq/kg
+µBq/kg
+
+µBq/cm2
+
+25000 cm2
+
+1 unit
+1 unit
+1 unit
+0.03 kg
+0.432 kg
+4 unit
+3 unit
+1 unit
+1 kg
+1 kg
+0.472 kg
+0.363 kg
+0.19 kg
+0.585 kg
+
+Units
+
+Quantity Screened
+
+Rn
+
+197+185
+−197
+1570 ± 266
+2260+278
+−266
+850000 ± 57900
+35900 ± 2780
+35+25
+−24
+178+28
+−27
+524+81
+−74
+890 ± 410
+1780 ± 210
+64800 ± 3820
+336+417
+−197
+2790 ± 787
+1790 ± 324
+
+56+104
+−56
+
+222
+
+Supplier
+Osaka Gas Chemicals
+WEKA
+Fluitron
+Fluitron
+Fluitron
+U. Maryland Fabrication
+DuPont
+U. Michigan Fabrication
+U. Michigan Fabrication
+U. Maryland Fabrication
+U. Maryland Fabrication
+
+Sample
+
+Shirasagi Charcoal
+Cryogenic Valve
+Circulation Compressor #1 heads
+Circulation Compressor #2 heads
+Full Circulation Compressor #2
+Xe Transfer Lines
+Vespel Gas Valve Seats
+Radon Reduction System Panel
+Radon Reduction System Plumbing
+TIG Welds On 0.5” SS Tubing
+Main Circulation Panel
+
+University of Maryland
+University of Maryland
+University of Maryland
+University of Maryland
+University of Maryland
+University of Maryland
+University of Alabama
+University of Maryland
+University of Maryland
+University of Maryland
+University of Maryland
+
+Detector
+
+0.512 kg
+1 unit
+2 unit
+2 unit
+1 unit
+1 unit
+36 unit
+1 unit
+1 unit
+1m
+1 unit
+
+Quantity Screened
+
+µBq/kg
+µBq/unit
+µBq/unit
+µBq/unit
+µBq/unit
+µBq/unit
+µBq/unit
+µBq/unit
+µBq/unit
+µBq/m
+µBq/unit
+
+Units
+
+Rn
+101000 ± 8100
+247 ± 56
+375 ± 50
+391 ± 56
+17000 ± 500
+223 ± 72
+15 ± 9.3
+286+110
+−91
+160 ± 57
+34 ± 21
+744 ± 198
+
+222
+
+

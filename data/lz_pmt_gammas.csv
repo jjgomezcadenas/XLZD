@@ -1,0 +1,21 @@
+source,region,isotope,angular_type,gammas_produced_per_yr,gammas_entering_per_yr,mean_cos_theta
+Top TPC PMTs,endcap_top,Bi214,flat,7.4130e+04,3.7065e+04,0.5000
+Top TPC PMTs,endcap_top,Tl208,flat,8.5847e+05,4.2923e+05,0.5000
+Top PMT bases,endcap_top,Bi214,flat,5.3238e+04,2.6619e+04,0.5000
+Top PMT bases,endcap_top,Tl208,flat,5.3774e+05,2.6887e+05,0.5000
+Top PMT structure,endcap_top,Bi214,flat,6.4957e+04,3.2478e+04,0.5000
+Top PMT structure,endcap_top,Tl208,flat,9.9672e+05,4.9836e+05,0.5000
+Bottom TPC PMTs,endcap_bottom,Bi214,flat,7.0614e+04,3.5307e+04,0.5000
+Bottom TPC PMTs,endcap_bottom,Tl208,flat,8.1775e+05,4.0888e+05,0.5000
+Bottom PMT bases,endcap_bottom,Bi214,flat,5.0713e+04,2.5356e+04,0.5000
+Bottom PMT bases,endcap_bottom,Tl208,flat,5.1223e+05,2.5612e+05,0.5000
+Bottom PMT structure,endcap_bottom,Bi214,flat,6.4957e+04,3.2478e+04,0.5000
+Bottom PMT structure,endcap_bottom,Tl208,flat,9.9672e+05,4.9836e+05,0.5000
+TPC PMT cables,barrel,Bi214,flat,1.8699e+05,9.3497e+04,0.5000
+TPC PMT cables,barrel,Tl208,flat,8.2400e+05,4.1200e+05,0.5000
+Skin PMTs side,barrel,Bi214,flat,1.3721e+05,6.8606e+04,0.5000
+Skin PMTs side,barrel,Tl208,flat,1.0294e+06,5.1470e+05,0.5000
+Skin PMTs lower ring,barrel,Bi214,shaped,2.9508e+04,3.5082e+03,0.7020
+Skin PMTs lower ring,barrel,Tl208,shaped,2.2137e+05,2.6794e+04,0.7005
+Skin PMTs dome,endcap_bottom,Bi214,shaped,2.6557e+04,3.1574e+03,0.7020
+Skin PMTs dome,endcap_bottom,Tl208,shaped,1.9924e+05,2.4115e+04,0.7005

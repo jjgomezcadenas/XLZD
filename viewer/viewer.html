@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>XLZD Field-Cage Ring MC — 3D Viewer</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #1a1a2e; color: #ccc; font-family: monospace; overflow: hidden; }
+  #canvas-container { position: absolute; inset: 0; }
+  #controls {
+    position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.75);
+    padding: 12px; border-radius: 6px; width: 220px; font-size: 12px;
+    max-height: calc(100vh - 20px); overflow-y: auto;
+  }
+  #controls h3 { color: #eee; margin-bottom: 8px; }
+  #controls label { display: block; margin: 4px 0; cursor: pointer; }
+  #controls .section { margin-top: 10px; border-top: 1px solid #444; padding-top: 8px; }
+  #controls input[type=range] { width: 100%; }
+  #controls button {
+    margin: 3px 0; padding: 4px 8px; background: #334; border: 1px solid #556;
+    color: #ccc; cursor: pointer; border-radius: 3px; width: 100%;
+  }
+  #controls button:hover { background: #445; }
+  #info-panel {
+    position: absolute; bottom: 10px; left: 10px; background: rgba(0,0,0,0.75);
+    padding: 10px; border-radius: 6px; font-size: 11px; display: none; max-width: 320px;
+  }
+  #info-panel h4 { color: #eee; margin-bottom: 4px; }
+</style>
+</head>
+<body>
+<div id="canvas-container"></div>
+
+<div id="controls">
+  <h3>XLZD Viewer</h3>
+
+  <div class="section">
+    <b>Opacity</b>
+    <label>LXe cylinder <input type="range" id="sl-cyl" min="0" max="100" value="12"></label>
+    <label>Rings <input type="range" id="sl-rings" min="0" max="100" value="60"></label>
+    <label>FV box <input type="range" id="sl-fv" min="0" max="100" value="30"></label>
+  </div>
+
+  <div class="section">
+    <b>Outcome filter</b>
+    <label><input type="checkbox" data-outcome="SS_in_ROI" checked> SS in ROI</label>
+    <label><input type="checkbox" data-outcome="SS_outside_ROI" checked> SS outside ROI</label>
+    <label><input type="checkbox" data-outcome="MS_rejected" checked> MS rejected</label>
+    <label><input type="checkbox" data-outcome="escaped" checked> Escaped</label>
+    <label><input type="checkbox" data-outcome="outward"> Outward</label>
+    <label style="margin-top:6px; border-top:1px solid #555; padding-top:4px">
+      <input type="checkbox" id="cb-fv-only"> FV only
+    </label>
+  </div>
+
+  <div class="section">
+    <b>Trajectories</b>
+    <label>Count <input type="range" id="sl-traj" min="0" max="100" value="100"></label>
+  </div>
+
+  <div class="section">
+    <b>Camera</b>
+    <button id="cam-perspective">Perspective</button>
+    <button id="cam-side">Side (across z)</button>
+    <button id="cam-top">Top (down z)</button>
+    <button id="cam-fv">FV closeup</button>
+    <button id="cam-reset">Reset view</button>
+  </div>
+</div>
+
+<div id="info-panel">
+  <h4>Trajectory info</h4>
+  <pre id="info-text"></pre>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+// ── Geometry parameters (defaults, overridden by trajectories.json if present) ──
+let GEO = {
+  R_lxe: 149.0, L_lxe: 297.0, pitch: 2.5, A_cs: 1.2, t_radial: 1.0,
+  n_rings: 119, fv_z_min: 70.0, fv_z_max: 215.0, fv_r: 80.0
+};
+
+// ── Scene setup ──
+const container = document.getElementById('canvas-container');
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.setSize(window.innerWidth, window.innerHeight);
+container.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x1a1a2e);
+
+const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 5000);
+const defaultCamPos = new THREE.Vector3(450, 300, 400);
+camera.position.copy(defaultCamPos);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+
+// Lighting
+scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+dirLight.position.set(300, 400, 200);
+scene.add(dirLight);
+
+// ── Groups for toggling ──
+const cylGroup = new THREE.Group();
+const ringsGroup = new THREE.Group();
+const fvGroup = new THREE.Group();
+const axesGroup = new THREE.Group();
+const trajGroup = new THREE.Group();
+scene.add(cylGroup, ringsGroup, fvGroup, axesGroup, trajGroup);
+
+// ── Build geometry objects ──
+// Coordinate convention: Three.js Y-up. We map detector z → Three.js Y,
+// detector x → Three.js X, detector y → Three.js Z.
+// The cylinder axis runs along Y. Origin at cylinder center.
+
+function detToWorld(x, y, z) {
+  // detector (x,y,z) → Three.js (x, z_det - L/2, y)
+  return new THREE.Vector3(x, z - GEO.L_lxe / 2, y);
+}
+
+function buildCylinder() {
+  cylGroup.clear();
+  const geo = new THREE.CylinderGeometry(GEO.R_lxe, GEO.R_lxe, GEO.L_lxe, 64, 1, true);
+  const mat = new THREE.MeshPhongMaterial({
+    color: 0x4488cc, transparent: true, opacity: 0.12,
+    side: THREE.DoubleSide, depthWrite: false
+  });
+  const mesh = new THREE.Mesh(geo, mat);
+  cylGroup.add(mesh);
+
+  // Wireframe edges
+  const edges = new THREE.EdgesGeometry(
+    new THREE.CylinderGeometry(GEO.R_lxe, GEO.R_lxe, GEO.L_lxe, 64, 1, false)
+  );
+  const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0x4488cc, opacity: 0.3, transparent: true }));
+  cylGroup.add(line);
+
+  // End caps (semi-transparent discs)
+  const capGeo = new THREE.CircleGeometry(GEO.R_lxe, 64);
+  const capMat = new THREE.MeshPhongMaterial({
+    color: 0x4488cc, transparent: true, opacity: 0.08,
+    side: THREE.DoubleSide, depthWrite: false
+  });
+  const topCap = new THREE.Mesh(capGeo, capMat);
+  topCap.rotation.x = -Math.PI / 2;
+  topCap.position.y = GEO.L_lxe / 2;
+  cylGroup.add(topCap);
+
+  const botCap = new THREE.Mesh(capGeo.clone(), capMat.clone());
+  botCap.rotation.x = -Math.PI / 2;
+  botCap.position.y = -GEO.L_lxe / 2;
+  cylGroup.add(botCap);
+}
+
+function buildRings() {
+  ringsGroup.clear();
+  const R_mean = GEO.R_lxe + GEO.t_radial / 2;
+  const w_axial = GEO.A_cs / GEO.t_radial;
+  // Use a torus with tube radius = half the geometric mean of t_radial and w_axial
+  const tubeR = Math.sqrt(GEO.t_radial * w_axial) / 2;
+  const mat = new THREE.MeshPhongMaterial({
+    color: 0xcc8833, transparent: true, opacity: 0.6,
+    metalness: 0.7
+  });
+
+  for (let i = 0; i < GEO.n_rings; i++) {
+    const z_ring = (i) * GEO.pitch + GEO.pitch / 2;
+    const y_pos = z_ring - GEO.L_lxe / 2;
+    const torusGeo = new THREE.TorusGeometry(R_mean, tubeR, 8, 64);
+    const mesh = new THREE.Mesh(torusGeo, mat);
+    mesh.rotation.x = Math.PI / 2;
+    mesh.position.y = y_pos;
+    ringsGroup.add(mesh);
+  }
+}
+
+function buildFVBox() {
+  fvGroup.clear();
+  const fvH = GEO.fv_z_max - GEO.fv_z_min;
+  const fvCenter = (GEO.fv_z_min + GEO.fv_z_max) / 2 - GEO.L_lxe / 2;
+
+  const geo = new THREE.CylinderGeometry(GEO.fv_r, GEO.fv_r, fvH, 64, 1, false);
+  const edges = new THREE.EdgesGeometry(geo);
+  const mat = new THREE.LineBasicMaterial({ color: 0x44cc44, transparent: true, opacity: 0.3 });
+  const wire = new THREE.LineSegments(edges, mat);
+  wire.position.y = fvCenter;
+  fvGroup.add(wire);
+}
+
+function buildAxes() {
+  axesGroup.clear();
+  const len = 200;
+  const colors = [0xff4444, 0x44ff44, 0x4444ff]; // x, z(det), y(det)
+  const dirs = [
+    new THREE.Vector3(1, 0, 0),
+    new THREE.Vector3(0, 1, 0),
+    new THREE.Vector3(0, 0, 1)
+  ];
+  const labels = ['X', 'Z (drift)', 'Y'];
+
+  dirs.forEach((d, i) => {
+    const arrow = new THREE.ArrowHelper(d, new THREE.Vector3(0, -GEO.L_lxe / 2, 0), len, colors[i], 8, 4);
+    axesGroup.add(arrow);
+
+    // Label using sprite
+    const canvas = document.createElement('canvas');
+    canvas.width = 64; canvas.height = 32;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#' + colors[i].toString(16).padStart(6, '0');
+    ctx.font = 'bold 24px monospace';
+    ctx.fillText(labels[i], 2, 24);
+    const tex = new THREE.CanvasTexture(canvas);
+    const spriteMat = new THREE.SpriteMaterial({ map: tex, depthTest: false });
+    const sprite = new THREE.Sprite(spriteMat);
+    sprite.scale.set(40, 20, 1);
+    const pos = d.clone().multiplyScalar(len + 15);
+    pos.y += -GEO.L_lxe / 2;
+    // Correct: only offset from origin, not double-shift
+    sprite.position.set(
+      d.x * (len + 15),
+      -GEO.L_lxe / 2 + d.y * (len + 15),
+      d.z * (len + 15)
+    );
+    axesGroup.add(sprite);
+  });
+}
+
+// ── Trajectory rendering ──
+const OUTCOME_COLORS = {
+  SS_in_ROI: 0x00ff66,
+  SS_outside_ROI: 0xffcc00,
+  MS_rejected: 0xff3333,
+  escaped: 0x888888,
+  outward: 0x444444
+};
+
+let trajData = null;
+let trajMeshes = []; // {group, outcome, data}
+
+function buildTrajectories(data, useFV) {
+  trajGroup.clear();
+  trajMeshes = [];
+  if (!data) return;
+
+  const fvOnly = useFV || false;
+  const trajectories = fvOnly ? (data.trajectories_fv || []) : (data.trajectories || []);
+  if (trajectories.length === 0) return;
+  trajectories.forEach((t, idx) => {
+    const g = new THREE.Group();
+    g.userData = { outcome: t.outcome, index: idx, data: t };
+
+    const color = OUTCOME_COLORS[t.outcome] || 0xffffff;
+    const points = [];
+
+    // Emission point
+    if (t.emission) {
+      points.push(new THREE.Vector3(t.emission.x, t.emission.z - GEO.L_lxe / 2, t.emission.y));
+    }
+
+    // Interaction points (skip :emit entries — emission is already in points)
+    if (t.interactions) {
+      t.interactions.forEach(ip => {
+        if (ip.type === 'emit') return;
+        points.push(new THREE.Vector3(ip.x, ip.z - GEO.L_lxe / 2, ip.y));
+
+        // Sphere at interaction, color-coded by type
+        const radius = Math.max(0.3, Math.log1p(ip.E_dep * 1000) * 0.4);
+        const sphereGeo = new THREE.SphereGeometry(radius, 8, 8);
+        let sphereColor = color;
+        if (ip.type === 'photo') sphereColor = 0xff6600;
+        else if (ip.type === 'compton') sphereColor = 0x00aaff;
+        else if (ip.type === 'pair') sphereColor = 0xffaa00;
+        else if (ip.type === 'cutoff') sphereColor = 0xff00ff;
+        const sphereMat = new THREE.MeshPhongMaterial({ color: sphereColor });
+        const sphere = new THREE.Mesh(sphereGeo, sphereMat);
+        sphere.position.set(ip.x, ip.z - GEO.L_lxe / 2, ip.y);
+        g.add(sphere);
+      });
+    }
+
+    // Polyline
+    if (points.length >= 2) {
+      const lineGeo = new THREE.BufferGeometry().setFromPoints(points);
+      const lineMat = new THREE.LineBasicMaterial({ color, linewidth: 1 });
+      g.add(new THREE.Line(lineGeo, lineMat));
+    }
+
+    trajGroup.add(g);
+    trajMeshes.push({ group: g, outcome: t.outcome, data: t });
+  });
+
+  // Update slider max
+  document.getElementById('sl-traj').max = trajMeshes.length;
+  document.getElementById('sl-traj').value = trajMeshes.length;
+}
+
+// ── Controls wiring ──
+function getMatChildren(group) {
+  const mats = [];
+  group.traverse(c => { if (c.material) mats.push(c.material); });
+  return mats;
+}
+
+// Shared visibility update — respects outcome filter and trajectory count
+function updateTrajectoryVisibility() {
+  const n = parseInt(document.getElementById('sl-traj').value);
+
+  trajMeshes.forEach((t, i) => {
+    const outcomeCheckbox = document.querySelector(`[data-outcome="${t.outcome}"]`);
+    const outcomeVisible = outcomeCheckbox ? outcomeCheckbox.checked : true;
+    t.group.visible = i < n && outcomeVisible;
+  });
+}
+
+document.getElementById('sl-cyl').addEventListener('input', e => {
+  const op = e.target.value / 100;
+  getMatChildren(cylGroup).forEach(m => { m.opacity = op; });
+});
+document.getElementById('sl-rings').addEventListener('input', e => {
+  const op = e.target.value / 100;
+  getMatChildren(ringsGroup).forEach(m => { m.opacity = op; });
+});
+document.getElementById('sl-fv').addEventListener('input', e => {
+  const op = e.target.value / 100;
+  getMatChildren(fvGroup).forEach(m => { m.opacity = op; });
+});
+
+// Outcome filter
+document.querySelectorAll('[data-outcome]').forEach(cb => {
+  cb.addEventListener('change', updateTrajectoryVisibility);
+});
+
+// Trajectory count slider
+document.getElementById('sl-traj').addEventListener('input', updateTrajectoryVisibility);
+
+// FV-only checkbox — rebuilds trajectories from the FV set
+document.getElementById('cb-fv-only').addEventListener('change', () => {
+  if (trajData) {
+    const useFV = document.getElementById('cb-fv-only').checked;
+    buildTrajectories(trajData, useFV);
+    updateTrajectoryVisibility();
+  }
+});
+
+// Camera presets
+const target0 = new THREE.Vector3(0, 0, 0);
+
+document.getElementById('cam-perspective').addEventListener('click', () => {
+  camera.position.set(450, 300, 400);
+  controls.target.copy(target0); controls.update();
+});
+document.getElementById('cam-side').addEventListener('click', () => {
+  camera.position.set(500, 0, 0);
+  controls.target.copy(target0); controls.update();
+});
+document.getElementById('cam-top').addEventListener('click', () => {
+  camera.position.set(0, 500, 0);
+  controls.target.copy(target0); controls.update();
+});
+document.getElementById('cam-fv').addEventListener('click', () => {
+  const fvCenterY = (GEO.fv_z_min + GEO.fv_z_max) / 2 - GEO.L_lxe / 2;
+  camera.position.set(250, fvCenterY, 250);
+  controls.target.set(0, fvCenterY, 0); controls.update();
+});
+document.getElementById('cam-reset').addEventListener('click', () => {
+  camera.position.copy(defaultCamPos);
+  controls.target.copy(target0); controls.update();
+});
+
+// Click to select trajectory
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+let selectedGroup = null;
+const infoPanel = document.getElementById('info-panel');
+const infoText = document.getElementById('info-text');
+
+renderer.domElement.addEventListener('click', e => {
+  mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+  raycaster.setFromCamera(mouse, camera);
+
+  // Only check trajectory meshes
+  const allObjects = [];
+  trajGroup.traverse(c => { if (c.isMesh) allObjects.push(c); });
+  const hits = raycaster.intersectObjects(allObjects, false);
+
+  // Restore previous selection
+  if (selectedGroup) {
+    selectedGroup.traverse(c => {
+      if (c.material && c.userData._origColor !== undefined) {
+        c.material.color.setHex(c.userData._origColor);
+      }
+    });
+    selectedGroup = null;
+  }
+
+  if (hits.length > 0) {
+    // Walk up to find the trajectory group
+    let obj = hits[0].object;
+    while (obj.parent && obj.parent !== trajGroup) obj = obj.parent;
+    if (obj.userData && obj.userData.data) {
+      selectedGroup = obj;
+      // Highlight white
+      obj.traverse(c => {
+        if (c.material) {
+          c.userData._origColor = c.material.color.getHex();
+          c.material.color.setHex(0xffffff);
+        }
+      });
+      // Show info
+      const d = obj.userData.data;
+      let txt = `Outcome: ${d.outcome}\n`;
+      txt += `Interactions: ${d.n_interactions}\n`;
+      if (d.cluster && d.cluster.E_total) {
+        txt += `Cluster E: ${(d.cluster.E_total * 1000).toFixed(1)} keV\n`;
+        txt += `Cluster pos: (${d.cluster.x.toFixed(1)}, ${d.cluster.y.toFixed(1)}, ${d.cluster.z.toFixed(1)}) cm\n`;
+      }
+      if (d.interactions) {
+        txt += `\nInteractions:\n`;
+        d.interactions.forEach((ip, j) => {
+          txt += `  ${j + 1}. ${ip.type} E_dep=${(ip.E_dep * 1000).toFixed(1)}keV\n`;
+        });
+      }
+      infoText.textContent = txt;
+      infoPanel.style.display = 'block';
+    }
+  } else {
+    infoPanel.style.display = 'none';
+  }
+});
+
+// ── Resize ──
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+// ── Init ──
+function init() {
+  buildCylinder();
+  buildRings();
+  buildFVBox();
+  buildAxes();
+  controls.target.copy(target0);
+  controls.update();
+}
+
+// Try loading trajectories.json (optional — viewer works without it)
+fetch('./trajectories.json')
+  .then(r => { if (r.ok) return r.json(); return null; })
+  .then(data => {
+    if (data) {
+      // Override geometry from JSON metadata if present
+      if (data.geometry) {
+        Object.assign(GEO, {
+          R_lxe: data.geometry.R_lxe ?? GEO.R_lxe,
+          L_lxe: data.geometry.L_lxe ?? GEO.L_lxe,
+          pitch: data.geometry.pitch ?? GEO.pitch,
+          t_radial: data.geometry.t_radial ?? GEO.t_radial,
+          A_cs: data.geometry.A_cs ?? GEO.A_cs,
+          n_rings: data.geometry.n_rings ?? GEO.n_rings,
+          fv_z_min: data.geometry.fv_z_min ?? GEO.fv_z_min,
+          fv_z_max: data.geometry.fv_z_max ?? GEO.fv_z_max,
+          fv_r: data.geometry.fv_r ?? GEO.fv_r,
+        });
+      }
+      trajData = data;
+      init();
+      buildTrajectories(data, false);
+    } else {
+      init();
+    }
+  })
+  .catch(() => { init(); });
+
+// ── Render loop ──
+function animate() {
+  requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene, camera);
+}
+animate();
+</script>
+</body>
+</html>

@@ -1,5 +1,19 @@
 Manifest.toml
+output/
 *.jl.cov
 *.jl.*.cov
 *.jl.mem
 docs/build/
+
+# Python
+__pycache__/
+*.pyc
+
+# LaTeX auxiliary files
+latex/*.aux
+latex/*.log
+latex/*.out
+latex/*.synctex.gz
+latex/*.fdb_latexmk
+latex/*.fls
+latex/*.toc

@@ -1,0 +1,2388 @@
+Prepared for submission to JINST
+
+arXiv:2311.03528v2 [physics.ins-det] 22 Dec 2023
+
+Design, characterization and installation of the
+NEXT-100 cathode and electroluminescence regions
+
+K. Mistry,1,𝑎 L. Rogers,2,𝑎 B.J.P. Jones,1 B. Munson,1 L. Norman,1 D. Oliver,3,1
+S. Pingulkar,1 M. Rodriguez-Tiscareno,1 K. Silva,1 K. Stogsdill,1 C. Adams,2
+H. Almazán,17 V. Álvarez,25 B. Aparicio,23 A.I. Aranburu,22 L. Arazi,8 I.J. Arnquist,19
+F. Auria-Luna,23 S. Ayet,15 C.D.R. Azevedo,6 K. Bailey,2 F. Ballester,25 M. del
+Barrio-Torregrosa,22 A. Bayo,11 J.M. Benlloch-Rodríguez,22 F.I.G.M. Borges,13
+A. Brodolin,22,20 N. Byrnes,1 S. Cárcel,18 A. Castillo,22 S. Cebrián,26 E. Church,19 L. Cid,11
+C.A.N. Conde,13 T. Contreras,10 F.P. Cossío,22,21 E. Dey,1 G. Díaz,24 T. Dickel,15
+C. Echevarria,22 M. Elorza,22 J. Escada,13 R. Esteve,25 R. Felkai,8,𝑏 L.M.P. Fernandes,12
+P. Ferrario,22,9 A.L. Ferreira,6 F.W. Foss,5 E.D.C. Freitas,12 Z. Freixa,21,9
+J.J. Gómez-Cadenas,22,9,𝑐 R. González,22 J.W.R. Grocott,17 R. Guenette,17 K. Hafidi,2
+J. Hauptman,4 C.A.O. Henriques,12 J.A. Hernando Morata,24 P. Herrero-Gómez,14
+V. Herrero,25 C. Hervés Carrete,24 Y. Ifergan,8 L. Larizgoitia,22 A. Larumbe,23 P. Lebrun,7
+F. Lopez,22 N. López-March,18 R. Madigan,5 R.D.P. Mano,12 A.P. Marques,13
+J. Martín-Albo,18 G. Martínez-Lema,8 M. Martínez-Vara,22 Z.E. Meziani,2 R.L. Miller,5
+J. Molina-Canteras,23 F. Monrabal,22,9 C.M.B. Monteiro,12 F.J. Mora,25 K.E. Navarro,1
+P. Novella,18 A. Nuñez,11 D.R. Nygren,1 E. Oblak,22 J. Palacio,11 B. Palmeiro,17 A. Para,7
+I. Parmaksiz,1 J. Pelegrin,22 M. Pérez Maneiro,24 M. Querol,18 A.B. Redwine,8 J. Renner,24
+I. Rivilla,22,9 C. Rogero,20 B. Romeo,22 C. Romo-Luque,18 F.P. Santos,13 J.M.F.
+dos Santos,12 M. Seemann,22 I. Shomroni,14 A. Simón,22 S.R. Soleti,22 M. Sorel,18
+J. Soto-Oton,18 J.M.R. Teixeira,12 J.F. Toledo,25 J. Torrent,22,16 A. Trettin,17 A. Usón,18
+J.F.C.A. Veloso,6 J. Waiton,17 A. Yubero22
+1 Department of Physics, University of Texas at Arlington, Arlington, TX 76019, USA
+2 Argonne National Laboratory, Argonne, IL 60439, USA
+3 University of Texas at El Paso, 500 W. University Ave., El Paso, Texas 79968, USA.
+4 Department of Physics and Astronomy, Iowa State University, Ames, IA 50011-3160, USA
+5 Department of Chemistry and Biochemistry, University of Texas at Arlington, Arlington, TX 76019, USA
+6 Institute of Nanostructures, Nanomodelling and Nanofabrication (i3N), Universidade de Aveiro, Campus
+
+de Santiago, Aveiro, 3810-193, Portugal
+7 Fermi National Accelerator Laboratory, Batavia, IL 60510, USA
+8 Unit of Nuclear Engineering, Faculty of Engineering Sciences, Ben-Gurion University of the Negev, P.O.B.
+
+653, Beer-Sheva, 8410501, Israel
+a Corresponding Author
+b Now at Weizmann Institute of Science, Israel.
+c NEXT Spokesperson.
+
+9 Ikerbasque (Basque Foundation for Science), Bilbao, E-48009, Spain
+10 Department of Physics, Harvard University, Cambridge, MA 02138, USA
+11 Laboratorio Subterráneo de Canfranc, Paseo de los Ayerbe s/n, Canfranc Estación, E-22880, Spain
+12 LIBPhys, Physics Department, University of Coimbra, Rua Larga, Coimbra, 3004-516, Portugal
+13 LIP, Department of Physics, University of Coimbra, Coimbra, 3004-516, Portugal
+14 Hebrew University, Edmond J. Safra Campus, Jerusalem 9190401 Israel
+15 II. Physikalisches Institut, Justus-Liebig-Universitat Giessen, Giessen, Germany
+16 Escola Politècnica Superior, Universitat de Girona, Av. Montilivi, s/n, Girona, E-17071, Spain
+17 Department of Physics and Astronomy, Manchester University, Manchester. M13 9PL, United Kingdom
+18 Instituto de Física Corpuscular (IFIC), CSIC & Universitat de València, Calle Catedrático José Beltrán,
+
+2, Paterna, E-46980, Spain
+19 Pacific Northwest National Laboratory (PNNL), Richland, WA 99352, USA
+20 Centro de Física de Materiales (CFM), CSIC & Universidad del Pais Vasco (UPV/EHU), Manuel de
+
+Lardizabal 5, San Sebastián / Donostia, E-20018, Spain
+21 Department of Applied Chemistry, Universidad del Pais Vasco (UPV/EHU), Manuel de Lardizabal 3, San
+
+Sebastián / Donostia, E-20018, Spain
+22 Donostia International Physics Center, BERC Basque Excellence Research Centre, Manuel de Lardizabal
+
+4, San Sebastián / Donostia, E-20018, Spain
+23 Department of Organic Chemistry I, University of the Basque Country (UPV/EHU), Centro de Innovación
+
+en Química Avanzada (ORFEO-CINQA), San Sebastián / Donostia, E-20018, Spain
+24 Instituto Gallego de Física de Altas Energías, Univ. de Santiago de Compostela, Campus sur, Rúa Xosé
+
+María Suárez Núñez, s/n, Santiago de Compostela, E-15782, Spain
+25 Instituto de Instrumentación para Imagen Molecular (I3M), Centro Mixto CSIC - Universitat Politècnica
+
+de València, Camino de Vera s/n, Valencia, E-46022, Spain
+26 Centro de Astropartículas y Física de Altas Energías (CAPA), Universidad de Zaragoza, Calle Pedro
+
+Cerbuna, 12, Zaragoza, E-50009, Spain
+
+E-mail: krishan.mistry@uta.edu, rogersl@anl.gov
+Abstract: NEXT-100 is currently being constructed at the Laboratorio Subterráneo de Canfranc
+in the Spanish Pyrenees and will search for neutrinoless double beta decay using a high-pressure
+gaseous time projection chamber (TPC) with 100 kg of xenon. Charge amplification is carried
+out via electroluminescence (EL) which is the process of accelerating electrons in a high electric
+field region causing secondary scintillation of the medium proportional to the initial charge. The
+NEXT-100 EL and cathode regions are made from tensioned hexagonal meshes of 1 m diameter.
+This paper describes the design, characterization, and installation of these parts for NEXT-100.
+Simulations of the electric field are performed to model the drift and amplification of ionization
+electrons produced in the detector under various EL region alignments and rotations. Measurements
+of the electrostatic breakdown voltage in air characterize performance under high voltage conditions
+and identify breakdown points. The electrostatic deflection of the mesh is quantified and fit to a
+first-principles mechanical model. Measurements were performed with both a standalone test EL
+region and with the NEXT-100 EL region before its installation in the detector. Finally, we describe
+the parts as installed in NEXT-100, following their deployment in Summer 2023.
+
+Contents
+1
+
+Introduction
+
+1
+
+2
+
+Design and construction of the EL and cathode region
+2.1 Photoetched mesh
+2.2 Mesh support and tensioning frames
+2.3 EL brackets
+2.4 Material choice and radioassay
+
+4
+5
+6
+7
+7
+
+3
+
+Electrostatic breakdown of the EL region
+3.1 Mesh robustness under discharges
+3.2 Profiling of breakdown locations
+
+8
+8
+10
+
+4
+
+Electrostatic deflection
+4.1 Analytical calculations
+4.2 Measurements of electrostatic deflection
+4.3 Energy resolution
+
+11
+11
+12
+14
+
+5
+
+Simulation of a small-scale EL and cathode region
+5.1 EL electric field uniformity
+5.2 Cathode field leakage
+5.3 Mesh alignment
+5.4 Mesh alignment impact on energy resolution
+
+15
+16
+17
+18
+21
+
+6
+
+Installation of EL and cathode regions in NEXT-100
+
+22
+
+7
+
+Conclusion
+
+24
+
+A Analytical calculation of the electrostatic deflection
+
+25
+
+B Electrostatic deflection measurements with a support post
+
+30
+
+C EL electric field
+
+30
+
+1
+
+Introduction
+
+Whether or not the neutrino is a Majorana particle is one of the leading questions in fundamental
+experimental physics, which may elucidate the origin of the matter-antimatter asymmetry in the
+universe. The most practical known way to answer this question is by searching for a process
+called neutrinoless double beta decay (0𝜈𝛽𝛽) [1]. High-pressure gas time projection chambers are
+
+–1–
+
+a compelling technology for such an experiment due to their mm-scale topological reconstruction,
+sub-percent energy resolution, and versatility. The Neutrino Experiment with a Xenon TPC (NEXT)
+is an experimental program based on this technology with xenon enriched in 136 Xe serving as both
+the source and detection medium. The latest experiment in this program to finish operation, NEXTWhite [2], has demonstrated (with 3.5 kg of xenon) superb energy resolution at 1% FWHM at
+2.5 MeV [3], measured the 2𝜈𝛽𝛽 half-life [4] and searched for 0𝜈𝛽𝛽 [5]. The forthcoming NEXT100 [6] experiment is currently under construction and will search for 0𝜈𝛽𝛽 with 100 kg of enriched
+xenon (91% 136 Xe) with sensitivity to a half-life of 6×1025 years at the 90% confidence level after
+three years of operation [7].
+The TPC design of NEXT-100 is shown in Fig. 1. As charged particles pass through the
+drift (active) region of the detector, they ionize and excite the xenon gas. Prompt scintillation
+light is produced from the excitation of the xenon gas by the primary interaction, known as the S1
+signal, and is used as a trigger to determine the interaction time of the event. For the ionization
+electrons, an electric field of 500 V/cm, generated by applying a large negative potential to the
+cathode, sweeps them towards the electroluminescence (EL) region which has a higher electric field
+of 18 kV/cm. After the ionization charges enter this region, they are accelerated and gain sufficient
+1cm
+
+24cm buffer
+
+130cm drift
+
+GND
+
+Stainless Steel Vessel
+Copper Shield
+
+Electric Field
+
+PMT
+
+Light (S1)
+PMT
+
+Light (S2)
+Electrons
+
+PMT
+
+Active Volume
+(HPGXe)
+
+Tracking Plane EL Anode EL Gate
+(GND)
+(-HV)
+(SiPMs)
+
+Field Cage
+
+Teflon
+Panels
+
+Buffer Region
+(HPGXe)
+
+Cathode (-HV)
+
+PMT
+
+Energy Plane
+(PMTs)
+
+Figure 1. A schematic of the main components of the NEXT-100 TPC. Charged particles produced inside
+the active volume (cylinder of 1 m diameter and 1.3 m length) ionize and excite the xenon producing the S1
+signal. Ionization electrons are subsequently drifted to and amplified in the EL region to produce the S2 light.
+An array of 60 Hamamatsu R11410-10 PMTs and 3584 Hamamatsu SiPMs located at the end-caps are used
+to measure the energy and provide tracking information from the light produced. The PMTs are separated
+from the high-pressure gas by sapphire windows. The buffer region steps down the high voltage from the
+cathode to the energy plane while keeping the electric field below the threshold for electroluminescence. The
+EL and cathode presented in this paper are highlighted in red.
+
+–2–
+
+Figure 2. Left: image of the NEXT-100 EL region attached to the copper tracking plane. The white region
+is a Teflon mask which improves light collection to the SiPMs which sit just behind. Right: image of the
+NEXT-100 cathode inside the field cage. Both the EL and cathode are golden rings with a transparent mesh.
+
+energy to excite (but not ionize) the xenon gas. This leads to the production of approximately 102
+– 103 scintillation photons per electron, known as the S2 signal. The photons produced from the
+EL are collected by silicon photomultipliers (SiPM) and photomultiplier tubes (PMTs) after being
+wavelength-shifted to the visible spectrum by tetraphenyl butadiene coated onto various surfaces
+inside of the TPC including the inner Teflon panels, sapphire windows in front of the PMTs, and
+SiPMs. This information is used to provide topological information and precision calorimetry.
+Pictures of the EL and cathode regions in NEXT-100 are shown in Fig. 2.
+The EL region produces S2 light with proportional gain and minimal fluctuations. It has to
+meet exacting mechanical and electrical design specifications in order to achieve the uniformity
+and gain required for high-quality topology reconstruction and energy measurement. The NEXT
+experiment requires percent-level or lower energy resolution for mitigating the contamination of the
+2𝜈𝛽𝛽 background in the signal region as well as reducing the impact of gamma rays that produce
+energy deposits near the energy range of interest. The electric field profile between the meshes
+governs the path an electron will take as it crosses the gap which directly affects the light yield
+and uniformity. In addition, with such high electric fields, the electrostatic force is large enough to
+cause the two surfaces of the EL region to deflect towards one another, potentially compromising
+field uniformity and high voltage stability. Defects and sharp edges on the mesh must be avoided, in
+order to ensure suitable operation at voltages of several tens of kilovolts without electrical sparking
+or field emission of electrons. The EL region must have high optical transparency to ensure that
+a suitable fraction of the light reaches the photodetectors. To ensure these specifications are met,
+significant mechanical challenges need to be overcome while using as little material as possible due
+to radiopurity constraints.
+The design selected to meet these requirements for NEXT-100 consists of two parallel photochemical etched hexagonal meshes tensioned on a metal frame. In this paper, we describe the
+design, characterization, and installation of the EL and cathode regions in the NEXT-100 detector.
+The design and construction of the EL region are first described in Sec. 2. Measurements of the
+mesh robustness and electrical breakdown voltage in air of the EL region are studied in Sec. 3. In
+
+–3–
+
+Figure 3. Left: a side view schematic of the EL region mounted onto the copper end cap at the tracking
+plane. The EL region sits right in front of the SiPM tracking plane. Middle: view of the cathode inside the
+detector. The field cage and reflector panels have been omitted from the schematic for visibility. Right: a
+schematic for how the EL bracket is connected to the EL frames.
+
+Sec. 4 we perform measurements of the electrostatic deflection, achieving 8 µm precision. Measurements were also performed on the NEXT-100 EL region before it was installed. We report
+comparisons of these measurements to an analytical model developed that can be used to calculate
+the deflection at various electric fields and estimate the tension of the meshes with and without a
+support post. Detailed simulations of the light and field response of the EL and cathode regions
+using a COMSOL [8] and Garfield++ [9] simulation are presented in Sec. 5. Finally, a brief report
+of the installation of the electroluminescent and cathode regions is given in Sec. 6.
+
+2
+
+Design and construction of the EL and cathode region
+
+The use of stretched meshes has a wide precedent in xenon TPC experiments and test stands [10–20].
+The challenges associated with the NEXT application are the very large diameter of the detector
+(∼m) coupled with the high voltage and small gap size required for a large gaseous EL TPC.
+Of the three required meshes to delineate the uniform-field regions in NEXT-100, the cathode
+requirements are the least strict, because it resides in a region of relatively low local electric field.
+This means that the expected mesh deflection under electrostatic forces is not a limiting design
+factor. The cathode design for NEXT-100 consists of a 13.5 mm thick silicon bronze frame with a
+hexagonal mesh with 5 mm inner diameter hexagons tensioned in between two rings.
+The EL region is more challenging due to the large fields required for EL gain and the small
+EL gap width of 1 cm. It consists of two silicon bronze frames that hold two tensioned meshes
+with 2.5 mm inner diameter hexagons facing parallel to each other. For the EL region, a large
+voltage is applied to the “gate”, i.e. the mesh that the ionization electrons pass through to enter
+the EL region. The anode is connected to ground. The frames are joined together using eight high
+density polyethylene (HDPE) brackets located around the circumference which space them with a
+gap distance of 9.7±0.15 mm. These parts are depicted in Fig. 3.
+
+–4–
+
+2.1
+
+Photoetched mesh
+
+The EL meshes, as shown in Fig. 4, are made from a 127 µm thick stainless steel (SS) sheet etched
+with a hexagonal pattern of 2.5 mm inner diameter hexagons and 127 µm wire widths. The cathode
+has a similar design and wire size but with 5 mm inner diameter hexagons. The meshes were
+manufactured with photochemical etching by PCM Products, Inc. [21]. This process is able to
+achieve tight tolerances down to 5 µm depending on the thickness of the material, which can range
+from 0.5 µm to 3 mm. The company has some of the largest etching machines in the USA and is
+able to etch components as wide as 1.5 m. The advantage of etched hexagonal rather than woven
+square or wire mesh geometry primarily resides in the frame loading properties. With hexagonal
+loading, the outer metal frame is not expected to buckle through a “saddle-shape” distortion, a
+common problem for thin frames loaded on one or two perpendicular axes. A further advantage of
+an etched mesh is that any break does not lead to a loose wire that may short to other surfaces. A
+fine surface finish is also achievable, giving favorable high-voltage properties.
+While the final design choice for the NEXT-100 hexagonal meshes includes photochemically
+etched meshes from a single sheet of stainless steel, alternative methods of manufacture were also
+explored. Previous attempts to manufacture meshes at this scale were attempted with alternative
+vendors who were not able to etch at the >1 m scale by combining partial semi-circular meshes into
+a full circle via various joining methods. We found that the meshes were too thin and sparse for most
+welding techniques to work without melting the material. Spot welding resulted in localized points
+where the tension would be unevenly distributed and resulted in the mesh failing when stretched.
+Soldering was more robust, with silver-based solder performing the best by achieving the desired
+tension but then began to fail slowly over time. Thus, we considered single full-sized photoetched
+meshes as the only viable use case of the photoetching technique for our application.
+The choice of hexagon size was driven by simulations of the electric field uniformity and is
+described in Sec. 5.1. Small hexagons are advantageous in terms of field uniformity and mesh
+robustness so 2.5 mm meshes were chosen for the EL region (90% transparency). Larger holes are
+preferable to maximize optical transparency and optimize light collection efficiency so in the case
+of the cathode, 5 mm hexagons were chosen (95% transparency).
+Several iterations of meshes at the scale of NEXT-100 (diameter 1 m) were produced in
+order to develop parts suitable for installation in the experiment. Initial meshes manufactured
+included a post-etching process. This includes an additional acid etching step to reduce sharp
+edges after the primary etching process. However for these meshes, the etching uniformity at
+scale was compromised with excessive numbers of broken wires and lands (identified with a
+visual inspection), and poor robustness under tensioning. Further iterations without post-etching
+significantly improved the quality of the mesh with only a few broken lands on each mesh. Studies
+on the impact of mesh defects on the electrical breakdown strength were made, and as described in
+Sec. 3, the non-post-etched meshes perform to specification. The best quality of meshes, without
+breaks but with a few small surface imperfections, was achieved when the manufacturer used a
+thicker photoresist; this was used for the final meshes used in NEXT-100.
+
+–5–
+
+Figure 4. Image of the NEXT-100 mesh with the 9 mm border and dowel pin holes. The mesh is etched
+from a single sheet of stainless steel and is held via small tabs. After removal of the mesh from the tabs, the
+sharp points of these tabs do not pose a breakdown risk as they are located inside the main ring frames.
+
+2.2
+
+Mesh support and tensioning frames
+
+Each EL frame consists of two parts: a base ring for fixing the mesh and a tensioning ring to stretch
+it. The choice of material for the rings was silicon bronze over stainless steel due to its mechanical
+strength and radiopurity (described in Sec. 2.4).
+Figure 5 shows a sketch of the tensioning procedure. A total of 180 dowel pins made of
+phosphor bronze (CuSn8P) are inserted around the base ring which holds the mesh in place. The
+photoetched mesh contains a 9 mm border with holes of the same diameter and location as the dowel
+pins (see Fig. 4) which are placed on top of the dowel pins. A tensioning ring is then placed on top
+of the mesh and incrementally screwed down (with 72 CuSn8P screws) until it fully contacts the
+base ring. The lip of the tensioning frame presses down to slowly stretch the mesh. Feeler gauges
+are used in the outer gap between the base and tensioning ring to control the uniformity around the
+ring during each tightening increment. During tensioning, the rings are clamped down to the table
+to prevent buckling of the thinner base ring until the gap is closed enough to distribute the tension
+through the vented bolt and frame. This same design, but on a smaller scale, was used in prototype
+form for the NEXT-CRAB-0 experiment [10].
+The cathode for NEXT-100 follows the design of an EL frame but is designed for lower tension
+due to the reduced local field strength (∼2 kV/cm) compared with the EL (∼20 kV/cm). The tension
+applied was reduced by decreasing the tensioning lip size. This reduces the amount of frame
+material required, which in turn offers a small radiopurity advantage.
+Considerations were taken in the design to ensure that the silicon bronze frames would be able
+to support the mesh tension sufficiently. Silicon bronze has slightly reduced mechanical properties
+compared with stainless steel (Young’s modulus = 200 GPa and 115 GPa and yield strength =
+230 MPa and 205 MPa for SS [22] and silicon bronze [23] respectively). The expected mesh
+tension applied to the frames is estimated with the following formula:
+3 Δ𝐿
+×
+× 𝑌 𝐴𝑁,
+2 𝐿0
+
+–6–
+
+(2.1)
+
+Figure 5. Mesh tensioning method used for each EL and cathode frame assembly. Left: dowel pins are
+inserted into holes around the inside of the base ring and the mesh is laid on top. Right: tensioning ring has
+been placed on top and bolted closed with vented screws, pressing the mesh downwards and stretching it.
+Vented screws and through-holes were incorporated into the design to minimize virtual leaks and the ring
+surface was electropolished to improve the performance under high voltages.
+
+where 𝐿 0 is the diameter of the mesh, Δ𝐿 is the stretch induced by the tensioning frame on the
+mesh, 𝑌 is the Young’s modulus, 𝐴 is the cross sectional area of the wire (sheet width × wire
+thickness), and 𝑁 = 𝐿 0 /(hexagon diameter × wire thickness). We estimate a max mesh tension of
+3.6 kN for the EL frame and 0.6 kN for the cathode frame if fully closed. Tension can be fine-tuned
+by partially bolting the rings together, providing less stretching to the mesh.
+The critical and estimated value of the section area moment of inertia (buckling point) for the
+EL and cathode frames were calculated to ensure they would not buckle under a maximum mesh
+tension of 3.6 kN if the frame is fully closed. We find the estimated maximum load the EL rings
+can take is more than 5 kN of tension. The distribution of force across the tensioning and base rings
+prevents buckling of the frame assuming a safety factor of 1.5. Since the cathode is tensioned less
+than the EL rings it will also be able to hold the tension.
+2.3
+
+EL brackets
+
+The HDPE brackets that hold the EL frames together are shown in Fig. 3. The brackets have a
+U-shape design with a ridged inner surface to minimize leakage current across the surface of the
+bracket. The ends of the brackets are used to attach the EL frames directly to the copper end cap
+of the NEXT-100 detector. The gate frame mounts to the brackets by 16 gate screws made from
+polyether ether ketone (PEEK). The 16 anode screws, on the other hand, sit in a low-field region
+and are made from stainless steel. Measurements of the EL gap distance (before the mesh was
+tensioned) were taken with vernier calipers to estimate the variation in the gap distance across the
+frames. The mean and standard deviation were found to be 9.7±0.15 mm, after accounting for the
+thickness of two meshes (0.127 mm each). The uncertainty on the gap distance is mostly driven by
+the manufacturing uniformity of the tensioning ring lip and the bracket surface.
+2.4
+
+Material choice and radioassay
+
+The material choice of each component for the EL and cathode was chosen to meet the radiopurity
+requirements of the experiment by screening for contamination of 238 U and 232 Th. The target
+background requirement for NEXT-100 is 1×10−3 counts/(keV kg year) or ∼1 count/yr over the
+full 0𝜈𝛽𝛽 energy region of interest (16 keV) [24]. The main radioactive backgrounds in NEXT
+
+–7–
+
+originate from gamma rays via 208 Tl (2.615 MeV) and 214 Bi (2.448 MeV) which are produced in
+the natural radioactive chains from 232 Th and 238 U respectively.
+Measurements of the EL and cathode frames were performed using inductively coupled plasma
+mass spectrometry (ICP-MS) at Pacific Northwest National Laboratory with an Agilent 8900
+where quantization was performed using isotope dilution mass spectrometric methods [25]. The
+technique is sensitive to trace amounts of 232 Th and 238 U to part-per-trillion (ppt) in a given sample.
+Estimations of the 208 Tl and 214 Bi contamination are made from the 238 U and 232 Th concentrations
+assuming secular equilibrium. While the initial frame design was based on stainless steel, we were
+unable to source plates that could meet the required radiopurity specifications at the necessary
+scale. For the final parts, a design based on silicon bronze frames was adopted due to the superior
+radiopurity of available materials. Previous screening campaigns of various detector components
+for NEXT-100 are published in Ref. [26]. Samples of stainless steel and silicon bronze plates were
+taken from various suppliers for testing (with the plate reserved with the manufacturer). The results
+of this screening campaign are shown in Tab. 1. The thicker plates correspond to the tensioning
+ring, while the thinner plates are for the base ring. While there were different vendors for supplying
+the C65500 grade of silicon bronze, the material certifications indicate the material originated
+from a single source: KME Mansfeld GmbH. For the C64200 grade of silicon bronze, the material
+certification suggests an origin from Dongzhou Longhe Metals. Measurements of silicon bronze
+C65500 were in single-digit ppt (or just above) levels for all samples. These values were either
+similar or smaller than the values reported in Ref. [27]. The C64200 silicon bronze alloy contained
+much higher levels. This specific alloy contains aluminum, which has been generally reported to
+contain large contamination [27, 28], and has a contamination four orders of magnitude beyond the
+desired specification for NEXT-100. As a result, the NEXT-100 EL and cathode were chosen to be
+made from batches 2023-03 and 2023-08 listed in Tab. 1.
+Measurements of the other components in the EL and cathode region are shown in Tab. 2.
+Measurements were performed using either ICP-MS, Glow Discharge Mass Spectrometry (GDMS)
+with Eurofins [29], or with High Purity Germanium (HPGe) detectors at the Sanford Underground
+Research Facility [30].
+The EL and cathode frames contribute the vast majority of the mass of these components
+(26.1 kg). A contamination level of <10 ppt is sufficient for meeting the target requirements for the
+frames, while looser requirements are implied for the mesh, screws, and dowel pins due to their
+lower mass. The total expected contribution to the background index of NEXT-100 from the EL
+regions and cathodes as assayed is 7.4×10−3 counts/yr and 8.8×10−2 counts/yr for 208 Tl and 214 Bi
+respectively, meeting the required specification.
+
+3
+
+Electrostatic breakdown of the EL region
+
+3.1
+
+Mesh robustness under discharges
+
+The NEXT-100 EL region has a minimum target electric field specification of 15 kV/cm at 13.5 bar
+such that the electrons can acquire sufficient energy to excite the xenon medium to produce scintillation light and the EL gain is non-limiting for fulfilling <1% energy resolution. The option to
+run at higher voltages to achieve larger gains is also desirable, up to a maximum anticipated operating voltage around 28 kV, just below the transition to avalanche. To achieve this, the mesh must
+
+–8–
+
+Sample
+2022-17
+2022-17
+2022-35
+2022-35
+2023-08
+2023-08
+2023-03
+2023-03
+2022-27
+2022-27
+2021-37
+2021-37
+
+Alloy
+Silicon Bronze
+C65500
+C65500
+C65500
+C65500
+C65500
+C65500
+C65500
+C65500
+C64200
+C64200
+Stainless Steel
+SS304
+SS304
+
+Supplier
+
+Thickness
+
+232 Th [ppt]
+
+238 U [ppt]
+
+Atlas Metal
+Atlas Metal
+Farmers Copper
+Farmers Copper
+Farmers Copper
+Farmers Copper
+Farmers Copper
+Farmers Copper
+Additive Mfg.
+Additive Mfg.
+
+1/2 in
+3/4 in
+10 mm
+15 mm
+1/2 in
+5/8 in
+1/2 in
+5/8 in
+10 mm
+15 mm
+
+4.4±0.5
+2.3±0.3
+3.8±0.5
+3.9±0.3
+1.4±0.3
+0.6±0.4
+0.5±0.3
+16.3±0.7
+25000±800
+34861±554
+
+14.6±1.3
+2.3±0.7
+2.2±0.5
+4.9±1.1
+4.9±0.6
+4.7±0.6
+4.5±0.3
+5.5±0.5
+84000±9000
+99797±3336
+
+Additive Mfg.
+Additive Mfg.
+
+10 mm
+15 mm
+
+104±8
+3346±64
+
+756±27
+526±30
+
+Table 1. The various ICP-MS measurements of materials considered for the EL and cathode base and
+tensioning rings. Each sample measurement was repeated three times, the rows show the combination of
+these repetitions. The thickness column corresponds to the thickness of the metal plate (which comes in
+metric or imperial sizes depending on the vendor) that a small 1 cm3 sample is taken from. High levels were
+detected in the C64200 alloy, a silicon bronze alloy containing aluminum.
+
+Component
+EL/cathode mesh
+Dowel pins and screws
+EL bracket
+EL bracket gate screws
+EL bracket anode screws
+
+Material
+SS316Ti
+CuSn8P
+HDPE
+PEEK
+18-8 SS
+
+Method
+ICP-MS
+GDMS
+ICP-MS
+HPGe
+HPGe
+
+232 Th [ppt]
+
+238 U [ppt]
+
+202.3±6.8
+<100
+15±5
+<4.1
+2630±1490
+
+604.1±38.4
+<100
+3±1
+<0.6
+480±230
+
+Total Mass
+509 g
+329 g
+324 g
+2.7 g
+22.4 g
+
+Table 2. The measurements and total mass of the other components in the EL and cathode regions. There
+are 540 dowel pins and 216 CuSn8P screws.
+
+have a high-quality surface finish to avoid breakdowns and be robust in the event of the inevitable
+occasional sparks to avoid permanent damage from discharges.
+Electrically the EL region can be approximately modeled as a large parallel plate capacitor
+with xenon gas as the dielectric medium. Considering an operating voltage of 28 kV, the meshes at
+the radius of NEXT-100 would have a capacitance of 1.4 nF and discharge with 0.52 J of energy.
+This is a factor of around eight larger than the energy stored in the smaller NEXT-White EL region
+at the same voltage [2], giving the potential for significantly more damaging discharges and a need
+for substantially higher material robustness.
+To test the electrical robustness of the meshes under discharge, a capacitor was attached to
+a mesh sample held at voltage, as shown in Fig. 6. A thin, grounded metal rod was moved
+
+–9–
+
+toward the mesh until a discharge occurred. The test was carried out in air and repeated for both
+positive and negative polarities at voltages up to 20 kV, and capacitances of 1, 5, and 10 nF. For
+discharges at energies up to 2 J no structural damage was found. At 2 J, (about a factor of 4 times
+the maximum operating conditions), some barely visible surface features were observed, with no
+apparent structural damage. With the mesh held at negative voltage, the surface became shinier
+where some surface material was ablated, whereas at positive voltage some small-scale pock marks
+were observed at the discharge points. These results demonstrate that photoetched meshes of this
+thickness are robust in the electrical discharge conditions of the EL region. This is in contrast to
+ultra-thin woven wire meshes of past NEXT detectors, where discharges of this magnitude can lead
+to melting and wire breakage.
+3.2
+
+Profiling of breakdown locations
+
+Preliminary iterations of meshes for the NEXT-100 experiment were defective upon manufacture
+and contained several broken hexagons on each mesh. Studies of the electric breakdown potential
+across the EL gap were carried out using these meshes to study the impact of imperfections/broken
+wire lands. These meshes were stretched in stainless steel frames identical to the NEXT-100 EL
+design. The breakdown across the meshes was studied in air at gap distances of 1.1 cm (slightly
+different from the gap used in NEXT-100). Tests were made by connecting one EL frame to high
+voltage and the other frame at ground, similar to the operation in NEXT-100. High voltage is
+supplied via a GLASSMAN PS/EG30N1-100TT 30 kV high-voltage supply, operated up to 20 kV.
+In each test, the voltage was slowly ramped up until a spark was initiated across the gap from the
+mesh surface. The supply was ramped back down to zero and switched off to reset the system after
+each spark.
+Figure 7 shows the results of the tests. The red dots indicate positions in the mesh where a
+defect (either a break on the wire land, a sharp edge, or some other visible surface variation) was
+identified while the numbers by the blue stars indicate the number of sparks at a given position.
+Sparks occurred with a higher frequency towards the center of the meshes where there is the largest
+expected electrostatic deflection (see Sec. 4). Some sparks occurred with a position close to a defect,
+
+Figure 6. Left: setup for high voltage sparks to the photoetched mesh. Middle: picture of sparks with a
+10 nF capacitor and −20 kV. Some shiny areas could be seen but no breaks or surface damage. Right: picture
+of sparks with a 10 nF capacitor and +20 kV. Some minor surface damage was visible under the microscope
+but no breaks or holes through the mesh were found.
+
+– 10 –
+
+Figure 7. Left: composite image of the sparks on the EL region. Right: a diagram of the sparks with
+positions of breaks/defects shown by the red dots against the sparks shown by the blue stars. The numbers
+indicate the number of sparks at a spot.
+
+though there was no evidence of a strong correlation between spark points and defect points. The
+breakdown potential consistently ranged from 17.5 – 18.5 kV, roughly the expected breakdown field
+strength for air at 1 bar (22 kV) [31]. Notably, this is already a sufficient voltage to run NEXT-100
+with reasonable gain for physics analyses in xenon at 13.5 bar, achieved even in the much weaker
+dielectric medium of air at one atmosphere.
+
+4
+
+Electrostatic deflection
+
+Due to the high voltage in which the EL region operates, the electrostatic force between the two
+parallel meshes can be significant enough to pull the mesh surfaces towards one another causing a
+non-planar surface. This can cause a non-uniform electric field leading to a non-uniform gain and
+increased chance of sparking. In this section, we provide analytical calculations and measurements
+of the NEXT-100 EL deflection under high voltage in various configurations. The impact of the
+deflection under different operating conditions is also discussed.
+4.1
+
+Analytical calculations
+
+A derivation of the expected electrostatic deflection is given in Appendix A. In summary, the
+electrostatic deflection, 𝑧, of a symmetrical circular mesh is given by the equation:
+𝑧 = −𝜅(𝑅 2 − 𝜌 2 ),
+
+𝜅=
+
+𝜖 𝑅𝐸 2
+4𝜏
+
+(4.1)
+
+where 𝜖 is the permittivity, 𝑅 is the radius of the mesh, 𝜌 is the radial distance from the center of
+the mesh, 𝜏 is the tension of the mesh, and 𝐸 is the electric field between the meshes with electrical
+potential difference, 𝑉, separated by a gap 𝑔, 𝐸 = 𝑉/𝑔. The maximum deflection occurs in the
+center of the mesh at 𝜌 = 0 cm,
+𝑧max = −𝜅𝑅 2 .
+(4.2)
+
+– 11 –
+
+Deflection [mm]
+
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+1.2
+1.4
+1.6
+1.8
+2.0
+
+NEXT-100
+
+Mesh Electric Fields ( =1.0kN)
+
+10 kV/cm
+12 kV/cm
+
+14 kV/cm
+16 kV/cm
+
+18 kV/cm
+20 kV/cm
+
+22 kV/cm
+24 kV/cm
+
+400
+200
+0
+200
+400
+Radial distance from center ( ) [mm]
+
+Figure 8. The predicted electrostatic deflection for a NEXT-100 mesh with a tension of 1 kN. The various
+lines show the deflection at different electric fields. This deflection reduces the EL gap distance of NEXT-100
+(9.7±0.15 mm).
+
+We find that the deflection does not depend on the Young’s modulus of the material and has a
+quadratic dependence on the electric field, 𝐸. Properties of the mesh such as the thickness and
+hexagon size factor into the tension of the mesh.
+Figure 8 shows the predicted electrostatic deflection for a NEXT-100-sized mesh at 1.02 m at
+several electric field values for a fixed mesh tension of 1 kN. With each of the EL gate and anode
+meshes deflecting towards each other, the total deflection is given by twice the values shown in
+Fig. 8.
+Predictions and measurements with a support post of the type studied in Ref. [32] placed
+between the meshes to reduce deflection are given in Appendix A and B respectively. It was
+decided against including the support post in the NEXT-100 experiment due to the satisfactory
+performance of an unsupported mesh.
+4.2
+
+Measurements of electrostatic deflection
+
+The electrostatic deflection was measured using the apparatus shown in Fig. 9. The deflection
+measurement involves moving a micrometer stage containing optical apparatus to find the relative
+change in focus of the mesh after a voltage is applied. This technique is similar to an approach
+outlined in Ref. [33] that we became aware of during the final preparation of this manuscript.
+Light from an LED is reflected off a 1-inch Thorlabs EBS1 50:50 beam-splitter through an
+Olympus Plan N microscope objective lens (factor 20x magnification) onto the mesh surface. The
+reflected light is imaged with a Logitech C615 HD webcam to give a real-time image of the mesh. In
+order to bring the mesh into focus via the objective lens alone, the main webcam lens was removed.
+The apparatus is mounted onto a movable micrometer stage whose displacement from the mesh
+is adjusted using a Thorlabs ZST213 actuator controlled by a brushed DC servomotor (Thorlabs
+KDC101) to determine the distance deflected relative to no potential applied. The actuator has a
+precision of 5 µm. The position of the apparatus is adjustable to measure the deflection across
+
+– 12 –
+
+Figure 9. Left: a schematic of the optical system used to measure the electrostatic deflection of the mesh.
+Right: an image of an in and out-of-focus mesh as viewed from the webcam. The EL gate and anode are
+held together using insulating brackets made from HDPE.
+
+various radii on the mesh surface. A bias voltage is applied to the gate mesh (with the anode at
+ground) using a GLASSMAN PS/EG30N1-100TT 30 kV high-voltage supply and was varied up
+to a voltage before breakdown could occur between the meshes. Between each measurement, the
+voltage was set to 0 V to allow the mesh to reset back to the origin and then slowly ramped up. The
+focus was also moved far from the focal point between each measurement.
+Several datasets of the electrostatic deflection were taken using an identical EL region in
+design as the EL region to be used in NEXT-1001. Among these tests, studies were made of the
+deflection as a function of the frame closure during tensioning. Measurements were taken using a
+fine voltage and radius increment to understand the tensioning protocol in detail. A less granular
+set of measurements was made on the NEXT-100 region in situ immediately before installation in
+the detector, to validate successful construction and tensioning.
+Fits to these data are performed using Eqn. 4.1 leaving the tension as a free parameter and
+minimizing a chi-square metric. Each data point has a deflection uncertainty of 8 µm from
+determining the focus of the mesh, established by taking several repeated measurements at the same
+position. We estimate the uncertainty from the repeatability of 𝑥 and 𝑦 positioning by taking the
+standard deviation of measurements from repeated placement at the same location (typically ranged
+from 13 – 17 µm) which is combined in quadrature with the 8 µm focusing uncertainty. The fit
+varies the EL gap distance (1.1±0.025 cm) and the voltage values (uncertainty of 100 V) randomly
+sampling 1000 times within their uncertainties. The fit results for the extracted tension (mean and
+standard deviation from the sampling) are shown in the legend of Fig. 10.
+Figure 10 shows the results of the maximum deflection during prototype mesh tensioning. For
+a loosely tensioned mesh (with a 2 mm gap between the rings), the deflection reaches 1.2 mm at
+1This part was procured for installation in NEXT-100 but failed to meet radiopurity specifications (see stainless steel
+measurements in Tab. 1).
+
+– 13 –
+
+Deflection [ m]
+
+1200
+1000
+800
+600
+400
+200
+0
+
+Frame Gap (Tension)
+2.0 mm ( = 340 +/- 20 N)
+1.0 mm ( = 800 +/- 45 N)
+0.5 mm ( = 1,000 +/- 55 N)
+0.25 mm ( = 1,110 +/- 65 N)
+0.0 mm ( = 1,300 +/- 75 N)
+
+0
+
+2
+
+4
+
+6
+8 10
+Voltage [kV]
+
+12
+
+14
+
+Figure 10. The electrostatic deflection at the center as a function of different mesh tensions. The tension
+values are obtained from a fit (shown by the solid lines) to the data using Eqn. 4.1.
+
+14 kV. At full tension, the deflection is reduced to ∼0.3 mm, almost a 1 mm total reduction for
+each mesh. We find that the reduction in deflection from a frame gap of 1 mm compared to fully
+closed was marginal (∼0.2 mm, see Fig. 10), so it was decided to tension the NEXT-100 meshes
+to be installed with a 1 mm frame gap. This choice minimizes the chance of breaking the mesh
+from overstretching. Interestingly, the measurement of the fully tensioned frames is about a factor
+of 4 lower than the estimations detailed in Sec. 2.2. While this leads to a deflection that is slightly
+more than anticipated, we show in Sec. 4.3 that the performance for NEXT-100 is suitable. Possible
+explanations could be that the wires at the local region around the edge of the frame are getting
+stretched more than the central region and entering plastic rather than elastic deformation, or that
+the mesh does not slip sufficiently well enough across the tensioning ring surface.
+Figure 11 shows the electrostatic deflection measured on each of the NEXT-100 EL meshes
+(labeled A and B), as prepared for installation in the Laboratorio Subterráneo de Canfranc (LSC)
+laboratory. Measurements were taken in 21 different places on the mesh surface covering four radii
+of 0 cm, 16 cm, 32 cm, and 48 cm with 1, 8, 7, and 5 measurements at each spot respectively.
+Some locations were not reachable with the apparatus resulting in differences in the number of
+repeated measurements at a given radius. We find the tension of mesh A to be 990±45 N while
+the tension of mesh B to be slightly less at 835±40 N due to its slightly larger measured deflection.
+The measurements of mesh B are consistent with the expected 1 mm frame gap tension shown in
+Fig. 10, however, the tension in mesh A is more consistent with a frame gap of 0.5 mm. On the
+basis of these data, the maximal expected deflection of each mesh at the 13.5 bar EL threshold is
+expected to range from 0.35 – 0.4 mm for mesh A and B respectively.
+4.3
+
+Energy resolution
+
+Deflection of the meshes indirectly impacts the energy resolution of a 0𝜈𝛽𝛽 decay event at 2.5 MeV
+from variation in the gap distance across the surface, altering the EL gain uniformity. To first
+order this effect is vanishing, since nearly all of the potential energy of the thermalized ionization
+electrons crossing the gap is converted into excitations that lead to photons, and the total potential
+
+– 14 –
+
+NEXT-100 Mesh A
+
+400
+
+Tension best fit: 990+/-45 N
+
+300
+200
+100
+0
+
+0
+
+2
+
+4
+
+6
+8
+10
+Voltage [kV]
+
+NEXT-100 Mesh B
+
+500
+
+Dist. from Centre
+0 cm
+32 cm
+16 cm
+48 cm
+
+Deflection [ m]
+
+Deflection [ m]
+
+500
+
+12
+
+14
+
+Dist. from Centre
+0 cm
+32 cm
+16 cm
+48 cm
+
+400
+
+Tension best fit: 835+/-40 N
+
+300
+200
+100
+0
+
+0
+
+2
+
+4
+
+6
+8
+10
+Voltage [kV]
+
+12
+
+14
+
+Figure 11. The electrostatic deflection for the NEXT-100 mesh A and B. The tension values are obtained
+from a fit (shown by the solid lines) to the data using Eqn. 4.2.
+
+energy is independent of the gap size. However, the threshold behavior of the EL process slightly
+breaks the correspondence between potential and light yield, and some residual gap size dependence
+is present. We assume no loss in signal due to a finite electron lifetime and no contributions from
+electronics noise. Both of these effects are expected to be sub-dominant in the measurement of
+energy resolution and can be controlled for via calibration with 83m Kr [34]. We calculate the
+expected variation in energy resolution considering the fluctuations in the ionization electrons
+produced (described in Ref. [35]), and the change in the gain across the surface due to the gap
+length and electric field strength using the empirical data provided in Ref. [36]. A uniform electric
+field at each gap position is also assumed. The results as a function of the electrostatic deflection
+and bias voltage for a gas pressure of 10 and 15 bar are shown in Fig. 12. The edge of the white
+region corresponds to the maximum electrostatic deflection expected for a mesh (Eqn. 4.2) of the
+same radius as NEXT-100 and at a tension of ∼900 N, similar to the measured values obtained.
+The deflection values are multiplied by two to account for two deflecting meshes. At each voltage,
+the deflection will vary from 0 mm (mesh edge) to the max deflection (mesh center) and the energy
+resolution varies between these extremes. Overall the resolution is below 1% in almost all areas
+meeting the desired threshold for operation and variations do not significantly span more than 0.2%
+across the mesh surface, although most cases are much below this. We find that at higher voltages
+the variation in gain due to the deflection is not significant and is compensated for by the increase
+in overall gain from the higher field.
+
+5
+
+Simulation of a small-scale EL and cathode region
+
+Uniformity of EL region response is crucial for achieving precise energy measurements through EL
+amplification. Local non-uniformities in the electric field on the scale of the mesh pattern depend on
+the relative position and alignment of the two hexagonal meshes, which impacts both the average and
+the spread of gains across the EL region. To study these effects a suite of simulations was performed.
+We use SolidWorks [37] to create a geometrical model of a smaller-scale EL and cathode region
+of several diameters, thicknesses, and alignments. From the hexagonal symmetry, the small-scale
+model can be extrapolated to the full-scale. We import these models into COMSOL Multiphysics
+which calculates the the electric field distribution in three dimensions. A Garfield++ simulation
+
+– 15 –
+
+Figure 12. The dependence of energy resolution on deflection and voltage at 10 bar (left) and 15 bar (right)
+using a mesh tension of 900 N. A factor of two is included in the maximum deflection to account for two
+deflecting meshes.
+
+Figure 13. Left: the simplified model of the small EL region in COMSOL with a 60 mm diameter mesh.
+Right: the electric field lines viewed in a slice of the 𝑥, 𝑦 plane simulated with COMSOL. Due to the shape of
+the hexagons, the field lines are funneled into the center of the hexagons. The electric field changes from a
+low drift field of 200 V/cm to a high field region of 18.8 kV/cm at the EL gate mesh surface. The meshes are
+separated with a 1 cm gap distance.
+
+is then used with the COMSOL field map to simulate individual electron trajectories and study the
+impact on EL gain and how this factors into energy resolution.
+5.1
+
+EL electric field uniformity
+
+Figure 13 shows the electric field model of an EL region with each frame of thickness 1 cm consisting
+of a mesh diameter of 60 mm at the surface. The hexagonal geometry of the mesh is similar to the
+NEXT-100 EL region design with 2.5 mm inner diameter hexagons and 127 µm thickness and wire
+width. The EL frames are spaced at a 1 cm gap distance and 20 kV is applied to the gate frame. We
+include a grounded plate below the meshes to terminate the field lines and a cathode plate to set a
+drift field ∼200 V/cm above the EL gate frame. This models the field lines as they would originate
+from the drift region and terminate at a grounded tracking plane sitting closely behind the anode.
+As the field lines cross the gate mesh boundary, they increase in value to around 20 kV/cm before
+decreasing to 0 kV/cm as they exit and terminate at the grounding plate.
+
+– 16 –
+
+19400
+
+20 mm diameter 4
+40 mm diameter
+60 mm diameter 3
+
+19200
+
+2
+
+19000
+
+1
+
+18800
+
+0
+
+5
+10 15 20 25
+Radial distance from edge [mm]
+
+30
+
+0
+
+Change in field from center [%]
+
+Electric Field [V/cm]
+
+19600
+
+Figure 14. Left: the electric field from the edge of the EL region radially inwards to the center for different
+mesh diameters. The blue line shows the electric field value at the center of the 60 mm EL region. Right: a
+side view of the 60 mm diameter model, the red arrow depicts the direction of the radial field studied.
+
+The electric field starting from the edge of the EL region going radially inwards is studied
+for an EL region with different diameters of 20 mm, 40 mm, and 60 mm. The electric field for
+each of these configurations is shown in Fig. 14. We find that the electric field in the center is
+slightly reduced from the ideal parallel plate scenario of 20 kV/cm with an average field closer to
+18.8 kV/cm, roughly a 6% reduction. Additionally, there is approximately an 11 mm region from
+the inner edge of the frame where the electric field is not uniform. In these geometries, the size of
+this non-uniform region does not depend much on the mesh size. The non-uniform region is due to
+the field transitioning to the parallel plate scenario (with a field of 20 kV/cm) where the EL frames
+lie which are two parallel metal surfaces.
+5.2
+
+Cathode field leakage
+
+The variation in the electric field from the buffer region to the drift region was investigated to inform
+the mesh parameters for the cathode. Since the cathode is highly transparent and the buffer electric
+field is much stronger than the drift field (due to design constraints), there will be a small region
+beyond the cathode mesh surface where the buffer electric field penetrates into the drift region (field
+leakage). Very near the cathode, ionization electrons produced near the cathode surface may travel
+to the buffer region rather than the EL region causing a loss in efficiency. The field leakage is nonuniform and depends on the distance to the nearest hexagon center. We calculated the maximum
+depth reached by the fringe field, which occurs at the center of each hexagon.
+Several hexagon sizes (2.5 mm, 5 mm, 10 mm inner diameter) for the cathode mesh were
+investigated at different buffer-to-drift field ratios. Two disks were placed on either side of a 60 mm
+mesh diameter cathode frame in COMSOL to fix the field boundary conditions. An electric field of
+∼2 kV/cm was used in the buffer region, and the drift field was varied to different values. The
+position of the minimum of the electric field from the cathode mesh surface is determined to estimate
+the depth of the leakage field. The results of this study are shown in Fig. 15. As the ratio of the
+buffer to the drift field is increased, the reach of the leakage field into the drift region increases.
+In the case of the 10 mm hexagon size, depths of 2 mm or larger are seen for electric field ratios
+of 2 and above. Both the 2.5 mm and 5 mm hexagons have a leakage field depth of 2 mm or less
+
+– 17 –
+
+Electric Field [V/cm]
+
+1500
+
+EBuffer/Edrift = 10
+Cathode Mesh Hexagon Size
+10 mm
+5 mm
+2.5 mm
+
+1000
+E>0 V/cm
+500 E=~-2 kV/cm
+Buffer Region
+Drift Region
+0
+6
+8 10 12 14 16 18 20
+z distance from buffer start [mm]
+
+Dist. from mesh surface [mm]
+
+2000
+
+6 Hexagon Size
+2.5 mm
+5
+5 mm
+10 mm
+4
+3
+2
+1
+0
+
+2
+
+4
+
+6
+EBuffer/Edrift
+
+8
+
+10
+
+Figure 15. Left: the electric field from the buffer region to the drift region as a function of different hexagon
+sizes. The minima of each curve correspond to the maximum fringe field depth given at the center of the
+hexagon. Right: the maximum fringe field depth (distance from 𝑧=10 mm into drift region to the electric
+field minimum) as a function of different buffer to drift field values at each hexagon size. The expected
+NEXT-100 𝐸 buffer /𝐸 drift ratio is 7 which has a similar fringe field depth for the 2.5 and 5 mm hexagons.
+
+for all configurations. Several wire widths of 0.13 mm, 0.5 mm, and 1 mm were also studied, and
+the differences were negligible, leading to a choice of 0.13 mm wire width to maximize optical
+transparency. The expected operating conditions in NEXT-100 include a buffer electric field of
+2 kV/cm and a drift field of 300 V/cm (𝐸 buffer /𝐸 drift = 7) giving a leakage field depth of 0.7 mm,
+1.3 mm, and 3.5 mm for the 2.5 mm, 5 mm, and 10 mm hexagon sizes respectively. Given the
+optical transparency of the 5 mm (∼95%) compared with the 2.5 mm (∼90%), 5 mm hexagons were
+chosen for the NEXT-100 cathode.
+5.3
+
+Mesh alignment
+
+The relative alignment of the EL gate and anode meshes determines how the electric field lines
+flow from the gate mesh to the anode, influencing the EL amplification properties of the system.
+To study this effect we use the same COMSOL model for the EL region as shown in Sec. 5.1 and
+consider a 60 mm mesh diameter working with the inner 20 mm radius where there is a uniform
+radial field region (see Fig. 14). The different mesh alignments considered are shown in Fig. 16
+where we orient the anode mesh such that it gives the desired mesh pattern.
+The electric field lines towards the anode will vary depending on the mesh alignment. A
+detailed description of the field lines is given in Appendix C. From these simulations, we find that
+the transition from the drift region to EL (and from EL to anode) is gradual rather than abrupt and
+extends several millimeters before and after the mesh surface. In addition, the local electric field
+around a wire surface is more than a factor of two higher than compared with the field in the EL
+gap. The different mesh alignments change the location of the hexagon lands at the anode where
+the field lines can either terminate in these high-field regions at the wire surface or continue to the
+grounded anode plate.
+To study the effect of the electric field non-uniformity on the scintillation photon yield per
+ionization electron, each of these field maps is imported into a Garfield++ simulation. Electrons
+were simulated starting 3.5 mm above the gate mesh and within a radius of 16 mm. Garfield++
+uses a microphysical simulation that steps the electron forward accounting for gas properties,
+
+– 18 –
+
+Aligned
+
+Shifted
+
+Rotated
+
+Figure 16. The mesh alignments studied in this simulation between the gate and anode EL frames as looked
+at in the 𝑥, 𝑦 plane. Each alignment forms a distinct pattern which alters how the electric field crosses the
+anode mesh. We consider the maximum 30 degree rotation for the rotated geometry. The red hexagons show
+example hexagonal unit cells (repeatable structures in the mesh pattern).
+
+collision cross sections, and diffusion. Gas properties and diffusion constants are calculated via
+the MAGBOLTZ program [38] integrated into the software. The output of the simulation is a series
+of inelastic scatter locations (𝑥, 𝑦, 𝑧, 𝑡) for each electron trajectory. Each inelastic scatter results in
+one scintillation photon due to the production of excimers [39], assuming no impurities in the gas.
+In the simulations, the field is not high enough to induce any ionization. All studies assume a gas
+pressure of 13.5 bar and a temperature of 20°C, the expected operating conditions for NEXT-100.
+Ten example electron trajectories in the 𝑥, 𝑧 plane from the Garfield++ simulation are shown in
+Fig. 17. Electrons follow the field lines towards the center of each hexagon in the gate mesh and get
+collected on the anode mesh from either the high field region or the grounded side. Some electrons
+are found to have collected on the grounded plate instead. The locations of all inelastic scatters
+(leading to photon emission) are also shown in Fig. 17. Electrons only start to produce inelastic
+scatters after they cross the gate mesh and stop when they reach a low-field region. The electrons
+are focused towards the centers of the mesh hexagons, even with random position sampling of their
+location when starting 3.5 mm above the mesh. Light emission is largely contained within the
+high-field region. The spreading of the trajectories is due to the diffusion of the electrons.
+The electroluminescent light timing profiles for the simulated electrons are shown in Fig. 18.
+The mean for each profile is taken from 40,000 simulated electrons. Fluctuations in the timing
+profile are driven by different path lengths each individual electron takes as it crosses the high field
+region. The timing profiles largely follow the central electric field line shapes shown in Fig. 25. In
+the aligned case, most electrons cross the anode mesh and either continue to the grounding plane
+or loop back and collect on the low-field side of the anode mesh. These loop-back events manifest
+as a long tail in the timing profile. In the shifted case, the majority of electrons collect directly on
+the anode wire surface in the high-field region giving rise to a pulse of light at the end of the path.
+The rotated timing profile has a mix of aligned and shifted geometries.
+There is an event-by-event variation due to the random path of each electron, variation of the
+
+– 19 –
+
+Inelastic Scatters
+0.4
+z [cm]
+
+0.2
+0.0
+0.2
+0.4
+0.6
+
+0.4
+
+0.2 0.0
+x [cm]
+
+0.2
+
+0.4
+
+Figure 17. Left: ten electron trajectories simulated in the aligned geometry starting from 𝑧 = 0.85 cm.
+Some electrons were collected on the low-field side of the anode mesh, while other electrons were collected
+on the grounding plate. Right: the electron tracks interpolated from only inelastic scatters (250 electrons are
+shown). The black dotted lines mark the EL gate (𝑧 = 0.5 cm) and EL anode (𝑧 = -0.5 cm). Some of the
+tracks continue to produce light 0.3 mm beyond the anode surface, however, the majority of inelastic scatters
+that lead to a photon are contained within the EL region. The color scale differentiates different electron
+trajectories.
+
+Aligned
+
+Shifted
+Mean
+
+100
+
+80
+EL Yield
+
+EL Yield
+
+80
+60
+40
+20
+00
+
+1000
+
+2000
+3000
+Time [ns]
+
+4000
+
+40
+00
+
+5000
+
+Rotated
+Mean
+
+EL Yield
+
+80
+EL Yield
+
+60
+20
+
+100
+60
+40
+20
+00
+
+Mean
+
+100
+
+1000
+
+2000
+3000
+Time [ns]
+
+4000
+
+5000
+
+35
+30
+25
+20
+15
+10
+5
+0 0
+
+1000
+
+2000
+3000
+Time [ns]
+
+4000
+
+5000
+
+4000
+
+5000
+
+Aligned Mean
+Shifted Mean
+Rotated Mean
+
+1000
+
+2000 3000
+Time [ns]
+
+Figure 18. Top left, top right, lower left: a 2D histogram of the timing profiles for all electron trajectories
+in each mesh configuration. The color scale (logarithmic) represents the density of the trajectory in each
+bin. The red trajectory shows a single electron trajectory and the black line shows the average timing profile.
+Lower right: The average time profiles overlaid.
+
+electric field, and stochastic nature of electron-xenon collisions. Figure 19 shows a histogram of
+
+– 20 –
+
+Entries [Arb.]
+
+0.020
+
+Aligned
+Shifted
+Rotated
+
+0.015
+0.010
+0.005
+0.000900
+
+950
+
+1000
+
+1050 1100
+EL Yield
+
+1150
+
+1200
+
+1250
+
+Figure 19. The average light yield (area normalized) in a unit cell for each of the mesh configurations at
+13.5 bar pressure, 1 cm gap distance, and 20 kV applied to the EL gate.
+
+the total EL yield for each mesh configuration. There is a difference in the EL yield and the spread
+depending on the configuration. Overall the shifted geometry has the best performance for gain and
+resolution and the aligned geometry has a lower gain on average by ∼10%. The rotated geometry
+exhibits behavior that is intermediate between aligned and shifted geometries. Other rotations were
+preliminarily explored and were found to similarly represent intermediate cases between aligned
+and shifted, depending on the angle.
+5.4
+
+Mesh alignment impact on energy resolution
+
+To study the impact of the gain variations from mesh alignment on the energy resolution, we assess
+the impact of these models on events of interest to the NEXT physics program. For this study, a
+map of EL yields is generated using the 40,000 electrons simulated via Garfield++ exploiting the
+hexagonal symmetry of the geometries. For each map, all electrons are translated to a unit cell
+based on their start 𝑥, 𝑦 position. Example unit cells are highlighted in red in Fig. 16 where the
+unit cell for the rotated mesh is much larger than the aligned or shifted geometries. This unit cell is
+divided into 50 bins using a cubic coordinate system. Each bin contains an array of EL yields to
+be sampled from. With these maps, we can account for variations in the photon yield from each
+electron depending on where it enters the gate mesh.
+Low-energy (40 keV, 106 events) and high-energy electrons (2.5 MeV, 105 events) are then
+generated in a gaseous xenon volume with dimensions of 0.5 × 0.4 × 0.4 m at 13.5 bar (expected
+operating pressure of NEXT-100) using a Geant4 [40–42] simulation and require all energy deposited in the gaseous region. The low-energy events are similar to the calibration samples used
+in NEXT from 83m Kr decays that are effectively point-like, while the high-energy event electrons
+model the 0𝜈𝛽𝛽 decay energy of 136 Xe which have longer and more complex topologies. The
+volume size was chosen to allow for fully contained events and show the effects of diffusion and the
+angular dependence on tracks to be encapsulated.
+
+– 21 –
+
+83mKr (40 keV)
+
+4
+3
+2
+
+Amplitude (Arb.)
+
+Amplitude (Arb.)
+
+5
+
+(2.5 MeV)
+
+50
+
+Aligned, = 0.10%
+Shifted, = 0.07%
+Rotated, = 0.17%
+
+Aligned, = 0.01%
+Shifted, = 0.01%
+Rotated, = 0.03%
+
+40
+30
+20
+
+1
+
+10
+
+01.00 0.75 0.50 0.25 0.00 0.25 0.50 0.75 1.00
+Change from median [%]
+
+00.15
+
+0.10
+
+0.05 0.00 0.05 0.10
+Change from median [%]
+
+0.15
+
+Figure 20. The widths in the total light yields produced for each mesh alignment are given in terms of a
+percent change from the median yield for (left) low and (right) high energy electrons. The dashed red lines
+are Gaussian fits with the fit sigma given in the legend. Note the different 𝑥 axis scale for the high-energy
+electrons.
+
+For each event, we take each ionization hit, which contains many electrons at a given 𝑥, 𝑦,
+and 𝑧 position inside the volume. The positions of each electron in a hit are smeared using a
+two-dimensional Gaussian distribution to account for transverse diffusion. This smearing models
+the diffusion of the ionization electrons towards a readout plane located at the end of the TPC. For
+each ionization electron, each smeared 𝑥, 𝑦 coordinate is translated to a position in the unit cell
+on the EL yield map, and a light yield is randomly sampled based on the bin it is located. The
+total yield is summed for all ionization electrons and is binned in a histogram. The histogram is
+then fit with a Gaussian distribution to determine the spread in light yield for a given event. The
+results are summarized in Fig. 20 and show that each mesh configuration at low or high energy has
+a sub-percent effect on the total light yields produced. A lower operating voltage of 15 kV was also
+checked for each alignment, we found that the impact on energy resolution was slightly larger but
+within 0.5% and 0.1% for low-energy and high-energy events respectively.
+The larger impact on lower energy events is due to the size of the events being more similar
+to the size of the hexagons. The rotated mesh has a wider variation due to the larger variation in
+path lengths possible due to the geometry. We conclude that any mesh alignment is suitable for
+use in NEXT-100. Due to existing design constraints and simplicity of assembly, the meshes in
+NEXT-100 were oriented with a rotation of approximately 15 degrees. As part of the NEXT-100
+commissioning process, we plan to verify the waveform shapes using data from 83m Kr decays and
+further study the edge effects of the electric field.
+
+6
+
+Installation of EL and cathode regions in NEXT-100
+
+Construction of the EL and cathode regions and installation in the NEXT-100 detector was carried
+out at the LSC in June 2023. The cathode is one of the first components installed in the field cage.
+Figure 21 shows three stages of the cathode construction. The left picture shows the tensioning
+ring being placed on top of the mesh and base ring before any screws have been added. The middle
+picture shows the cathode rings clamped to a table during tensioning of the mesh. The right picture
+shows a close-up image of the cathode that was placed between the white HDPE staves. The staves
+
+– 22 –
+
+Figure 21. Images of various stages of the cathode being assembled. Left: image of the tensioning ring
+being placed on top of the mesh and base ring just before tensioning. Middle: the cathode being clamped
+down while it is tensioned. Right: an image of the cathode being inserted into the field cage.
+
+Figure 22. Left: a picture of the NEXT-100 EL region before joining them together with the brackets.
+Middle: the EL region with the HDPE brackets attached just before placing on the copper end cap. Right: a
+close-up picture of the meshes in the EL region.
+
+provide the structure of the field cage for the insertion of the copper field rings and Teflon reflector
+panels and insulate between each field ring.
+Figure 22 shows pictures of various construction stages of the NEXT-100 EL region. An
+image of the EL frames prior to adding the brackets is shown. The white spacers between the rings
+separate them such that the mesh surfaces do not touch before adding the brackets. The middle
+picture shows the EL rings with the HDPE brackets just before they were placed onto the copper
+tracking plane. The final picture shows a close-up image of the EL gate. The final EL meshes
+following tensioning include one mesh without breaks and one mesh with three breaks. The mesh
+with the breaks was placed at the anode which reduces the formation of the sparks at these points.
+The EL region has been tested in 4 bar of nitrogen (which is similar to ∼15 bar xenon estimated
+from PyBoltz [31, 43]) and reached a breakdown near the center of the mesh at an electric field
+strength of 17.4 kV/cm which meets the minimum operating specifications for NEXT-100.
+The construction of the remaining parts of NEXT-100 including tracking and energy planes
+is now proceeding. The full detector will be exercised beginning in Winter 2023, with a physics
+program to follow a short commissioning phase that is expected to run to Summer 2024.
+
+– 23 –
+
+7
+
+Conclusion
+
+In this work, we have described the design choices made for the NEXT-100 electroluminescent and
+cathode region which have been mechanically installed for first tests of operation in the detector
+located at the LSC in Spain. We studied the electrical robustness of the hexagonal meshes to
+sparks and investigated the electric breakdown potential and positioning in air. We found that the
+breakdown tends to happen near the center of the mesh where the deflection is larger and occasionally
+breakdown occurs near a defective position (such as a break) on the mesh surface. An analytical
+model was developed to predict the electrostatic deflection with and without a support post placed
+at the center of the meshes to reduce the deflection. Measurements of the electrostatic deflection
+were performed by bringing a segment of the mesh into focus using a microscope objective and a
+webcam. The system is positioned on a micrometer stage to achieve 8 µm precision at a given point.
+Measurements were taken of the deflection as a function of mesh tension and we found that the
+deflection is reduced as more tension is applied to the mesh. Finally, measurements of the NEXT100 EL region were carried out before its installation at the LSC with extracted tension values to
+be 990±45 N and 835±40 N for each mesh. These measurements provide the expected deflection
+for the operation of the NEXT-100 EL region at a given electric field. Simulations of the electric
+field of the EL and cathode are performed including studies of the effect of different alignments
+of the meshes in the EL region including aligning, shifting, or rotating them by 30 degrees. The
+simulations include a detailed CAD model of the EL region with the COMSOL Multiphysics
+program to calculate the electric field. This field is further used in a Garfield++ simulation to
+calculate the EL gain for individual electrons crossing the gap in each alignment. We found that
+the mesh alignment does not significantly affect the energy resolution of low-energy (40 keV) and
+high-energy (2.5 MeV) events. Finally, we reported on the assembly of the NEXT-100 EL and
+cathode at the LSC, and installation into the detector. With the TPC now fully installed, NEXT-100
+will proceed to first full detector commissioning runs.
+
+Acknowledgments
+The NEXT Collaboration acknowledges support from the following agencies and institutions: the
+European Research Council (ERC) under Grant Agreement No. 951281-BOLD; the European
+Union’s Framework Programme for Research and Innovation Horizon 2020 (2014–2020) under
+Grant Agreement No. 957202-HIDDEN; the MCIN/AEI of Spain and ERDF A way of making Europe under grants PID2021-125475NB and the Severo Ochoa Program grant CEX2018000867-S; the Generalitat Valenciana of Spain under grants PROMETEO/2021/087 and CIDEGENT/2019/049; the Department of Education of the Basque Government of Spain under the
+predoctoral training program non-doctoral research personnel; the Spanish la Caixa Foundation (ID
+100010434) under fellowship code LCF/BQ/PI22/11910019; the Portuguese FCT under project
+UID/FIS/04559/2020 to fund the activities of LIBPhys-UC; the Israel Science Foundation (ISF)
+under grant 1223/21; the Pazy Foundation (Israel) under grants 310/22, 315/19 and 465; the US
+Department of Energy under contracts number DE-AC02-06CH11357 (Argonne National Laboratory), DE-AC02-07CH11359 (Fermi National Accelerator Laboratory), DE-FG02-13ER42020
+(Texas A&M), DE-SC0019054 (Texas Arlington) and DE-SC0019223 (Texas Arlington); the US
+
+– 24 –
+
+Figure 23. The coordinate system used for calculating the expected electrostatic deflection of an EL mesh.
+The second mesh will be displaced from the mesh shown in the 𝑧-direction. The origin is taken to be the
+center of the mesh which is circularly symmetric.
+
+National Science Foundation under award number NSF CHE 2004111; the Robert A Welch Foundation under award number Y-2031-20200401. Finally, we are grateful to the Laboratorio Subterráneo
+de Canfranc for hosting and supporting the NEXT experiment.
+
+A
+
+Analytical calculation of the electrostatic deflection
+
+This appendix gives the full calculation for the electrostatic deflection of a circular mesh when
+charged under a voltage. The calculation considers one mesh to be charged to a voltage, 𝑉 (known
+as the gate mesh), and the other mesh to be at ground (the anode mesh) - akin to the geometry of a
+parallel plate capacitor. For simplicity, the mesh is modeled as a series of parallel wires spanning
+the 𝑥 and 𝑦 directions. The coordinate system used is shown in Fig. 23.
+The stored energy in each segment of the mesh has contributions from the elastic energy due
+to the tensioning of the mesh and from the electrostatic energy from the capacitance between the
+mesh surface. The equilibrium shape is determined by minimizing the sum of these contributions
+using the Euler-Lagrange equation. The calculations are detailed in what follows.
+Elastic energy
+For an EL mesh that is pre-tensioned to a tension, 𝑇, a wire segment in this mesh of initial length
+0
+𝛿𝑙 0 stores elastic potential energy (in zero-field), 𝑈elastic
+, given by:
+1 𝐴𝛿𝑙 0 2
+𝜎 ,
+(A.1)
+2 𝑌
+where 𝐴 is the cross section of a wire segment in the mesh, 𝑌 is the Young’s modulus and 𝜎 is the
+stress. We can rewrite this in terms of the tension, 𝑇 = 𝜎 𝐴:
+0
+𝑈elastic
+=
+
+0
+𝑈elastic
+=
+
+1 𝛿𝑙 0 2
+𝑇 .
+2𝑌𝐴
+
+(A.2)
+
+The length of the pre-tensioned segment at zero field is given by:
+
+𝑇 
+𝛿𝑙 pt = 𝛿𝑙 0 1 +
+𝐴𝑌
+
+– 25 –
+
+(A.3)
+
+With a voltage applied, the segment will stretch further. The deformed length, 𝛿𝑙def can be
+related to the un-deformed length by:
+"√︂
+#
+ 𝑑𝑧  2
+𝛿𝑙def = 𝛿𝑙 pt 1 +
+,
+(A.4)
+𝑑𝑥
+where 𝑑𝑧/𝑑𝑥 is the deformation gradient. Assuming the gate-to-anode mesh separation in 𝑧 is much
+smaller than the radius of the mesh, we can assume 𝑑𝑧/𝑑𝑥 ≪ 1, and expand to first order:
+"
+#
+1  𝑑𝑧  2
+𝛿𝑙 def = 𝛿𝑙 pt 1 +
+.
+(A.5)
+2 𝑑𝑥
+The stored energy in a single wire is given by:
+𝐴𝑌 𝛿𝑙 0 2 𝐴𝑌 𝛿𝑙0 𝛿𝑙 def − 𝛿𝑙 0
+𝑠 =
+𝑈elastic =
+2
+2
+𝛿𝑙 0
+
+!2
+,
+
+(A.6)
+
+where 𝑠 is the strain. Using Eqns. A.3 and A.5 and rearranging, we find:
+!2
+
+𝐴𝑌 𝛿𝑙0 𝑇
+𝑇   𝑑𝑧  2
+𝑈elastic =
++ 1+
+2
+𝐴𝑌
+𝐴𝑌 𝑑𝑥
+#
+"
+ 𝑑𝑧  4
+𝑇   𝑑𝑧  2
+𝑇 𝛿𝑙 0  𝑇  
++ 1+
++O
+=
+2
+𝐴𝑌
+𝐴𝑌 𝑑𝑥
+𝑑𝑥
+
+(A.7)
+(A.8)
+
+The total stored energy is obtained by integrating over all wires.
+A wire along√︁ the 𝑥-direction at
+√︁
+position 𝑦 has a tensioned length that stretches from −𝑥 0 = − 𝑅 2 − 𝑦 2 to 𝑥 0 = 𝑅 2 − 𝑦 2 , where 𝑅
+is the radius of the mesh. Integrating along the pre-tensioned wire is equivalent to identifying the
+integration measures 𝑑𝑥 = 𝛿𝑙 pt ,
+∫ √𝑅2 −𝑦 2
+
+#
+"
+ 𝑇 
+ −1  𝑑𝑧  2
+𝑇
+𝑇
+1 wire
+𝑈elastic
+= √
+𝑑𝑥
+1+
++
+.
+2 𝐴𝑌
+𝐴𝑌
+𝑑𝑥
+− 𝑅 2 −𝑦 2
+
+(A.9)
+
+If there are 𝑁 𝑥 wires per unit length in 𝑦, we sum to find the contributions from all 𝑥 wires:
+√
+"
+#
+𝑗∼𝑅
+ −1  𝑑𝑧  2
+∑︁𝑁𝑥 ∫ 𝑅 1− 𝑗 2 𝑇  𝑇  
+𝑇
+𝑥 wires
+𝑈elastic
+=
+𝑑𝑥
+1+
++
+.
+(A.10)
+√
+2 𝐴𝑌
+𝐴𝑌
+𝑑𝑥
+−𝑅 1− 𝑗 2
+𝑗∼−𝑅 𝑁
+𝑥
+
+If the wires are sufficiently densely packed, we can replace the sum with an integral:
+√
+
+𝑗∼𝑅
+∑︁𝑁𝑥 ∫ 𝑅 1− 𝑗 2
+
+√
+
+𝑗∼−𝑅 𝑁 𝑥
+
+𝑑𝑥 →
+
+−𝑅 1− 𝑗 2
+
+Writing 𝑗/𝑁 𝑥 = 𝑦,
+
+√
+
+𝑑𝑦
+−𝑅
+
+−
+
+√
+
+𝑑𝑗
+
+𝑑𝑥.
+
+(A.11)
+
+−𝑅 1− 𝑗 2
+
+−𝑅 𝑁 𝑥
+
+∫ √𝑅2 −𝑦 2
+
+∫ 𝑅
+𝑁𝑥
+
+∫ 𝑅√1− 𝑗 2
+
+∫ 𝑅 𝑁𝑥
+
+∫
+𝑑𝑥 = 𝑁 𝑥
+
+𝑅 2 −𝑦 2
+
+– 26 –
+
+𝑑𝑥𝑑𝑦,
+◦𝑅
+
+(A.12)
+
+thus, the total elastic contribution from the 𝑥 wires is:
+"
+#
+∫
+𝑇  𝑇 
+𝑇  −1  𝑑𝑧  2
+𝑥 wires
+𝑈elastic = 𝑁 𝑥
+𝑑𝑥𝑑𝑦
+1+
++
+2 𝐴𝑌
+𝐴𝑌
+𝑑𝑥
+◦𝑅
+∫
+𝑇  𝑑𝑧  2
+= 𝑈0𝑥 + 𝑁 𝑥
+𝑑𝑥𝑑𝑦
+.
+2 𝑑𝑥
+◦𝑅
+
+(A.13)
+(A.14)
+
+Adding the similar contribution from the 𝑦 wires, we find the total stored elastic energy is given by:
+"
+#
+∫
+ 𝑑𝑧  2
+ 𝑑𝑧  2
+𝑇
+𝑦
+𝑥
+𝑑𝑥𝑑𝑦 𝑁 𝑥
++ 𝑁𝑦
+.
+(A.15)
+𝑈elastic = 𝑈0 + 𝑈0 +
+2
+𝑑𝑥
+𝑑𝑥
+◦𝑅
+Using this formula, we can see that if the wire was not pre-tensioned, the only restoring force would
+come from the O ( 𝑑𝑑𝑧𝑥 ) 4 term, which was neglected here. The mesh will always be pre-tensioned for
+our purposes, so the second-order term suffices.
+Electrostatic energy
+We can assess the total capacitive energy by assuming each surface element contributes as a small
+parallel plate capacitor and all are connected in parallel. Thus, the total electrostatic energy is given
+by:
+∑︁ 1
+∑︁ 1 𝑑𝑥𝑑𝑦
+1
+𝑈elec = 𝐶𝑉 2 =
+𝐶𝑖 𝑉 2 =
+𝜖
+𝑉 2,
+(A.16)
+2
+2
+2
+𝑔
++
+𝑧
+𝑖
+𝑖
+where 𝐶 is the capacitance, 𝑔 is the gap distance between the meshes and 𝑉 is the voltage. Taking
+the infinitesimal limit:
+1 𝑉2
+𝑑𝑥𝑑𝑦 𝜖
+2 𝑔+𝑧
+◦𝑅
+
+∫
+𝑈elec →
+
+(A.17)
+
+We will generally be able to assume small displacements of the mesh, although this is not as
+robust an approximation as the ones taken previously in this calculation, however, it will provide a
+considerable simplification:
+∫
+𝑧
+1 𝑉2 
+1−
+(A.18)
+𝑈elec ∼
+𝑑𝑥𝑑𝑦 𝜖
+2 𝑔
+𝑔
+◦𝑅
+Equilibrium shape
+To find the equilibrium mesh shape 𝑧(𝑥, 𝑦), we need to minimize the energy functional:
+∫
+𝑦
+𝑥
+𝑈 = 𝑈0 + 𝑈0 +
+𝑑 2 𝑥 𝑖 𝜀(𝑧)
+"
+#
+ 𝑑𝑧  2
+ 𝑑𝑧  2
+𝑇
+1 𝑉2 
+𝑧
+𝜀(𝑧) =
+𝑁𝑥
++ 𝑁𝑦
++ 𝜖
+1− ,
+2
+𝑑𝑥
+𝑑𝑦
+2 𝑔
+𝑔
+
+(A.19)
+(A.20)
+
+which can be solved with the Euler-Lagrange equation:
+∑︁
+𝑖
+
+𝜕𝑖
+
+ 𝜕𝜀  𝑑𝜀
+=
+.
+𝜕 [𝜕𝑖 𝑧]
+𝑑𝑧
+
+– 27 –
+
+(A.21)
+
+Applying the Euler-Lagrange equation, we find,
+ 𝜕2 𝑧
+𝜕2 𝑧 
+1 𝑉2
+𝑇 𝑁𝑥 2 + 𝑁𝑦 2 = − 𝜖 2 .
+2 𝑔
+𝜕𝑥
+𝜕𝑦
+
+(A.22)
+
+If we restrict to the symmetric case, 𝑁 𝑥 = 𝑁 𝑦 = 𝑁, in which case, this reproduces to a cylindrically
+symmetric form:
+1 𝜖 𝐸2
+(𝜕𝑥2 + 𝜕𝑦2 )𝑧 = −4𝜅, 𝜅 = ·
+,
+(A.23)
+4 2𝑇 𝑁
+where we have substituted in the electric field, 𝐸 = 𝑉/𝑔. The additional factor of 1/4 is introduced
+for convenience in the calculations. Solving using cylindrical polar coordinates, we can rewrite
+Eqn. A.23:
+1 𝜕  𝜕 
+𝜌
+𝑧 = −4𝜅.
+(A.24)
+𝜌 𝜕𝜌 𝜕𝜌
+To find the general solution, we write 𝑧 as a power series in 𝜌:
+∑︁
+𝑧=
+𝑎𝑛 𝜌𝑛,
+
+(A.25)
+
+𝑛
+
+which, when substituted into Eqn. A.24, gives:
+∑︁
+𝑛2 𝑎 𝑛 𝜌 𝑛−2 = −4𝜅.
+
+(A.26)
+
+𝑛
+
+Since there are no terms with 𝜌 on the right-hand side of Eqn. A.26, only the 𝑛 = 0 and 𝑛 = 2 terms
+contribute. The boundary condition 𝑧(𝑅) = 0 fixes the relationship between 𝑎 0 and 𝑎 2 to yield:
+𝑎0 =
+
+𝜅
+,
+𝑅2
+
+𝑎 2 = −𝜅,
+
+𝑎 others = 0.
+
+(A.27)
+
+This gives the solution:
+𝑧 = −𝜅(𝑅 2 − 𝜌 2 )
+
+(A.28)
+
+We can express 𝜅 in terms of the total mesh tension, 𝜏 = 2𝑇 𝑁 𝑅, rather than the tension per wire, 𝑇,
+as:
+𝜖 𝑅𝐸 2
+𝜅=
+.
+(A.29)
+4𝜏
+The extremal electrostatic deflection occurs at 𝜌 = 0 and is:
+𝑧max = −𝜅𝑅 2 .
+
+(A.30)
+
+It is useful to note that the electrostatic deflection does not depend on the Young’s modulus of the
+mesh.
+Addition of a support post
+In the scenario of adding an insulative support post between the meshes to reduce the deflection,
+we can use a similar method and solve the Euler-Lagrange equations. In this case, we have slightly
+different boundary conditions for which we want to solve Eqn. A.24 due to the post situated at the
+
+– 28 –
+
+origin. Again using cylindrical polar coordinates and solving the equation with integration exactly
+instead of using a power series:
+𝑧 = −𝜅𝜌 2 + 𝐴 ln 𝜌 + 𝐵,
+(A.31)
+where 𝐴 and 𝐵 are integration constants that we need to determine. For any solution going to 𝜌 = 0,
+we will have to throw the logarithmic term by setting 𝐴 = 0. This case gives us back the polynomial
+solution we found in Sec. A. If we don’t try to find the solution all the way to the origin, we can
+consider a boundary condition of 𝑧 = 0 at 𝑟 = 𝑅0 and 𝑟 = 𝑅 and find the displacement anywhere
+between these values. The value of 𝑅0 is the effective diameter of the post which includes the width
+of the post and the region of mesh which is stiff enough not to collapse around the head of the post.
+It is more convenient to write Eqn. A.31 in the following form:
+𝑧 = −𝜅𝜌 2 + 𝐴 ln
+
+𝜌
+,
+𝐶
+
+(A.32)
+
+where 𝐴 and 𝐶 both have units of length. Our two boundary conditions read:
+0 = −𝜅𝑅 2 + 𝐴 ln
+
+𝑅
+𝑅0
+, 0 = −𝜅𝑅02 + 𝐴 ln .
+𝐶
+𝐶
+
+(A.33)
+
+Using the right-hand equation to solve for 𝐶, we find:
+𝐶 = 𝑅0 exp −
+
+𝜅𝑅02
+
+(A.34)
+
+.
+
+𝐴
+
+Substituting this equation into the Eqn. A.33 (left) and rearranging, we find:
+𝐴=
+
+𝜅(𝑅 2 − 𝑅02 )
+ln(𝑅/𝑅0 )
+
+(A.35)
+
+,
+
+for which we can then determine 𝐶:
+𝐶 = 𝑅0
+
+ 𝑅 −
+
+𝑅2
+0
+2
+𝑅 −𝑅 2
+0
+
+(A.36)
+
+.
+
+𝑅0
+
+We can then write the full expression for the deflection with the post as:
+!
+ln(𝜌/𝑅
+)
+0
+𝑧 = −𝜅𝜌 2 + 𝜅 (𝑅 2 − 𝑅02 )
++ 𝑅02 .
+ln(𝑅/𝑅0 )
+
+(A.37)
+
+To find the maximum deflection, we differentiate Eqn. A.37 and set it equal to zero and solve:
+√︄
+𝑅 2 − 𝑅02
+𝜌max =
+,
+(A.38)
+2 ln(𝑅/𝑅0 )
+which gives:
+" ln
+𝑧 max = 𝜅(𝑅02 − 𝑅 2 )
+
+𝑅 2 −𝑅02
+2𝑅 2 ln(𝑅/𝑅0 )
+
+!
+
+2 ln(𝑅/𝑅0 )
+
+– 29 –
+
+− 1#
++ 𝜅𝑅 2 .
+
+(A.39)
+
+B
+
+Electrostatic deflection measurements with a support post
+
+Figure 24 shows the measurements of the deflection with and without the support post placed at
+the center of the mesh. Measurements were taken with a partially tensioned mesh with a frame gap
+of ∼1 mm to study the effect of the post on larger deflections. The post is made of HDPE with a
+diameter of 3 mm and consists of a hemispherical cap with a thin rod extruding from the base that
+has a diameter smaller than the mesh hexagons as shown in Fig. 24. The rod of the cap fits into a
+cylindrical tube located between the meshes. The cap and tube tight fitting creates a vacuum seal
+that holds the post in place between the meshes. The choice of material for the support post was
+informed by previous studies (see Ref. [32]) of the breakdown potential of various plastics. These
+data are fit to determine the mesh tensions that are shown in the legend of Fig. 24. The tension values
+yielded in each fit with and without the post are consistent within 30 N. In addition, the behavior
+of the support post agrees well with the model where the max deflection is now shifted towards a
+radius between the center of the mesh and the edge at around 20 cm. The effective post diameter
+was also left as a free parameter with the support post data and yields a value of 4.6±0.1 mm, which
+is 1.4 mm larger than the physical extent of the post. Overall, we find the maximum deflection is
+reduced by 0.2 mm with the post in place at 14 kV, therefore, the post was not used in NEXT-100.
+
+C
+
+EL electric field
+
+The electric field in the 𝑧-direction at various starting positions (labeled 1 – 4) starting from above
+the gate mesh is shown in Fig. 25 for each mesh configuration. As described in Sec. 5.1, the
+maximum electric field in the region between the gate and anode does not reach 20 kV/cm but a
+value ∼6% below this. In case 1 at the center of the hexagon cell, the electric field gradually ramps
+up and down as it crosses the gate and anode region with the field extending beyond the bounds of
+the mesh. In the case of the shifted geometry, there is a wire land precisely at the center. Towards
+the surface of the wire, the electric field rapidly rises and then reaches 0 V/cm inside the wire. On
+the opposite side of the anode wire, we also get a sharp rise in the field, although its magnitude
+is smaller compared to the side in the high-field region. In case 2, the shifted and rotated fields
+swap from case 1. In case 3, the field lines penetrate the aligned mesh at the gate and anode so
+there is a sharp rise and fall after crossing both mesh surfaces. Finally, in case 4 the field shape is
+symmetrical in all configurations as no wire surface is crossed.
+
+– 30 –
+
+Without support post
+
+600
+400
+300
+
+Deflection [ m]
+
+Deflection [ m]
+
+500
+
+Tension best fit: 950 +/- 55 N
+
+200
+100
+0
+
+0
+
+2
+
+4
+
+6
+8
+10
+Voltage [kV]
+
+With support post
+
+500
+
+Dist. from Centre
+0 cm
+30 cm
+5 cm
+35 cm
+10 cm
+40 cm
+15 cm
+45 cm
+20 cm
+48 cm
+25 cm
+
+12
+
+14
+
+400
+
+Dist. from Centre
+1.5 cm
+30.0 cm
+10.0 cm
+40.0 cm
+20.0 cm
+48.0 cm
+
+300
+
+Tension best fit: 995 +/- 55 N
+R0 best fit: 4.6 +/- 0.1 mm
+
+200
+100
+0
+
+0
+
+2
+
+4
+
+6
+8
+10
+Voltage [kV]
+
+12
+
+14
+
+Figure 24. Top left: the electrostatic deflection without a support post. Top right: the electrostatic deflection
+with a support post between the meshes. Bottom left: drawing of how the support post fits between the
+EL meshes. Bottom right: the deflection in 𝑥 and 𝑦 at 14 kV and at the best-fit tension and R0 values.
+The extracted tension amounts between each measurement set are consistent within 30 N. The solid lines
+represent fits to the experimental data using Eqn. 4.1 and A.37. Measurement of the deflection at the center
+of the mesh with the post is shifted by 1.5 cm to account for the post.
+
+– 31 –
+
+4
+
+1
+
+4
+
+1
+
+4
+
+2
+
+3
+
+3
+
+2
+
+Figure 25. The electric field lines in 𝑧 at various positions in each configuration. The horizontal blue line
+shows the electric field for an ideal parallel plate of 20 kV/cm, and each black vertical line shows the position
+of the gate and anode mesh. One example of a rotated mesh is given in red and the shifted geometry is given
+in orange.
+
+– 32 –
+
+References
+[1] Adams, C. and others, Neutrinoless double beta decay, arXiv:2212.11099.
+[2] NEXT Collaboration, F. Monrabal et al., The Next White (NEW) Detector, JINST 13 (2018), no. 12
+P12010, [arXiv:1804.02409].
+[3] NEXT Collaboration, J. Renner et al., Energy calibration of the NEXT-White detector with 1%
+resolution near Q𝛽𝛽 of 136 Xe, J. High Energ. Phys. 10 (2019) 230, [arXiv:1905.13110].
+[4] NEXT Collaboration, P. Novella et al., Measurement of the 136 Xe two-neutrino double beta decay
+half-life via direct background subtraction in NEXT, Phys. Rev. C 105 (May, 2022)
+[arXiv:2111.11091].
+[5] NEXT Collaboration, C. Adams and others, Demonstration of neutrinoless double beta decay
+searches in gaseous xenon with next, arXiv:2305.09435.
+[6] NEXT Collaboration, Álvarez, V. and others, The NEXT-100 experiment for neutrinoless double beta
+decay searches (Conceptual Design Report), arXiv:1106.3630.
+[7] NEXT Collaboration, J. Martin-Albo et al., Sensitivity of NEXT-100 to Neutrinoless Double Beta
+Decay, J. High Energ. Phys. 05 (2016) 159, [arXiv:1511.09246].
+[8] E. J. Dickinson, H. Ekström, and E. Fontes, Comsol multiphysics®: Finite element software for
+electrochemical analysis. a mini-review, Electrochem. Commun. 40 (2014) 71–74.
+[9] “Garfield++: A toolkit for the simulation of particle detectors.”
+https://garfieldpp.web.cern.ch/.
+[10] NEXT Collaboration, N. Byrnes, I. Parmaksiz, et al., NEXT-CRAB-0: a high pressure gaseous xenon
+time projection chamber with a direct VUV camera based readout, JINST 18 (Aug, 2023) P08006,
+[arXiv:2304.06091].
+[11] L. Baudis, Y. Biondi, M. Galloway, and et al., The First Dual-Phase Xenon TPC Equipped with
+Silicon Photomultipliers and Characterisation with 37 Ar, European Physical Journal C 80 (2020)
+477, [arXiv:2003.01731].
+[12] S. Stephenson, J. Haefner, Q. Lin, et al., MiX: a position sensitive dual-phase liquid xenon detector,
+JINST 10 (Oct, 2015) P10040, [arXiv:1507.01310].
+[13] D. Baur et al., The XeBRA platform for liquid xenon time projection chamber development, JINST 18
+(Feb, 2023) T02004, [arXiv:2208.14815].
+[14] J. Xu, S. Pereverzev, B. Lenardo, J. Kingston, D. Naim, A. Bernstein, K. Kazkaz, and M. Tripathi,
+Electron extraction efficiency study for dual-phase xenon dark matter experiments, Phys. Rev. D 99
+(May, 2019) 103024, [arXiv:1904.02885].
+[15] Q. Lin, Y. Wei, J. Bao, J. Hu, X. Li, W. Lorenzon, K. Ni, M. Schubnell, M. Xiao, and X. Xiao, High
+resolution gamma ray detection in a dual phase xenon time projection chamber, JINST 9 (Apr, 2014)
+P04014, [arXiv:1309.5561].
+[16] XENON100 Collaboration, E. Aprile et al., The XENON100 dark matter experiment, Astroparticle
+Physics 35 (2012), no. 9 573–590, [arXiv:1107.2155].
+[17] F. Jörg, D. Cichon, G. Eurin, and et al., Characterization of Alpha and Beta Interactions in Liquid
+Xenon, European Physical Journal C 82 (2022) 361, [arXiv:2109.13735].
+[18] nEXO Collaboration, M. Jewell et al., Characterization of an Ionization Readout Tile for nEXO,
+JINST 13 (Jan, 2018) P01006, [arXiv:1710.05109].
+
+– 33 –
+
+[19] S. J. Haselschwardt, R. Gibbons, H. Chen, S. Kravitz, A. Manalaysay, Q. Xia, P. Sorensen, and W. H.
+Lippincott, First measurement of discrimination between helium and electron recoils in liquid xenon
+for low-mass dark matter searches, arXiv:2308.02430.
+[20] L. Baudis et al., Design and construction of Xenoscope — a full-scale vertical demonstrator for the
+DARWIN observatory, JINST 16 (Aug, 2021) P08052, [arXiv:2105.13829].
+[21] PCM Products Inc., “Photo chemical etching & machining.” https://www.pcmproducts.com,
+2023.
+[22] MakeItFrom.com, “AISI 316Ti (S31635) Stainless Steel.” https:
+//www.makeitfrom.com/material-properties/AISI-316Ti-S31635-Stainless-Steel,
+May, 2020.
+[23] Christian, C., “All About Silicon Bronze - Strength, Properties, and Uses.” https:
+//www.thomasnet.com/articles/metals-metal-products/all-about-silicon-bronze/,
+2023.
+[24] G. Díaz López, Sensitivity of NEXT-100 detector to neutrinoless double beta decay. PhD thesis, U.
+Santiago de Compostela (main), 2023.
+[25] B. LaFerriere, T. Maiti, I. Arnquist, and E. Hoppe, A novel assay method for the trace determination
+of Th and U in copper and lead using inductively coupled plasma mass spectrometry, Nucl. Instr. and
+Meth. in Phys. Res. Sect. A 775 (2015) 93–98.
+[26] NEXT Collaboration, V. Álvarez et al., Radiopurity control in the NEXT-100 double beta decay
+experiment: procedures and initial measurements, JINST 8 (Jan, 2013) T01002,
+[arXiv:1211.3961].
+[27] D. Leonard et al., Systematic study of trace radioactive impurities in candidate construction materials
+for EXO-200, Nucl. Inst. and Meth. in Phys. Res. Sect. A 591 (2008), no. 3 490–509,
+[arXiv:0709.4524].
+[28] PNNL and SNOLAB, “https://www.radiopurity.org.” Aug 2023.
+[29] Eurofins, “Eag laboratories.” https://www.eag.com, 2023.
+[30] LUX-ZEPLIN Collaboration, D. S. Akerib, C. W. Akerlof, D. Y. Akimov, et al., The LUX-ZEPLIN
+(LZ) Radioactivity and Cleanliness Control Programs, European Physical Journal C 80 (2020) 1044,
+[arXiv:2006.02506].
+[31] B. Al Atoum, S. Biagi, D. González-Díaz, B. Jones, and A. McDonald, Electron transport in gaseous
+detectors with a python-based monte carlo simulation code, Computer Physics Communications 254
+(2020) 107357, [arXiv:1910.06983].
+[32] NEXT Collaboration, L. Rogers et al., High voltage insulation and gas absorption of polymers in high
+pressure argon and xenon gases, JINST 13 (2018), no. 10 P10002, [arXiv:1804.04116].
+[33] LUX-ZEPLIN Collaboration, R. Linehan et al., Design and production of the high voltage electrode
+grids and electron extraction region for the LZ dual-phase xenon time projection chamber, Nucl.
+Instr. and Meth. in Phys. Res. Sect. A 1031 (2022) 165955, [arXiv:2106.06622].
+[34] NEXT Collaboration, G. Martínez-Lema, J. H. Morata, B. Palmeiro, A. Botas, P. Ferrario,
+F. Monrabal, A. Laing, J. Renner, A. Simón, A. Para, et al., Calibration of the NEXT-White detector
+using 83𝑚 Kr decays, JINST 13 (2018), no. 10 P10014, [arXiv:1804.01780].
+[35] D. Nygren, High-pressure xenon gas electroluminescent tpc for 0-𝜈 𝛽𝛽-decay search, Nucl. Instr. and
+Meth. 603 (2009), no. 3 337–348.
+
+– 34 –
+
+[36] C. M. B. Monteiro, L. M. P. Fernandes, J. A. M. Lopes, L. C. C. Coelho, J. F. C. A. Veloso, J. M. F.
+dos Santos, K. Giboni, and E. Aprile, Secondary scintillation yield in pure xenon, JINST 2 (May,
+2007) P05001.
+[37] Dassault Systèmes, Solidworks, 2023.
+[38] S. F. Biagi, Monte carlo simulation of electron drift and diffusion in counting gases under the
+influence of electric and magnetic fields, Nucl. Inst. and Meth. in Phys. Res. Sect. A 421 (1999),
+no. 1-2 234–240.
+[39] M. Suzuki and K. S., Mechanism of proportional scintillation in argon, krypton and xenon, Nucl. Inst.
+and Meth. 164 (1979), no. 1 197–199.
+[40] J. Allison et al., Recent developments in geant4, Nucl. Inst. and Meth. in Phys. Res. Sect. A 835 (2016)
+186–225.
+[41] J. Allison et al., Geant4 developments and applications, IEEE Trans. Nucl. Sci. 53 (2006), no. 1
+270–278.
+[42] S. Agostinelli et al., Geant4—a simulation toolkit, Nucl. Inst. and Meth. in Phys. Res. Sect. A 506
+(2003), no. 3 250–303.
+[43] L. Norman, K. Silva, B. Jones, et al., Dielectric strength of noble and quenched gases for high
+pressure time projection chambers., Eur. Phys. J. C 82 (Jan, 2022) [arXiv:2107.07521].
+
+– 35 –
+
+

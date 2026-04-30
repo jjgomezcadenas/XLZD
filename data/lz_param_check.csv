@@ -1,0 +1,36 @@
+source,parameter,reference,model,status
+TDR,TPC active mass (kg),7000.0,7158.754238617294,~OK (2.3%)
+TDR,Skin mass side+dome (kg),2000.0,1252.9548876459285,** DIFF 37.4% **
+TDR,Total LXe in cryostat (kg),9600.0,8709.751920526993,** DIFF 9.3% **
+TDR,TPC PMTs (top+bottom),494,494,OK
+TDR,Top Skin PMTs (R8520),93,93,OK
+TDR,Bottom Skin PMTs (R8778),38,38,OK
+TDR,EL region gate-anode (mm),13.0,,NOT IN MODEL
+TDR,Drift region cathode-gate (mm),1456.0,1456.0,OK
+TDR,RFR sub-cathode (mm),137.5,,NOT IN MODEL
+TDR,TPC inner diameter (mm),1456.0,1456.0,OK
+TDR,Field cage thickness (mm),15.0,15.0,OK
+TDR,Skin thickness at surface (mm),40.0,,NOT IN MODEL
+TDR,Skin thickness at cathode (mm),80.0,,NOT IN MODEL
+TDR,Drift field stages,57,,NOT IN MODEL
+TDR,RFR stages,7,,NOT IN MODEL
+TDR,Operating pressure (bar),1.8,,NOT IN MODEL
+TDR,Temperature (K),175.8,,NOT IN MODEL
+bbonu,Ti cryostat vessel mass (kg),2590.0,2589.9,OK
+bbonu,Cryostat insulation mass (kg),13.8,13.8,OK
+bbonu,Field-cage rings mass (kg),93.0,93.0,OK
+bbonu,Field-cage resistors mass (kg),0.06,0.06,OK
+bbonu,PTFE walls mass (kg),184.0,184.0,OK
+bbonu,TPC sensors mass (kg),5.02,5.02,OK
+bbonu,Field grids+holders mass (kg),89.1,89.1,OK
+bbonu,TPC PMTs mass (kg),91.9,91.9,OK
+bbonu,TPC PMT bases mass (kg),2.8,2.8,OK
+bbonu,TPC PMT structures mass (kg),166.0,166.0,OK
+bbonu,TPC PMT cables mass (kg),88.7,88.7,OK
+bbonu,Skin PMTs+bases mass (kg),8.59,8.589,OK
+bbonu,FV z_min (cm),26.0,26.0,OK
+bbonu,FV z_max (cm),96.0,96.0,OK
+bbonu,FV r_max (cm),39.0,39.0,OK
+bbonu,FV mass (kg),967.0,987.7352971012136,~OK (2.1%)
+bbonu,Energy resolution sigma/E,0.01,0.007,** DIFF 30.0% **
+bbonu,SS/MS z threshold (mm),3.0,3.0,OK

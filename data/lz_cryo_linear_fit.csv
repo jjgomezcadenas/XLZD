@@ -1,0 +1,17 @@
+# LZ Cryostat: linear fit to angular PDF for MC sampling
+# p(u) = (a + b*u) / norm  for u in [u_min, u_max]
+#
+# To sample u in MC:
+#   1. Draw r ~ Uniform(0, 1)
+#   2. C = r * norm + a * u_min + b/2 * u_min^2
+#   3. u = (-a + sqrt(a^2 + 2*b*C)) / b
+#   4. theta = arccos(u), phi ~ Uniform(0, 2*pi)
+#
+# total_gammas_per_yr: rate of gammas exiting skin (all angles)
+# frac_in_fit_range: fraction of PDF integral within [u_min, u_max]
+#   (gammas below u_min are negligible and safely ignored)
+isotope,region,a,b,u_min,u_max,norm,total_gammas_per_yr,frac_in_fit_range
+Bi214,barrel,0.8813888329633134,0.5072659532471668,0.3,1.0,0.8477781918017803,3.382267e+04,0.8363
+Bi214,endcap,0.9595742180269802,0.15672506550570744,0.3,1.0,0.743011857423983,2.986222e+04,0.7326
+Tl208,barrel,0.8937906417145352,0.4650976924197553,0.3,1.0,0.8372728992511632,1.046081e+06,0.8259
+Tl208,endcap,0.9611869520774659,0.15394708478820354,0.3,1.0,0.7428767900328587,1.907042e+06,0.7324

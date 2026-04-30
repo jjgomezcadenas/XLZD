@@ -1,0 +1,13 @@
+# LZ Field Cage: MC sampling parameters
+# Angular distribution is isotropic over the inward hemisphere:
+#   u = cos(theta) ~ Uniform(0, 1)
+#   theta = arccos(u)
+#   phi ~ Uniform(0, 2*pi)
+# Entry point: uniform on barrel cylinder or endcap disc
+# Barrel: cylindrical shell at R_cm, height H_cm
+# Endcap: disc at R_cm (split 50/50 top and bottom)
+isotope,region,total_gammas_per_yr,angular_distribution,R_cm,H_cm
+Bi214,barrel,3.671593e+04,"flat (u ~ Uniform(0,1))",72.8,159.35
+Bi214,endcap,5.731006e+04,"flat (u ~ Uniform(0,1))",72.8,0.0
+Tl208,barrel,8.734495e+05,"flat (u ~ Uniform(0,1))",72.8,159.35
+Tl208,endcap,7.368697e+05,"flat (u ~ Uniform(0,1))",72.8,0.0

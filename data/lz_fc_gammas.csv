@@ -1,0 +1,13 @@
+source,region,isotope,gammas_produced_per_yr,gammas_entering_per_yr
+Field-cage rings,barrel,Bi214,1.5921e+04,7.9606e+03
+Field-cage rings,barrel,Tl208,2.5286e+05,1.2643e+05
+Field-cage resistors,barrel,Bi214,3.9620e+04,1.9810e+04
+Field-cage resistors,barrel,Tl208,1.3663e+06,6.8314e+05
+PTFE walls,barrel,Bi214,3.6000e+03,1.8000e+03
+PTFE walls,barrel,Tl208,2.0845e+04,1.0423e+04
+TPC sensors,barrel,Bi214,1.4291e+04,7.1454e+03
+TPC sensors,barrel,Tl208,1.0692e+05,5.3459e+04
+Top grids and holders,endcap,Bi214,5.7310e+04,2.8655e+04
+Top grids and holders,endcap,Tl208,7.3687e+05,3.6843e+05
+Bottom grids and holders,endcap,Bi214,5.7310e+04,2.8655e+04
+Bottom grids and holders,endcap,Tl208,7.3687e+05,3.6843e+05

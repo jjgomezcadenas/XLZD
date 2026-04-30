@@ -1,0 +1,1542 @@
+arXiv:1702.02646v5 [physics.ins-det] 26 Sep 2017
+
+Identification of Radiopure Titanium for the LZ Dark Matter Experiment and Future
+Rare Event Searches
+D.S. Akerib,1, 2 C.W. Akerlof,3 D. Yu. Akimov,4 S.K. Alsum,5 H.M. Araújo,6 I.J. Arnquist,a M. Arthurs,3 X. Bai,7
+A.J. Bailey,6, b J. Balajthy,8 S. Balashov,9 M.J. Barry,10 J. Belle,11, c P. Beltrame,12 T. Benson,5 E.P. Bernard,13, 14
+A. Bernstein,15 T.P. Biesiadzinski,1, 2 K.E. Boast,16 A. Bolozdynya,4 B. Boxer,17, 9 R. Bramante,1, 2 P. Brás,18
+J.H. Buckley,19 V.V. Bugaev,19 R. Bunker,7, d S. Burdin,17 J.K. Busenitz,20 C. Carels,16 D.L. Carlsmith,5
+B. Carlson,21 M.C. Carmona-Benitez,22 C. Chan,23 J.J. Cherwinka,5 A.A. Chiller,24 C. Chiller,24 A. Cottle,11
+R. Coughlen,7 W.W. Craddock,1 A. Currie,6, e C.E. Dahl,25, 11 T.J.R. Davison,12 A. Dobi,10, f J.E.Y. Dobson,26
+E. Druszkiewicz,27 T.K. Edberg,8 W.R. Edwards,10 W.T. Emmet,10 C.H. Faham,10, g S. Fiorucci,10 T. Fruth,16
+R.J. Gaitskell,23 N.J. Gantos,10 V.M. Gehman,10, h R.M. Gerhard,28 C. Ghag,26 M.G.D. Gilchriese,10 B. Gomber,5
+C.R. Hall,8 S. Hans,29 K. Hanzel,10 S.J. Haselschwardt,30 S.A. Hertel,31 S. Hillbrand,28 C. Hjemfelt,7 M.D. Hoff,10
+B. Holbrook,28 E. Holtom,9 E.W. Hoppe,a J.Y-K. Hor,20 M. Horn,21 D.Q. Huang,23 T.W. Hurteau,14
+C.M. Ignarra,1, 2 R.G. Jacobsen,13 W. Ji,1, 2 A. Kaboth,9, i K. Kamdin,10, 13 K. Kazkaz,15 D. Khaitan,27 A. Khazov,9
+A.V. Khromov,4 A.M. Konovalov,4 E.V. Korolkova,32 M. Koyuncu,27 H. Kraus,16 H.J. Krebs,1 V.A. Kudryavtsev,32
+A.V. Kumpan,4 S. Kyre,30 C. Lee,1, 2, j H.S. Lee,33 J. Lee,33 D.S. Leonard,33 R. Leonard,7 K.T. Lesko,10
+C. Levy,34 F.-T. Liao,16 J. Lin,16, k A. Lindote,18 R.E. Linehan,1, 2 W.H. Lippincott,11 X. Liu,26 M.I. Lopes,18
+B. Lopez Paredes,6 W. Lorenzon,3 S. Luitz,1 P. Majewski,9 A. Manalaysay,28 L. Manenti,26 R.L. Mannino,35
+D.J. Markley,11 T.J. Martin,11 M.F. Marzioni,12 C.T. McConnell,10 D.N. McKinsey,13, 10 D.-M. Mei,24 Y. Meng,20
+E.H. Miller,7 E.Mizrachi,1 J. Mock,34, 10 M.E. Monzani,1, 2 J.A. Morad,28 B.J. Mount,36 A.St.J. Murphy,12
+C. Nehrkorn,30 H.N. Nelson,30 F. Neves,18 J.A. Nikkel,9 J. O’Dell,9 K. O’Sullivan,10, 13, l I. Olcina,6
+M.A. Olevitch,19 K.C. Oliver-Mallory,10, 13 K.J. Palladino,5 E.K. Pease,13, 14 A. Piepke,20 S. Powell,17 R.M. Preece,9
+K. Pushkin,3 B.N. Ratcliff,1 J. Reichenbacher,7 L. Reichhart,26, m C.A. Rhyne,23 A. Richards,6 J.P. Rodrigues,18
+H.J. Rose,17 R. Rosero,29 P. Rossiter,32 J.S. Saba,10 M. Sarychev,11 R.W. Schnee,7 M. Schubnell,3 P.R. Scovell,16
+S. Shaw,26, n T.A. Shutt,1, 2 C. Silva,18 K. Skarpaas,1 W. Skulski,27 M. Solmaz,30 V.N. Solovov,18 P. Sorensen,10
+V.V. Sosnovtsev,4 I. Stancu,20 M.R. Stark,7 S. Stephenson,28, o T.M. Stiegler,35 K. Stifter,1, 2 T.J. Sumner,6
+M. Szydagis,34 D.J. Taylor,21 W.C. Taylor,23 D. Temples,25 P.A. Terman,35 K.J. Thomas,10, p J.A. Thomson,28
+D.R. Tiedt,7 M. Timalsina,7 W.H. To,1, 2, q A. Tomás,6 T.E. Tope,11 M. Tripathi,28 L. Tvrznikova,14, 13
+J. Va’vra,1 A. Vacheret,6 M.G.D. van der Grinten,9 J.R. Verbus,23, l C.O. Vuosalo,5 W.L. Waldron,10 R. Wang,11
+R. Watson,10, 13 R.C. Webb,35 W.-Z. Wei,24 M. While,24 D.T. White,30 T.J. Whitis,1, 2 W.J. Wisniewski,1
+M.S. Witherell,10, 13 F.L.H. Wolfs,27 D. Woodward,32 S. Worm,9, r J. Xu,15 M. Yeh,29 J. Yin,27 and C. Zhang24
+(The LUX-ZEPLIN (LZ) Collaboration)
+1
+
+SLAC National Accelerator Laboratory, P.O. Box 20450, Stanford, CA 94309-0450, USA
+2
+Kavli Institute for Particle Astrophysics and Cosmology (KIPAC),
+Stanford University, 452 Lomita Mall, Stanford, CA 94309-4008, USA
+3
+University of Michigan, Randall Laboratory of Physics,
+450 Church Street, Ann Arbor, MI 48109-1040, USA
+4
+National Research Nuclear University MEPhI (NRNU MEPhI), 31 Kashirskoe shosse, Moscow, 115409, Russia
+5
+University of Wisconsin-Madison, Department of Physics,
+1150 University Avenue Room 2320, Chamberlin Hall, Madison, WI 53706-1390, USA
+6
+Imperial College London, Physics Department, Blackett Laboratory, Prince Consort Road, London, SW7 2BW, UK
+7
+South Dakota School of Mines and Technology, 501 East Saint Joseph Street, Rapid City, SD 57701-3901, USA
+8
+University of Maryland, Department of Physics, College Park, MD 20742-4111, USA
+9
+STFC Rutherford Appleton Laboratory (RAL), Didcot, OX11 0QX, UK
+10
+Lawrence Berkeley National Laboratory (LBNL),
+1 Cyclotron Road, Berkeley, CA 94720-8099, USA
+11
+Fermi National Accelerator Laboratory (FNAL), P.O. Box 500, Batavia, IL 60510-5011, USA
+12
+SUPA, University of Edinburgh, School of Physics and Astronomy, Edinburgh, EH9 3FD, UK
+13
+University of California (UC), Berkeley, Department of Physics,
+366 LeConte Hall MC 7300, Berkeley, CA 94720-7300, USA
+14
+Yale University, Department of Physics, 217 Prospect Street, New Haven, CT 06511-8499, USA
+15
+Lawrence Livermore National Laboratory (LLNL),
+P.O. Box 808, Livermore, CA 94551-0808, USA
+16
+University of Oxford, Department of Physics, Oxford, OX1 3RH, UK
+17
+University of Liverpool, Department of Physics, Liverpool, L69 7ZE, UK
+18
+Laboratório de Instrumentação e Fı́sica Experimental de Partı́culas (LIP),
+Department of Physics, University of Coimbra, Rua Larga, 3004-516, Coimbra, Portugal
+
+2
+19
+
+Washington University in St. Louis, Department of Physics,
+One Brookings Drive, St. Louis, MO 63130-4862, USA
+20
+University of Alabama, Department of Physics & Astronomy,
+206 Gallalee Hall, 514 University Boulevard, Tuscaloosa, AL 34587-0324, USA
+21
+South Dakota Science and Technology Authority (SDSTA),
+Sanford Underground Research Facility, 630 East Summit Street, Lead, SD 57754-1700, USA
+22
+Pennsylvania State University, Department of Physics,
+104 Davey Lab, University Park, PA 16802-6300, USA
+23
+Brown University, Department of Physics, 182 Hope Street, Providence, RI 02912-9037, USA
+24
+University of South Dakota, Department of Physics,
+414 East Clark Street, Vermillion, SD 57069-2307, USA
+25
+Northwestern University, Department of Physics & Astronomy,
+2145 Sheridan Road, Evanston, IL 60208-3112, USA
+26
+University College London (UCL), Department of Physics and Astronomy, Gower Street, London, WC1E 6BT, UK
+27
+University of Rochester, Department of Physics and Astronomy, Rochester, NY 14627-0171, USA
+28
+University of California (UC), Davis, Department of Physics,
+One Shields Avenue, Davis, CA 95616-5270, USA
+29
+Brookhaven National Laboratory (BNL) P.O. Box 5000, Upton, NY 11973-5000, USA
+30
+University of California (UC), Santa Barbara, Department of Physics,
+Broida Hall, Santa Barbara, CA 93106-9530, USA
+31
+University of Massachusetts, Department of Physics,
+1126 Lederle Graduate Research Tower (LGRT), Amherst, MA 01003-9337, USA
+32
+University of Sheffield, Department of Physics and Astronomy, Sheffield, S3 7RH, UK
+33
+IBS Center for Underground Physics (CUP), 70,
+Yuseong-daero 1689-gil, Yuseong-gu, Daejeon, Korea
+34
+University at Albany (SUNY), Department of Physics,
+1400 Washington Avenue, Albany, NY 12222-1000, USA
+35
+Texas A&M University, Department of Physics and Astronomy,
+4242 TAMU, College Station, TX 77843-4242, USA
+36
+Black Hills State University, School of Natural Sciences,
+1200 University Street, Spearfish, SD 57799-0002, USA
+(Dated: September 28, 2017)
+The LUX-ZEPLIN (LZ) experiment will search for dark matter particle interactions with a detector
+containing a total of 10 tonnes of liquid xenon within a double-vessel cryostat. The large mass and
+proximity of the cryostat to the active detector volume demand the use of material with extremely
+low intrinsic radioactivity. We report on the radioassay campaign conducted to identify suitable
+metals, the determination of factors limiting radiopure production, and the selection of titanium for
+construction of the LZ cryostat and other detector components. This titanium has been measured
+with activities of 238 Ue <1.6 mBq/kg, 238 Ul <0.09 mBq/kg, 232 The = 0.28±0.03 mBq/kg, 232 Thl =
+0.25 ± 0.02 mBq/kg, 40 K <0.54 mBq/kg, and 60 Co <0.02 mBq/kg (68% CL). Such low intrinsic
+activities, which are some of the lowest ever reported for titanium, enable its use for future dark
+matter and other rare event searches. Monte Carlo simulations have been performed to assess
+the expected background contribution from the LZ cryostat with this radioactivity. In 1,000 days
+of WIMP search exposure of a 5.6-tonne fiducial mass, the cryostat will contribute only a mean
+background of 0.160 ± 0.001(stat)±0.030(sys) counts.
+
+a Pacific Northwest National Laboratory, P.O. Box 999, Richland,
+
+WA 99352-0999, USA; non-LZ Collaboration
+b Now at: Instituto de Fsica Corpuscular (IFIC), University of Valencia and CSIC, Parque Cientfico, C/Catedrático José, Beltrán,
+2, E-46980 Paterna, Spain
+c Also at: Belle Aerospace Corporation (BAC), Wheaton, IL
+60189-7059, USA
+d Now at: Pacific Northwest National Laboratory, P.O. Box 999,
+Richland, WA 99352-0999, USA
+e Now at: HM Revenue and Customs, 100 Parliament Street, London, SW1A 2BQ, UK
+f Now at: Zenysis Technology, 535 Mission Street Floor 14, San
+Franciso, CA 94105-3253, USA
+g Now at: LinkedIn, 2029 Stierlin Court, Mountain View, CA
+
+94043-4655, USA
+h Now at: Cainthus, Otherlab, 701 Alabama Street, San Francisco,
+
+CA 94110-2022, USA
+Royal Holloway, University of London, Department of
+Physics, Egham Hill, Egham, Surry, TW20 0EX, UK
+j Now at:
+IBS Center for Underground Physics (CUP), 70,
+Yuseong-daero 1689-gil, Yuseong-gu, Daejeon, Korea
+k Now at: University of California (UC), Berkeley, Department of
+Physics, 366 LeConte Hall MC 7300, Berkeley, CA 94720-7300,
+USA
+l Now at: Insight Data Science, 260 Sheridan Avenue Suite 310,
+Palo Alto, CA 94306-2010, USA
+m Now at: IMS Nanofabrication AG, Wolfholzgasse 20-22, 2345
+Brunn am Gebirge, Austria
+i Also at:
+
+3
+
+1.
+
+Introduction
+
+Direct dark matter searches attempt to measure the
+interaction of Weakly Interacting Massive Particles
+(WIMPs) with an atomic nucleus, a process not yet observed. The very nature of this low-energy rare-event
+search demands extremely low background event rates in
+the signal region of interest. In recent leading experimental searches, the background has been dominated by the
+decay of naturally occurring radioactive contamination
+present within the materials used to construct the detectors, primarily 238 U, 232 Th, 40 K, and 60 Co. To achieve
+the design sensitivity, the control of such radioactivity is
+fundamental not only to direct dark matter experiments,
+but to rare event searches in general, requiring extensive radioassay campaigns to select suitable construction
+materials.
+LZ (LUX-ZEPLIN) is a second generation dark matter
+experiment, presently under construction [1]. It will feature a two-phase xenon time projection chamber (TPC),
+containing approximately 7 tonnes of active liquid xenon
+(LXe) [2]. The total load of 10 tonnes of liquid xenon
+and other detector components will be held in a cryostat
+made from two nested vessels—the inner vessel contains
+the cold xenon whilst the outer vessel enables a vacuum
+region for thermal insulation. The material from which
+the cryostat is fabricated must be suitable for operation
+at cryogenic temperatures, must have mechanical properties that comply with international codes regulating the
+materials for pressure vessel fabrication, must not be prohibitively expensive and must be extremely radiopure.
+Historically, dark matter searches have used cryostats
+made from stainless steel or electroformed oxygen-free
+high conductivity (OFHC) copper. Stainless steel is inexpensive, readily satisfies mechanical constraints with
+its high tensile strength, and vessels are straightforward
+to manufacture. However, 238 U and 232 Th content can be
+significant and highly variable and levels of 40 K and 60 Co
+are typically high. Copper is usually found to be considerably more radiopure, but thicker vessels are required
+relative to stainless steel when manufacturing pressure
+vessels for equivalent mechanical strength. The ZEPLINIII experiment, one of the predecessors to LZ, used a
+low-activity copper cryostat containing 12 kilograms of
+
+n Corresponding author: sally.shaw.13@ucl.ac.uk
+o Now at: Deepgram, 148 Townsend Street, San Francisco, CA,
+
+94107-1919, USA
+
+p Corresponding author: thomas250@llnl.gov; Also at: University
+
+of California (UC), Berkeley, Department of Nuclear Engineering, 4155 Etcheverry Hall MC 1730, CA 94720-1730, USA; now
+at: Lawrence Livermore National Laboratory (LLNL), P.O. Box
+808, Livermore, CA 94551-0808, USA
+q Now at: California State University, Stanislaus, Department of
+Physics, 1 University Circle, Turlock, CA 95382-3200, USA
+r Now at: University of Birmingham, Particle Physics Group,
+School of Physics and Astronomy, Edgbaston, Birmingham, B15
+2TT, UK
+
+LXe [3, 4]. For larger experiments at the tonne-scale and
+beyond, thick cryostats not only impact total radioactivity, but also attenuate internally-produced γ-ray and
+neutron backgrounds, acting to limit the effectiveness of
+veto detectors that may surround the primary target volume.
+Titanium has previously been considered as an attractive alternative to stainless steel and copper. It has a
+high strength-to-weight ratio, is resistant to corrosion,
+and is already popular in the aerospace, metal finishing,
+oil refining and medical industries. It has a lower atomic
+number and therefore lower attenuation of low energy γradiation than stainless steel, should in principle contain
+very little 60 Co, and also benefits from little cosmogenic
+activation. This is significant since radioactive isotopes
+can be produced by neutron-induced spallation reactions
+whilst the material is still above ground. Stainless steel
+contains isotopes of iron, nickel and chromium that can
+be activated to form radioisotopes such as 56 Co, 58 Co,
+54
+Mn and 48 V [5], whilst in titanium, only the production of 46 Sc is a concern [6]. Although the LUX experiment [7–10], LZ’s most recent predecessor, successfully
+manufactured and deployed a cryostat constructed from
+low-activity titanium to contain 350 kg of LXe [11], securing similarly radiopure material has proved non-trivial
+across the field of rare-event search experiments. The importance of constructing vessels of sufficient radiopurity
+has already been recognized as necessary for the next
+generation of neutrinoless double-beta-decay (0νββ) experiments [12].
+To procure titanium for the manufacture of the LZ
+cryostat of similar or better radiopurity to that in LUX,
+an extensive R&D campaign has been conducted. This
+was necessary to ensure that reliably radiopure material could be sourced in sufficient quantities for LZ. The
+campaign has determined the requirements for procurement of reproducible radiopure titanium metal, included
+an extensive assay campaign of titanium samples (alongside stainless steel samples as an alternative) and, finally,
+selected suitable candidate materials. The measured radioactivities of screened samples have been used as input
+for detailed studies employing Monte Carlo simulations
+to model the LZ cryostat within the entire experiment.
+The impact of the intrinsic contamination in terms of
+background contribution to the WIMP search is determined, and this informs the selection of the most suitable
+sample for further confirmatory screening before procurement of the batch material for LZ.
+2.
+
+Titanium Production and Contaminants
+
+Titanium (Ti), a lightweight transition metal with
+atomic number 22, average atomic weight 47.90 and a
+density of 4510 kg/m3 , is the fourth most abundant metal
+on Earth, comprising 0.62% of the Earth’s crust. Titanium production begins with the mining and refinement of ores, and involves exposure to coke, coal, oil
+and tar which can introduce significant contamination
+
+4
+of radioactive elements including uranium and thorium.
+However, titanium oxide ores are treated with chlorine
+gas to produce titanium tetrachloride (TiCl4 ), which is
+found to have extremely low radiocontent after chemical
+treatment and filtering [13].
+To produce metallic titanium, the TiCl4 is reduced by
+liquid magnesium or sodium in a vessel filled only with
+argon to avoid oxygen or nitrogen contamination. This
+produces a porous titanium sponge, which is purified by
+leaching or heated vacuum distillation. There are typically no controls in place at this stage to limit contamination from surfaces or fluids in contact with the sponge,
+and thus variability in radioactivity of sponge products
+is expected.
+Before melting the sponge, any alloys and scrap metals required are added by mechanical compaction. The
+use of these, where radioisotope contamination of source
+material is not traceable, constitutes the highest risk for
+introduction of radioactivity into the bulk material. At
+this stage the radiopurity may be greatly affected even if
+the purity has been preserved from the TiCl4 through to
+the sponge.
+Refinement of titanium sponge can be undertaken using either vacuum arc remelting (VAR) or electron beam
+cold hearth (EBCH) techniques. VAR is used for most
+commercial titanium and involves melting the metal under a vacuum in a crucible. A current is passed across a
+gap between an electrode consisting of compacted sponge
+and alloy and a smaller piece of the metal. This creates
+an arc and begins a continuous melting process. As the
+electrode melts, it must be lowered towards the bottom
+of the vessel, allowing control over the solidification rate,
+which affects the micro-structure of the titanium. The
+vacuum conditions allow any remaining gas contamination (e.g. N2 , O2 , H2 ) to escape the titanium into the vacuum chamber. The resulting ingot is usually melted either once or twice more. Other impurities such as carbon,
+sulphur and magnesium that have a high vapour pressure
+will also be reduced in concentration. The disadvantages
+of VAR are that it is a slow process and nitrogen-rich
+low density particles survive as their residence time at
+sufficient temperatures is not long enough to melt them.
+Electron beam remelting uses electron beams to heat
+and melt metals in a water-cooled copper crucible under a vacuum. In EBCH, cold hearth refers to a watercooled copper hearth in which the feedstock is drip
+melted, overflowing into a withdrawal mold. EBCH holds
+some advantages for manufacturers: it is a faster process
+as it involves fewer steps than traditional refinement implying fewer opportunities for further radiological contamination, its high yield, its flexibility in melting feedstock of any geometry and finally the possibility of producing ingots and slabs with a wide range of cross sections. A final and key advantage for applications such
+as low-background experiments is that EBCH exceeds
+other refinement methods in removing high density contaminants, as these sink to the bottom of the hearth and
+so do not reach the mold [14].
+
+As part of the radioassay campaign for LZ, titanium
+of varying grades has been sampled in partnership with
+several manufacturers and at various stages of the production cycle beyond radiopure TiCl4 (including sponge,
+slabs, and sheet), using both re-melting processes (VAR
+and EBCH), and with varying scrap concentrations (with
+the majority requested and delivered with 0% scrap).
+3.
+
+Radioassay Campaign
+
+3.1.
+
+Screening Techniques
+
+The cryostat material assays have been primarily carried out by the Berkeley Low Background Facility using
+its surface screening detectors at the Lawrence Berkeley
+National Laboratory and the underground HPGe system
+Maeve. Until November 2015, Maeve was located underground (∼550 ft) at the Oroville Dam in Oroville, California, but has now been relocated to the Black Hills
+State University Underground Campus (BHUC) facility
+dedicated to low-background counting 4,850 ft underground at the Sanford Underground Research Facility
+(SURF) in Lead, South Dakota. Maeve is an ORTEC
+HPGe 85% p-type detector in a low background cryostat,
+shielded by OFHC copper and lead. For samples of a few
+kg, the sensitivity after two weeks of counting reaches approximately 10 ppt U (≈0.1 mBq/kg 238 U) and 25 ppt Th
+(≈0.1 mBq/kg 232 Th), 20 ppb for K (≈0.7 mBq/kg 40 K)
+and ≈0.03 mBq/kg for 60 Co. Maeve counting efficiencies were modelled with a Geant4 [15] simulation including precise geometry, accounting for sample dimensions
+and placement within the detector castle. The GEANT4
+models were carefully verified with well-characterized,
+homogeneous, weakly radioactive sources to ensure the
+validity of the Monte Carlo simulations for both geometric placement, self-attenuation, and energy response of
+the HPGe crystal.
+Measurements have also been performed at the Boulby
+Underground Laboratory in the UK, primarily using
+Chaloner, a 0.8 kg Canberra BE5030 Broad Energy
+Germanium (BEGe) detector. This instrument, with the
+advantage of its low energy threshold (≈15 keV), was
+used to perform confirmation measurements, particularly
+of the low energy and low branching ratio lines close to
+the top of the 238 U and 232 Th decay chains. Low background HPGe detectors operated at the University of Alabama in a surface laboratory have also been utilized for
+this campaign. All detectors have been cross-calibrated
+with results from the assay of standard sources, and agree
+within stated systematic uncertainties.
+All signal peaks detected with HPGe are passed for
+analysis, and multiple lines are measured to infer 238 U
+and 232 Th concentrations, as well as the lines from 60 Co,
+137
+Cs and other long-lived species. For 238 U it is standard to measure the decays of 226 Ra, 214 Pb and 214 Bi,
+and for 232 Th the decays of 228 Ac, 212 Bi, 212 Pb and 208 Tl.
+Rather than combining these lines to report single values for 238 U and 232 Th, we separately extract both early
+chain and late chain activities as manufacturing/chemical
+
+5
+processes may break secular equilibrium in the chains.
+This separation is necessary given the different energies
+and branching ratios of γ-rays throughout the chains,
+and more significantly, the impact on neutron production
+yields through both (α,n) processes and spontaneous fission. In the case of 238 U, we define the early part of
+the chain (238 Ue ) as containing any isotopes above 226 Ra
+(T1/2 = 1600 yr). The late part of the chain (238 Ul ) is
+counted from 226 Ra and below. Another break in the
+U chain often occurs at 210 Pb (T1/2 = 22 yr) and is also
+reported separately when available. Among the 238 U subchains, contributions from 238 Ul dominate LZ γ-ray and
+(α,n) backgrounds [16], whilst γ-rays and neutrons from
+fission of 238 U in 238 Ue are efficiently vetoed [17]. For
+the 232 Th chain, we define the early part of the chain
+(232 The ) as coming from isotopes above 228 Th and the
+late part of the chain (232 Thl ) as coming from isotopes
+from 228 Th and below. Among the 232 Th sub-chains,
+roughly equal contributions to LZ γ-ray background arise
+from 232 The and 232 Thl , whilst (α,n) backgrounds arise
+dominantly from 232 Thl .
+Small samples of titanium have been subjected to direct mass spectrometry for their U and Th content using
+Inductively Coupled Plasma Mass Spectrometry (ICPMS) at a dedicated facility set up at University College
+London (UCL) for LZ assays [18], and at the Pacific
+Northwest National Laboratory (PNNL). Both facilities
+operated an Agilent 7900 ICP-MS instrument in cleanrooms, taking extreme care to avoid trace contamination
+of the samples in handling, preparation and assay.
+3.2.
+
+Radioassay Results
+
+Titanium samples were secured for radioassay from
+several international manufacturers and suppliers, including VSMPO [19], TIMET [20], Supra Alloy [21],
+Honeywell [22] and PTG [23]. The samples were collected from stages throughout the manufacturing process
+with a focus on final processed sheet. TIMETAL® 35A
+sheet samples, equivalent to ASTM Grade 1, showed the
+highest radiopurity in early measurements and so several
+were obtained. After rejection of samples with known
+high scrap content or where traceability of the sample
+through the manufacture process was compromised, 22
+samples were selected for assay with the high sensitivity
+underground gamma spectroscopy detectors. The sample masses varied from approximately 0.5 kg to 10 kg and
+were cleaned prior to assay by etching with hydrofluoric
+and nitric acids. Several different types of titanium were
+measured: ASTM Grade 1 which is the highest grade purity of unalloyed titanium with a maximum oxygen content of 0.18%, ASTM Grade 2 which is also unalloyed but
+may contain a maximum oxygen content of up to 0.25%,
+porous titanium sponge created during the first stage of
+processing, and some finished nuts and bolts. The radioassay results from each of these samples are presented
+in Table I.
+ICP-MS assays have been performed to directly mea-
+
+sure the 238 U and 232 Th content of the most radio-pure
+samples as identified through γ-screening measurements:
+TIMET HN3469 and TIMET Sheet (4), both ASTM
+Grade 1 titanium with 0% scrap, and produced with
+EBCH re-melting. ICP-MS can achieve higher sensitivity for some elements in particular matrixes, utilizes a
+much smaller sample mass, and requires a shorter measurement time than in γ-screening. However, ICP-MS
+can suffer systematic errors that are larger than those
+in γ-screening measurements, due to contamination of
+the smaller sample mass, and variation due to the sampling of a small fraction of a large mass. Two pieces
+of TIMET HN3469-M were assayed with ICP-MS at the
+UCL facility. The samples were sonicated in high purity IPA before rinsing in de-ionised water, followed by
+an etch in 1:1 HF:HNO3 acid, further rinsing, and drying in an ISO class 10 LFU. The prepared samples, with
+masses 128.8 g (UCL #1) and 202.3 (UCL #2), were digested in a mixture of de-ionised water, HF, and HNO3 ,
+with acids doubly distilled. The digestion was performed
+in a closed microwave oven, with samples spiked with
+233
+U and 230 Th tracers assayed to monitor and correct
+for uranium and thorium recovery, and separate sample blanks were also assayed for background subtraction..
+The results of the assays are shown in Table II, with detections of 238 U at 2.23 ± 0.37 mBq/kg and 232 Th at
+0.10 ± 0.08 mBq/kg in sample UCL #1, and 238 U at
+2.01 ± 0.43 mBq/kg and 232 Th at 0.15 ± 0.07 mBq/kg
+in sample UCL #2. An additional 15% systematic uncertainty is estimated based on ICP-MS assays of calibration standards, such as IAEA-385 [25], used in the
+HPGe cross-calibration campaign. The results are consistent with the HPGe assays of TIMET HN3469-M, also
+shown in Table II for comparison, at 2.80 ± 0.15 mBq/kg
+for 238 Ue and at <0.20 mBq/kg for 232 The indicating
+the successful control of systematic effects in the ICP-MS
+process. Similarly, two samples of TIMET Sheet (4) were
+assayed at PNNL: a large piece (TiLarge) separated into
+3 pieces of 1 g each measured separately, and a small rectangular bar (TiSmall) measured once. A surface etch was
+performed on the TiLarge pieces to remove any surface
+contamination remaining after cleaning the samples. The
+etched material (TiLarge Etch) was retained and assayed
+separately to the bulk material (TiLarge Inner). The results of the assays are also presented in Table II. Uncertainties reported for TiLarge use the standard deviation
+of the three samples as well as instrumental precision,
+whilst TiSmall uses instrumental precision only. 238 U results are consistent between samples, whilst 232 Th results
+show discrepancy particularly from the etched material,
+likely due to surface contamination from processing. The
+results from the the ICP-MS are generally in agreement
+with the LZ γ-screening measurements of 8 ± 2 mBq/kg
+of 238 U and <0.12 mBq/kg of 232 Th again highlighting
+good control of systematic effects in the ICP-MS process.
+In parallel with the titanium R&D, we maintained a
+programme to secure samples of stainless steel as a viable alternative for the LZ cryostat to mitigate risk of
+
+6
+Table I: Radioassay results of 22 titanium samples (68% CL) from a variety of suppliers. Numbers in italics are 1σ upper
+limits, and 210 Pb results are given where available. Systematic uncertainties are estimated to be up to 10% by comparing the
+cross-calibration results of the assay of standard sources. TIMET sponges were obtained as a dirty gravel; the high 210 Pb
+activities observed are expected due to surface contamination and identify them as unsuitable.
+238 U (mBq/kg)
+232 Th (mBq/kg)
+40 K
+early late 210 Pb early
+late
+(mBq/kg)
+Supra Alloy Sheet (1)
+ASTM Grade 1 Sheet
+32
+4.2
+3.3
+2.8
+<1.9
+Supra Alloy Sheet (2)
+ASTM Grade 2 Sheet
+110
+<2
+200
+180
+25
+TIMET Sponge (1)
+Sponge
+25
+<2
+250
+<4.1
+<4.1
+<12
+TIMET Sponge (2)
+Sponge
+<25
+<2
+6200 <4.1
+<2.4
+<15
+TIMET Sponge (3)
+Sponge
+<25
+<2
+<62 <5.3
+<1.6
+<12
+TIMET Sponge (4)
+Sponge
+74
+<2
+120
+<4.1
+<1.6
+<12
+TIMET Sponge (5)
+Sponge
+<12
+<2
+740
+<4.1
+<1.6
+<12
+TIMET Sponge (6)
+Sponge
+74
+<4
+2500 <5.3
+14
+<19
+TIMET Sponge (7)
+Sponge
+37
+25
+2500
+12
+5.7
+<12
+TIMET Sheet (1)
+ASTM Grade 1 Sheet
+11 <0.62
+<0.8
+<0.6
+<2.5
+TIMET Sheet (2)
+ASTM Grade 1 Sheet
+5
+3.3
+2.8
+0.8
+<1.5
+TIMET Sheet (3)
+ASTM Grade 1 Sheet
+8.5
+0.37
+0.45
+0.61
+<0.5
+TIMET Sheet (4)
+ASTM Grade 1 Sheet
+8.0 <0.12
+<0.12
+<0.1
+<0.6
+TIMET HN3469-T
+ASTM Grade 1 Slab
+<1.6 <0.09
+0.28
+0.23
+<0.5
+TIMET HN3469-M
+ASTM Grade 1 Slab
+2.8 <0.10
+<0.20
+0.25
+<0.7
+PTG Sheet (1)
+ASTM Grade 1 Sheet
+47
+2.8
+2.0
+2.8
+<1.9
+PTG Sheet (2)
+ASTM Grade 2 Sheet
+<9.9 3.7
+<0.81
+2.4
+<2.2
+Bolts
+Bolts
+1300 <6.2
+160
+160
+<37
+Nuts/Washers
+Nuts/Washers
+520 <8.6
+<12
+81
+<62
+Honeywell Sheet
+ASTM Grade 1 Sheet
+3.7
+4.7
+1.5
+1.6
+<1.5
+VSMPO Disc (10% scrap) ASTM Grade 1 Metal
+62
+<6.2
+<4.1
+<4.1
+<31
+VSMPO Sponge
+ASTM Grade 1 Sponge 17
+12
+<4.1
+<4.1
+<6.2
+
+Name
+
+Type
+
+Table II: ICP-MS assay results of TIMET HN3469-M and
+TIMET Sheet (4) titanium samples. Also shown for
+comparison are the 238 Ue and 232 The (1 σ upper limits)
+results from γ-screening where uncertainties are statistical
+only and a systematic uncertainty of up to 10% is estimated
+by comparison of cross-calibration assays.
+Sample
+TIMET
+HN3469-M
+
+TIMET
+Sheet (4)
+
+UCL #1
+UCL #2
+HPGe
+TiLarge Inner
+TiLarge Etch
+TiSmall
+HPGe
+
+238 U
+232 Th
+e
+e
+(mBq/kg) (mBq/kg)
+2.23 ± 0.15 0.10 ± 0.08
+2.01 ± 0.43 0.15 ± 0.07
+2.80 ± 0.15
+<0.20
+
+9.9 ± 0.2
+9.9 ± 0.8
+9.8 ± 0.2
+8.0 ± 2.0
+
+0.12 ± 0.01
+0.7 ± 0.2
+0.086 ± 0.003
+<0.12
+
+being unable to find a source of sufficiently radiopure
+titanium, or an inability to manufacture a sufficiently
+large quantity. Stainless steel samples were sourced from
+NIRONIT [26], suppliers for the GERDA [5], NEXT [24]
+and XENON100 [27] experiments. We also re-measured
+a selection of stainless steel samples previously measured
+by the GERDA and NEXT experiments for independent
+assay, finding activity levels consistent with theirs [5, 24].
+The radioassay results of the 22 stainless steel samples are
+presented in Table III. NIRONIT samples were sourced
+from ThyssenKrupp (samples 2–6, 9 and 13) and Aperam
+(1, 7, 8, 11, 12).
+
+3.3.
+
+Material Selection
+
+Following the assays of all 22 Ti and 22 stainless steel
+samples, the highest and most reproducible radiopurity
+is found in ASTM Grade 1 titanium that contained 0%
+scrap and had been refined using EBCH technology. Of
+these, the lowest radioactivity is observed in material
+from TIMET Heat Number (HN) 3469, a single 15,000 kg
+slab of titanium, produced by TIMET at its Morgantown
+(Pennsylvania) mill. Results from a chemical analysis of
+this sample to measure concentrations of iron, carbon,
+oxygen and nitrogen are shown in Table IV.
+A sample from TIMET HN3469, denoted HN3469-T,
+was screened at the Berkeley Low Background Facility
+using Maeve in May of 2015. This consisted of 10.1 kg
+of plates selected from the top portion of the single slab.
+A second sample taken from the middle (HN3469-M), was
+acquired and assayed in September of 2015 to confirm the
+uniform distribution of contamination. The radioactivities of both samples of this titanium stock were found to
+be consistent.
+In both samples, each counted for approximately three
+weeks, the early uranium chain was non-detectable or
+barely detectable within the limited abilities of HPGe
+detectors to assay this portion of the decay chain via
+γ-ray spectroscopy. The late portion of the chain (at
+226
+Ra and below), however, is quite accessible via γ-ray
+spectroscopy due to both the branching ratio and detection efficiency for γ-rays emitted during the decay of
+constituent isotopes, and registered no detectable activity above background down to a few ppt. The 238 Ul value
+
+7
+Table III: Radioassay results from the 13 stainless steel samples directly from NIRONIT, 3 from GERDA and 3 from
+NEXT. All limits are 1σ upper limits and systematic uncertainties are estimated to be up to 10% by comparing the
+cross-calibration results of the assay of standard sources. NIRONIT samples that were excluded following pre-screening due
+to their high 60 Co content were not assayed for early-chain contents. Samples (2–6) were selected for additional assay
+underground at SURF using Maeve primarily upon their lower 60 Co content. Published results from the GERDA and NEXT
+collaborations are included for comparison.
+Name
+NIRONIT (1)
+NIRONIT (2)
+NIRONIT (3)
+NIRONIT (4)
+NIRONIT (5)
+NIRONIT (6)
+NIRONIT (7)
+NIRONIT (8)
+NIRONIT (9)
+NIRONIT (10)
+NIRONIT (11)
+NIRONIT (12)
+NIRONIT (13)
+GERDA D6
+published [5]
+GERDA G1
+published [5]
+GERDA G2
+published [5]
+NEXT 10 mm
+published [24]
+NEXT 15 mm
+published [24]
+NEXT 50 mm
+published [24]
+
+238 U (mBq/kg)
+
+232 Th (mBq/kg)
+
+early
+7.3
+1.2
+<1
+1.4
+1.1
+0.5
+-
+
+early
+1.1
+0.12
+0.49
+0.5
+0.81
+1.7
+-
+
+late
+0.35
+0.27
+0.54
+0.5
+0.38
+1.9
+1.1
+<0.6
+<0.6
+4
+<0.6
+<0.8
+<1.4
+
+<5
+<0.6
+<5
+<1.3
+<5
+<0.86
+7.46
+<21
+12.4
+<25
+12.4
+67 ± 22
+
+Table IV: Chemical analysis of two samples from TIMET
+HN3469-T, showing % weight of iron, carbon, oxygen and
+nitrogen in the titanium [28].
+Sample Fe
+C
+O
+N
+1
+0.01 0.001 0.04 0.002
+2
+0.02 0.006 0.02 0.002
+
+is based upon the 609 keV peak from 214 Bi and is consistent when compared to upper limits from other useful peaks in the late uranium chain, such as from 214 Pb
+(295, 352 keV) and 214 Bi (1764 keV). Both samples had
+detectable levels of the thorium series in both the early
+and late portions of the chain, consistent with secular
+equilibrium in both samples. The 232 Thl measurement
+is based upon the 238 keV γ-ray from 212 Pb, which is
+the strongest peak given the product of the detection efficiency of that γ-ray line and its branching ratio in the
+thorium chain. The assays are summarized in Table V.
+In terms of cosmogenic activation there were several
+isotopes of scandium present, most of which are the result
+of cosmic ray-induced reactions with the five stable isotopes of titanium. Detected in the sample was 46 Sc (889,
+1121 keV, T1/2 =84 days); as well as small amounts of
+47
+Sc (159 keV, T1/2 =3 days), 48 Sc (984, 1038, 1312 keV,
+T1/2 =44 hours), and 44,44m Sc (271, 1157 keV, T1/2 =59
+hours and 4 hours, the metastable state being the longer-
+
+late
+4.0
+0.49
+1.1
+0.32
+0.73
+1.5
+4.1
+<0.8
+<0.9
+2.2
+4.8
+2.1
+<1.5
+
+<0.4
+<1.4
+<0.4
+<2.6
+<0.4
+<0.24
+<0.24
+<0.59
+<0.24
+<0.69
+<0.24
+2.1 ± 0.4
+
+60 Co
+40 K
+(mBq/kg) (mBq/kg)
+14.5
+0.53
+1.6
+<0.4
+1.7
+<0.59
+2.6
+<0.5
+5.6
+<0.46
+4.5
+<0.5
+8.2
+<3.0
+7.4
+<3
+6.5
+<3
+26
+<4
+32
+<2
+32
+5
+335
+<4
+<0.002
+16.8 ± 2.4
+<1.8
+<0.003
+45.5 ± 2.1
+<2.8
+<0.003
+14.0 ± 0.1
+< 0.93
+<0.63
+2.8 ± 0.2
+<0.96
+<0.63
+4.4 ± 0.3
+<1.0
+<0.63
+4.2 ± 0.3
+<2.5
+
+lived). Screening results for 46 Sc are also listed in Table V, whilst the 47 Sc, 48 Sc, and 44,44m Sc activities are
+not listed as their short half lives mean they essentially
+disappear over the course of the measurement. The reported value for 46 Sc was corrected to the start of counting for each of the samples. The cosmogenic production
+of 46 Sc can be mitigated by moving components underground as soon as possible after manufacture.
+Table V: Results from γ-ray spectroscopy (in mBq/kg) of
+TIMET titanium sample HN3469 for both top and middle
+samples. All limits are 1σ upper limits and uncertainties are
+statistical only. A systematic uncertainty of up to 10% has
+to be additionally assumed. Results were obtained with the
+Maeve detector and confirmed with ICP-MS and the
+Chaloner detector.
+Top
+Middle
+Date
+May 2015 Sep. 2015
+Sample mass 10.07 kg
+8.58 kg
+Livetime
+23.9 days 20.8 days
+Activities (mBq/kg)
+238 U
+<1.6
+2.80 ± 0.15
+e
+238 U
+<0.09
+<0.10
+l
+232 Th
+0.28 ± 0.03
+<0.20
+e
+232 Th
+0.23 ± 0.02 0.25 ± 0.02
+l
+40 K
+<0.54
+<0.68
+60 Co
+<0.02
+<0.03
+46 Sc
+2.0 ± 0.1
+2.7 ± 0.1
+
+8
+The activities reported here for TIMET HN3469 are
+among the lowest worldwide known to-date for titanium; the radiopurity is comparable to the LUX titanium (Ul <0.25 mBq/kg, Thl <0.2 mBq/kg [11]), making
+the campaign a success. Titanium from the HN3469 slab
+has been procured for the 2,292 kg LZ cryostat and cryostat support structures, as well as other internal structures amounting to ∼364 kg. The measured radioactivities in the cryostat materials used in other dark matter
+and 0νββ experiments are shown for comparison in Table VI. The cryostat material with the lowest radiopurity and most sensitive measurements is the copper used
+in the Majorana Demonstrator (MJD) 0νββ experiment,
+which is electroformed underground to ensure extremely
+low levels of contamination.
+4.
+4.1.
+
+Cryostat Background
+Overview of Backgrounds
+
+Backgrounds from the cryostat may be categorised into
+two classes: electron recoils (ER) and nuclear recoils
+(NR). ER events can be discriminated against in a LXe
+TPC to greater than 99.5% efficiency, while NR events
+may not as they are essentially signal-like. Neutroninduced NR are indistinguishable from WIMPs if only
+a single elastic scatter occurs within the LZ fiducial volume, unaccompanied by any other signal in other active
+veto volumes of the experiment. Leading LZ background
+sources include astrophysical neutrinos, intrinsic radioactivity in the Xe, and emission from every component in
+the experiment.
+Radon emanation from the cryostat materials contributes an additional ER background, due to the ‘naked’
+beta emission from 214 Pb in the 222 Rn sub-chain. Background may also be generated from residual dust on the
+detector surfaces and plate-out of radon daughters, by
+emission of γ-rays from the radioactivity in the dust and
+neutrons from (α,n) reactions, as well as further radon
+emanation into the LXe from the dust, specifically from
+the inside of the inner vessel. Plate-out of radon progeny
+onto the surfaces of the cryostat following final cleaning
+post-manufacture must also be considered, especially the
+long-lived isotope 210 Pb. Daughters of 210 Pb, specifically
+210
+Po, can induce neutron emission through (α,n) reactions anywhere on the titanium surfaces, despite the relatively low α energy, generating additional nuclear recoil
+background. Furthermore, the presence of a reflective
+PTFE liner inside the inner vessel must also be considered; neutrons can also be induced here by α-particles
+from the cryostat, a process enhanced by the relatively
+high (α, n) cross section of the fluorine present in PTFE.
+4.2.
+
+Background Modeling
+
+Monte Carlo simulations have been performed to assess
+the contribution from all expected background sources,
+particularly those that generate single vertex interactions as expected from WIMP elastic scattering. These
+
+are conducted using LZSim, a simulation package constructed to model the experiment and inform the design,
+determine optimal performance parameters, and define
+tolerable rates from background sources. Developed using the Geant4 toolkit [15], the framework inherits from
+the LUX model [35], and includes all parts of the experiment.
+The LZ cryostat has been designed to stringent requirements that factor science goals, safety, containment,
+installation, and operation, and complies with ASME
+Boiler Pressure and Vessel Code (BPVC) VIII Div. 1 [36].
+It will contain a total of 10 tonnes of LXe at a minimum
+temperature of −110°C and be placed inside a water tank
+for shielding purposes. There are three primary parts—
+the inner cryostat vessel (ICV), the outer cryostat vessel
+(OCV) and the cryostat support (CS). Both the OCV
+and ICV contain a series of ports for cabling, liquid exchange and calibration sources. A CAD model of the
+cryostat is shown in Figure 1.
+
+(a) OCV and CS
+
+(b) ICV
+
+Figure 1: CAD models of the cryostat vessels and support.
+The OCV connects to three support legs mounted on
+baseplates and the ICV will be placed inside the OCV in
+vacuum. The full cryostat assembly stands 4.1 m tall.
+
+4.3.
+
+Radioactivity Simulations
+
+Simulations have been conducted by positioning radioactive nuclides in all the cryostat materials including
+the titanium, seals, liners, insulation, and bolts. For ER
+simulations, 60 Co, 40 K and the U and Th chain decays
+are simulated to produce γ-rays with the correct energies and branching ratios. For the U and Th early and
+late sub-chains, activities are assigned as determined by
+assays. Additionally, radon decays inside the LXe are
+simulated, under the assumption that all radon released
+from any material in contact with Xe mixes with the active mass.
+For NR simulations, a neutron (α, n) energy spectrum
+for each material was obtained from SOURCES4A [37].
+Single neutrons were emitted with energies sampled from
+the relevant spectrum, depending on their source mate-
+
+9
+Table VI: Radioactivities of cryostat material for a selection of dark matter and 0νββ experiments. Late chain 238 U & 232 Th
+activities are quoted due to the sparsity of data on early chain activities. Activities for 60 Co, 40 K, and 46 Sc are included
+where results are publicly available. Results from XENON100 and GERDA were reported as total activity and have been
+scaled by the given mass for comparison.
+Experiment
+
+Type
+
+DarkSide50 [29]
+XENON100 [27]
+XENON1T [30]
+ZEPLIN-III [31]
+EXO-200 [32]
+
+MJD [34]
+LUX [11]
+
+SS
+SS
+SS
+Cu
+Cu
+Cu
+SS
+Cu
+Ti
+
+LZ (this work)
+
+Ti
+
+GERDA [33]
+
+238 U
+232 Th
+60 Co
+40 K
+46 Sc
+Mass
+(kg) (mBq/kg)
+(mBq/kg)
+(mBq/kg) (mBq/kg) (mBq/kg)
+175
+<1
+<1
+13.1 ± 1
+74
+<1.8
+<0.03
+5.4 ± 0.5
+<9
+870
+2.4 ± 0.7
+0.21 ± 0.06
+<0.36
+9.7 ± 0.8
+2.7
+400
+<6.22
+<2.03
+<0.32
+5,901
+<0.01
+<0.003
+<0.01
+16,000 0.017 ± 0.005 0.014 ± 0.005 0.018 ± 0.005
+<0.049
+25,000
+<1.2
+<1.2
+19
+<2.9
+1,297
+<0.0003
+<0.0003
+230
+<0.25
+<0.2
+<1.2
+2.5
+Ue <1.6
+The : 0.28 ± 0.03
+1,827
+<0.02
+<0.54
+2.0 ± 0.1
+Ul <0.09
+Thl : 0.23 ± 0.02
+
+rial. The SOURCES4A code has been modified to extend
+the energies of α-particles up to 10 MeV from the original
+upper energy cut at 6.5 MeV [38], and to improve and extend the (α, n) cross-section library for a large number of
+materials [39–41], with newly added cross-sections calculated using the EMPIRE-2.19 code [42]. In calculations
+of neutron yields we use the thick target approximation,
+valid for material thicknesses significantly exceeding the
+range of α-particles, which are 10–30 µm in titanium. We
+find <0.1% of α-decays in the titanium are able to reach
+the neighbouring PTFE and induce a neutron, and so we
+consider this rate as negligible.
+In principle, 238 U spontaneous fission can contribute
+to neutron yields significantly in materials where (α, n)
+rates are low. However, the near-simultaneous emission
+of up to 5 neutrons and up to 20 γ-rays results in highly
+efficient event rejection, reducing the contribution from
+spontaneous fission to negligible levels, and so these are
+removed from the background model [17]. In our simulations, this reduces the neutron yield in titanium by
+35%.
+The simulation output is analysed to examine events
+with energy depositions in the LXe active target. In particular, for an event to constitute a background count,
+the energy deposited in the active LXe must be within
+the WIMP search region of interest (6–30 keV recoil energy) and the particle must be observed to have scattered
+only once within the active LXe volume. Furthermore,
+LZ will have a veto detector external to the cryostat,
+and this may not register an energy deposition within an
+event time window.
+Table VII summarises the materials used in the cryostat simulations, their masses, their measured activities, the neutron emission rate as determined with
+SOURCES4A for the given activities and mass, and the
+contribution to ER and NR background in LZ following
+the selection criteria. Figure 2 shows the spatial distribution of events generated by the cryostat radioactivity
+in the 7 tonne active volume and energy range of interest, showing the reduction as single scatter selection and
+vetoing is implemented.
+
+4.4.
+
+Total Cryostat Background
+
+The total expected background in LZ’s 5.6 tonne fiducial mass in a 1,000-day exposure (after the application
+of the region of interest, single scatter and veto cuts described above) from the intrinsic radioactivity within the
+titanium of the cryostat is 0.0127 NR and 0.51 ER counts.
+Discrimination allows 99.5% rejection of ERs, reducing
+the cryostat contribution of WIMP-like events from ERs
+to 0.003 events. The NR background is also reduced
+to 0.006 counts under the standard NR acceptance of
+∼50% typically assumed in LXe TPC dark matter experiments. Figure 3 shows this background contribution
+together with that expected if a selection of alternative
+titanium samples were to be used based on our radioassay results. Also included is a hypothetical point based
+on radioactivity equal to the LUX cryostat material. The
+ER and NR background expected if any of the stainless
+steel samples were to be used for the LZ cryostat are also
+included. Contours on the figure indicate goals on background contribution from the cryostat material. The red
+contour represents 0.2 NR counts and an ER rate equivalent to 10% of the background expected from pp solar
+neutrino scattering in the active mass—one of the largest
+contributions to the experiment. This marks the upper
+limit set on background from intrinsic radioactivity fixed
+in all materials in the LZ experiment. The yellow contour is 0.05 NR and 5% of the pp solar neutrino rate.
+Given the cryostat mass and proximity to the LXe, it
+is allocated up to a third of the maximum rate, 0.03
+NR and 3.3% of the pp solar neutrino rate, denoted by
+the green contour. The TIMET samples produced with
+EBCH and 0% scrap and the LUX titanium each satisfy this goal. Although some of the stainless steel samples assayed would be acceptable, most either fail the
+requirement or are very close to failing, and all exceed
+rates from titanium. Furthermore, the large sample-tosample variation indicates poorer reproducibility under
+standard manufacturing and processing. This presents
+increased risk of differences in radioactivities between assayed and procured material. The use of a stainless steel
+
+10
+Table VII: Table of expected backgrounds from all cryostat components, in an exposure of 5,600 tonne-days, before
+discrimination and NR acceptance is applied. The stainless steel is used for fasteners and calibration tubes, and the PEEK
+for seismic limiters. The totals show the mass weighed activities. ER and NR counts are rounded to two decimal places, and
+statistical uncertainties are given for the totals.
+60 Co
+40 K
+Mass 238 U (mBq/kg) 232 Th (mBq/kg)
+ER
+NR
+(kg) early
+early
+(mBq/kg) (mBq/kg)
+(cts)
+(cts)
+late
+late
+Titanium 2,292
+1.59
+0.11
+0.29
+0.25
+0.00
+0.54
+0.51
+1.27 × 10−2
+S. Steel
+110.5 1.429
+0.27
+0.33
+0.49
+1.60
+0.40
+0.09
+3.01 × 10−4
+PEEK
+1.167 17.00
+16.60
+16.10
+8.50
+0.52
+40.80
+0.02
+1.42 × 10−4
+Total
+2,404
+1.59
+0.11
+0.29
+0.25
+0.07
+0.56
+0.63±0.06 0.013±0.001
+
+Name
+
+cryostat also reduces the efficiency of ER background vetoing, with γ-rays stopped in the vessels rather than penetrating to veto systems.
+The ER and NR contributions from the intrinsic radioactivity fixed within all of the cryostat components
+is presented in Table VII, after all cuts are applied. The
+combined contribution is 0.013±0.001 NR and 0.63±0.07
+ER counts, reduced to 0.0032 ± 0.0004 WIMP like ER
+counts and 0.0065 ± 0.0005 NR counts after 50% NR acceptance and 99.5% ER discrimination.
+Estimates of radon emanation from titanium have been
+made using emanation rates from steel in literature and
+conservative models of the reduction expected at cryogenic temperatures [43]. The total estimated activity
+from the titanium cryostat from 222 Rn is 0.15 mBq.
+This activity is combined with radon emanation from
+the dust on the inside of the ICV, assuming typical 238 U
+concentrations of ≈10 mBq/g and a surface density of
+500 ng/cm2 , for a conservative total of 30 ER counts.
+The contribution from intrinsic dust activity is insignificant, contributing only 1.5 × 10−4 NR counts and
+7.6 × 10−3 ER counts. This was calculated assuming
+conservative exposure periods to air with no radon mitigation. Radon daughter plate-out, which leads to contamination of titanium surfaces with the long-lived isotope 210 Pb, can induce neutron emission through (α,n)
+reactions, but given the efficiency of neutron vetoing and
+the single scatter selection criteria in the fiducial volume,
+this process is expected to contribute only 2.8×10−3 NR
+counts.
+The combined total activity from the cryostat including fixed radioactivity, radon emanation, plate-out and
+dust is 0.152 ER and 0.008 NR after discrimination and
+acceptances. Models of dust deposition are assumed to
+have a systematic uncertainty of 30%. These and the systematic uncertainty on radioassays of 10% are combined
+with statistical uncertainty from simulations to give a total of 0.160 ± 0.001(stat)±0.030(sys) background counts
+to the WIMP search exposure of 5,600 tonne-days. The
+breakdown from the contributors to this total is presented in Table VIII.
+5.
+
+Conclusion
+
+The LZ collaboration has completed an R&D campaign to identify and procure radiopure titanium for construction of a double vessel cryostat. Material will also
+
+Table VIII: Breakdown of expected counts from the
+cryostat, in 5.6 tonnes of LXe and 1000 days; the total is
+shown before and after an ER discrimination of 99.5%, and
+an NR efficiency 50%.
+NR (cts) ER (cts)
+Titanium contamination 1.27 × 10−2
+0.51
+Other contamination
+4.43 × 10−4
+0.11
+Rn emanation
+0
+29.7
+Rn daughter plate-out
+2.81 × 10−3
+0
+Dust
+1.51 × 10−4 7.58 × 10−3
+Total (before dis./acc.)
+0.016
+30.31
+Total (after dis./acc.)
+0.008
+0.152
+
+be used for construction of other internal detector components. We identified titanium made from EBCH melt
+with 0% scrap, produced by TIMET, as by far the best
+material. The measured activities for 238 U, 232 Th, 60 Co
+and 40 K from the sample are significantly lower than requirements and are, alongside the LUX titanium, the
+lowest reported in titanium to date.
+Identification of low radioactivity titanium, together
+with associated manufacturing criteria required to reliably reproduce such activities, represents mitigation of a
+significant potential source of background for future dark
+matter experiments that will operate with metal cryostat
+vessels.
+The total contribution to LZ backgrounds in the standard LZ exposure of 5.6 tons and 1000 days from the
+titanium vessels alone is 0.51 ER and 0.0127 NR, before
+any discrimination is applied. Accounting for all ancillary
+components and materials, and backgrounds that may be
+introduced during fabrication, assembly, and installation,
+the cryostat is expected to contribute a background of up
+to 0.152 ER and 0.008 NR WIMP-like background events
+to the LZ science run.
+Acknowledgements
+
+We thank Alex Chepurnov of the Scobelcyn Institute
+of Nuclear Physics of Moscow State University for useful discussions and insights and are grateful to TIMET
+and NIRONIT for their co-operation with this work. We
+thank the GERDA and NEXT collaborations for supplying samples, and Mike Buhr from NIRONIT for support
+and securing and sending stainless steel samples.
+In particular the project would like to thank Jim Grau-
+
+11
+
+(a) Single scatter energy deposits.
+
+(b) Single scatter energy deposits after vetoing.
+
+Figure 2: Expected background from the cryostat in LZ, showing the spatial distribution in r2 and z within the active
+volume, and the fiducial volume (black dashed) that contains 5.6 tonnes of LXe. The colour scales are in counts/tonne/year.
+The effect of vetoing is highlighted through the reduction of events that satisfy single scatter selection in the energy range of
+interest for a WIMP search (left) by a factor ∼ 10 when vetoes are implemented (right).
+
+man from TIMET for his help in getting the Ti samples
+and securing for us the final slab. Without his constant
+support we would have not succeeded in our ultra low
+background material search campaign. Also we would
+like thank him for his expertise and valuable comments
+on the titanium production. We thank Alan R. Smith
+of Lawrence Berkeley National Laboratory for his work
+on many of the measurements made during this assay
+campaign.
+This work was partially supported by the U.S.
+Department of Energy (DOE) under award numbers
+DESC0012704,de-sc0010010,
+DE-AC02-05CH11231,
+de-sc0012161, de-sc0014223, DE-FG02- 13ER42020,
+DE-FG02-91ER40674, de-na0000979, de-sc0011702,
+DESC0006572, DESC0012034, de-sc0006605, and
+DE-FG02-10ER46709; by the U.S. National Science Foundation (NSF) under award numbers NSF
+PHY-110447, NSF PHY-1506068, NSF PHY-1312561,
+NSF PHY-1406943 and NSF PHY-1642619; by the
+U.K. Science & Technology Facilities Council under award numbers ST/K006428/1, ST/M003655/1,
+ST/M003981/1,
+ST/M003744/1,
+ST/M003639/1,
+ST/M003604/1, and ST/M003469/1; and by the
+Portuguese Foundation for Science and Technology
+(FCT) under award numbers CERN/FP/123610/2011
+and PTDC/FIS-NUC/1525/2014. University College
+London and Lawrence Berkeley National Laboratory
+thank the U.K. Royal Society for travel funds under the
+International Exchange Scheme (IE141517).
+We acknowledge additional support from the Boulby
+Underground Laboratory in the U.K., the University
+of Wisconsin for grant UW PRJ82AJ and the GridPP
+
+Collaboration, in particular at Imperial College London. Part of the research described in this Letter was
+conducted under the Ultra Sensitive Nuclear Measurements Initiative at Pacific Northwest National Laboratory, which is operated by Battelle for the U.S. Department of Energy under Contract No. DE-AC0576RL01830.
+We acknowledge many types of support provided to us
+by the South Dakota Science and Technology Authority,
+which developed the Sanford Underground Research Facility (SURF) with an important philanthropic donation
+from T. Denny Sanford as well as support from the State
+of South Dakota. SURF is operated by Lawrence Berkeley National Laboratory for the DOE, Office of High Energy Physics. The University of Edinburgh is a charitable
+body, registered in Scotland, with the registration number SC005336.
+
+12
+
+NR cts/1000d/5.6t
+
+10
+
+TIMET HN3469
+LUX Titanium
+TIMET Sheet (1)
+TIMET Sheet (3)
+
+NIRONIT (1)
+NIRONIT (2)
+NIRONIT (3)
+NIRONIT (4)
+NIRONIT (5)
+NIRONIT (6)
+NIRONIT (7)
+
+1
+
+NIRONIT (8)
+NIRONIT (9)
+NIRONIT (10)
+NIRONIT (11)
+NIRONIT (12)
+NIRONIT (13)
+
+10-1
+
+10-2
+
+10-3
+
+10-2
+
+10-1
+1
+ER cts/1000d/5.6t
+
+10
+
+Figure 3: Expected background counts in ER and NR, within the fiducial volume after all vetoes are applied, showing the
+TIMET sample chosen for LZ, the screened stainless steel samples as well as the titanium used for the LUX cryostat. An NR
+acceptance of 50% and an ER discrimination factor of 99.5% are applied. The red curve corresponds to the sum of 10% of the
+pp solar neutrinos and 0.2 NR events, the yellow is the sum of 5% of the pp solar neutrino ER background and 0.05 NR
+events, and the green line is the sum of 3.3% of the pp solar neutrino ER background and 0.03 NR events. This green line was
+the requirement for the LZ cryostat, and the titanium chosen (indicated by the star) is well below this requirement.
+
+[1] D. S. Akerib et al. (LZ), (2015), Conceptual Design Report; LBNL-190005, FERMILAB-TM-2621-AE-E-PPD,
+arXiv:1509.02910 [physics.ins-det].
+[2] V. Chepel and H. Araújo, J. Instrum. 8, R04001 (2013),
+arXiv:1207.2292 [physics.ins-det].
+[3] V. N. Lebedenko et al. (ZEPLIN-III), Phys. Rev. Lett.
+103, 151302 (2009), arXiv:0901.4348 [hep-ex].
+[4] D. Yu. Akimov et al. (ZEPLIN-III), Phys. Lett. B709,
+14 (2012), arXiv:1110.4769 [astro-ph].
+[5] W. Maneschg, M. Laubenstein, D. Budjas, W. Hampel,
+G. Heusser, K. T. Knopfle, B. Schwingenheuer, and
+H. Simgen (GERDA), Nucl. Instrum. Meth. A593, 448
+(2008).
+[6] C. Zhang, D. M. Mei, V. A. Kudryavtsev,
+and
+S. Fiorucci, Astropart. Phys. 84, 62 (2016),
+
+arXiv:1603.00098 [physics.ins-det].
+[7] D. S. Akerib et al. (LUX), Phys. Rev. Lett. 112, 091303
+(2014), arXiv:1310.8214 [astro-ph].
+[8] D. S. Akerib et al. (LUX), Phys. Rev. Lett. 116, 161301
+(2016), arXiv:1512.03506 [astro-ph].
+[9] D. S. Akerib et al. (LUX), Phys. Rev. Lett. 116, 161302
+(2016), arXiv:1602.03489 [hep-ex].
+[10] D. S. Akerib et al. (LUX), Phys. Rev. Lett. 118, 021303
+(2017), arXiv:1608.07648 [astro-ph.CO].
+[11] D. S. Akerib et al. (LUX), “Radio-assay of Titanium samples for the LUX Experiment,” (2011), (unpublished),
+arXiv:1112.1376 [physics.ins-det].
+[12] NSAC Subcommittee on Double Beta Decay, Neutrinoless Double Beta Decay, Tech. Rep. (Office of Science,
+U.S. Department of Energy, 1000 Independence Ave.,
+
+13
+SW, Washington, DC 20585, 2015).
+[13] E. Mozhevitina, A. Chepurnov, A. Chub, I. Avetissov,
+V. Glebovsky, S. Nisi, M. L. d. Vacri, and Y. Suvorov,
+Proceedings, 5th Topical Workshop on Low Radioactivity
+Techniques (LRT 2015): Seattle, WA, USA, March 1820, 2015, AIP Conf. Proc. 1672, 050001 (2015).
+[14] ASM International Handbook Committee, ASM Handbook Volume 15: Casting (ASM International, 9639 Kinsman Road, Materials Park, OH 44073-0002, 2008).
+[15] S. Agostinelli et al. (GEANT4), Nucl. Instrum. Meth.
+A506, 250 (2003).
+[16] D. C. Malling, S. Fiorucci, M. Pangilinan, J. J. Chapman,
+C. H. Faham, J. R. Verbus, and R. J. Gaitskell, “Dark
+Matter Search Backgrounds from Primordial Radionuclide Chain Disequilibrium,” (2013), (unpublished),
+arXiv:1305.5183 [astro-ph].
+[17] S. Shaw, Dark Matter Searches with the LUX and LZ
+Dark Matter Experiments, Ph.D. thesis, University College London (2016).
+[18] J. Dobson et al., (2017), manuscript in preparation.
+[19] VSMPO-AVISMA, (2015), Parkovaya St. 1, Verkhnaya
+Salda, Sverdlovsk Region, 624760, Russia.
+[20] TIMET, (2015), 224 Valley Creek Blvd. Suite 200, Exton, PA 19341-2300.
+[21] Supra Alloys, (2015), 351 Cortez Circle, Camarillo, CA
+93012-8638, USA.
+[22] “Honeywell Electronic Materials,” (2015), 15128 E Euclid Ave, Spokane Valley, WA 99216-1801, USA.
+[23] PTG - Performance Titanium Group, (2015), 8400 Miramar Rd Suite 200-248C San Diego, CA 92126-4387,
+USA.
+[24] V. Álvarez et al. (NEXT), J. Instrum. 8, T01002 (2013),
+arXiv:1211.3961 [physics.ins-det].
+[25] M. K. Pham, J. A. Sanchez-Cabeza, and P. P. Povinec,
+Radionuclides in Irish Sea Sediment, IAEA-385 (2005)
+International Atomic Energy Agency.
+[26] NIRONIT Edelstahlhandel GmbH & Co. KG, (2015),
+Eckeler Strasse 10, D-21224 Rosengarten, Germany.
+[27] E. Aprile et al. (XENON100), Phys. Rev. D83, 082001
+(2011), [Erratum: Phys. Rev. D85, 029904 (2012)],
+arXiv:1101.3866 [astro-ph].
+
+[28] TIMET, “HN3469-T Approved Certificate,” (2016), Internal Report.
+[29] C. E. Aalseth et al. (DarkSide), Adv. High Energy Phys.
+2015, 541362 (2015).
+[30] E. Aprile et al. (XENON1T), JCAP 1604, 027 (2016),
+arXiv:1512.07501 [physics.ins-det].
+[31] H. M. Araújo et al. (ZEPLIN-III), Astropart. Phys. 35,
+495 (2012), arXiv:1104.3538 [physics.ins-det].
+[32] M. Auger et al. (EXO-200), JINST. 7, P05010 (2012).
+[33] M. Agostini et al. (GERDA), Eur. Phys. J. C74, 2764
+(2014), arXiv:1306.5084 [physics.ins-det].
+[34] N. Abgrall et al. (Majorana), Nucl. Instrum. Meth.
+A823, 83 (2016), arXiv:1603.08483 [physics.ins-det].
+[35] D. S. Akerib et al. (LUX), Nucl. Instrum. Meth. A675,
+63 (2012), arXiv:1111.2074 [physics.data-an].
+[36] Boiler and Pressure Vessel Committee, ASME boiler and
+pressure vessel code, Section IX (American Society of
+Mechanical Engineers, Two Park Avenue New York, NY
+10016-59905, 2015).
+[37] W. B. Wilson, R. T. Perry, W. S. Charlton, and T. A.
+Parish, Prog. Nucl. Energy 51, 608 (2009), (SOURCES4C).
+[38] M. J. Carson et al., Astropart. Phys. 21, 667 (2004),
+arXiv:hep-ex/0404042 [hep-ex].
+[39] R. Lemrani, M. Robinson, V. A. Kudryavtsev, M. De Jesus, G. Gerbier, and N. J. C. Spooner, Nucl. Instrum.
+Meth. A560, 454 (2006), arXiv:hep-ex/0601030 [hep-ex].
+[40] V. Tomasello, V. A. Kudryavtsev, and M. Robinson,
+Nucl. Instrum. Meth. A595, 431 (2008), arXiv:0807.0851
+[hep-ph].
+[41] V. Tomasello, M. Robinson, and V. A. Kudryavtsev,
+Astropart. Phys. 34, 70 (2010).
+[42] M. Herman, R. Capote, B. Carlson, P. Oblozinsky,
+M. Sin, A. Trkov, H. Wienke, and V. Zerkin, Nucl. Data
+Sheets 108, 2655 (2007).
+[43] G. Zuzel, in Topical Workshop on Low Radioactivity
+Techniques: LRT 2004., American Institute of Physics
+Conference Series, Vol. 785, edited by B. Cleveland,
+R. Ford, and M. Chen (2005) pp. 142–149, Highly Sensitive Measurements of 222 Rn Diffusion and Emanation.
+
+
