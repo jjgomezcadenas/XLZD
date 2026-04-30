@@ -155,18 +155,135 @@ function finalize_outcome!(state::PhotonState, rng::AbstractRNG,
 end
 
 # ---------------------------------------------------------------------------
+# Photon tracking segment (recursive helper)
+# ---------------------------------------------------------------------------
+
+"""
+    _track_photon_segment!(rng, det, params, xcom, state, scratch,
+                            x, y, z, dx, dy, dz, E)
+
+Track one photon segment through the LXe until it is absorbed, escapes
+the detector, or `state.outcome` becomes terminal. Mutates `state` and
+(if non-`nothing`) pushes deposits to `scratch`. Returns nothing.
+
+Pair production triggers two recursive calls — one per 511 keV
+annihilation γ emitted back-to-back from the conversion vertex.
+Recursion depth is bounded at 2: 511 keV is below the pair-production
+threshold, so secondaries cannot themselves pair-produce.
+"""
+function _track_photon_segment!(rng::AbstractRNG, det::LXeDetector,
+                                 params::MCParams, xcom::XCOMTable,
+                                 state::PhotonState,
+                                 scratch::Union{PhotonScratch, Nothing},
+                                 x::Float64, y::Float64, z::Float64,
+                                 dx::Float64, dy::Float64, dz::Float64,
+                                 E::Float64)
+    ρ = det.material.density
+    E_cutoff = E_tracking_cutoff_MeV(params)
+
+    while state.outcome === :in_progress
+        reg = region_at(det, x, y, z)
+
+        if reg === :outside_lxe
+            return
+        end
+
+        if reg === :gas || reg === :fc_region
+            d = path_to_next_region(x, y, z, dx, dy, dz, det)
+            d == Inf && return
+            d_step = d + 1.0e-7
+            x += d_step * dx; y += d_step * dy; z += d_step * dz
+            state.total_path += d_step
+            continue
+        end
+
+        # LXe region: μ-step vs region boundary
+        μ = μ_total_lin(xcom, E, ρ)
+        d_int = -log(rand(rng)) / μ
+        d_bnd = path_to_next_region(x, y, z, dx, dy, dz, det)
+
+        if d_int >= d_bnd
+            d_step = d_bnd + 1.0e-7
+            x += d_step * dx; y += d_step * dy; z += d_step * dz
+            state.total_path += d_step
+            continue
+        end
+
+        # Interact
+        x += d_int * dx; y += d_int * dy; z += d_int * dz
+        state.total_path += d_int
+        state.n_int += 1
+
+        sP = σ_photo(xcom, E)
+        sC = σ_Compton(xcom, E)
+        sX = σ_pair(xcom, E)
+        sT = sP + sC + sX
+        r_branch = rand(rng)
+
+        if r_branch < sX / sT
+            # Pair production: e⁺e⁻ kinetic energy deposited at the vertex,
+            # then two 511 keV annihilation γ's back-to-back.
+            E_pair_kin = E - 2.0 * ME_C2_MEV
+            handle_deposit!(state, det, params, x, y, z, E_pair_kin, scratch)
+            state.outcome === :in_progress || return
+
+            # Isotropic direction for the first; second is opposite.
+            u_aux = 2.0 * rand(rng) - 1.0
+            φ_aux = 2π * rand(rng)
+            s_aux = sqrt(max(0.0, 1.0 - u_aux*u_aux))
+            d1x = s_aux * cos(φ_aux)
+            d1y = s_aux * sin(φ_aux)
+            d1z = u_aux
+
+            _track_photon_segment!(rng, det, params, xcom, state, scratch,
+                                    x, y, z,  d1x,  d1y,  d1z, ME_C2_MEV)
+            state.outcome === :in_progress || return
+            _track_photon_segment!(rng, det, params, xcom, state, scratch,
+                                    x, y, z, -d1x, -d1y, -d1z, ME_C2_MEV)
+            return
+
+        elseif r_branch < (sX + sP) / sT
+            # Photoelectric absorption: full energy locally
+            handle_deposit!(state, det, params, x, y, z, E, scratch)
+            return
+
+        else
+            # Compton: KN scatter
+            E_scatt, cos_θ = sample_klein_nishina(rng, E)
+            E_dep = E - E_scatt
+            handle_deposit!(state, det, params, x, y, z, E_dep, scratch)
+            state.outcome === :in_progress || return
+
+            φ_az = 2π * rand(rng)
+            dx, dy, dz = rotate_direction(dx, dy, dz, cos_θ, φ_az)
+            E = E_scatt
+
+            # Energy cutoff: deposit remainder locally
+            if E < E_cutoff
+                handle_deposit!(state, det, params, x, y, z, E, scratch)
+                return
+            end
+        end
+    end
+    return
+end
+
+# ---------------------------------------------------------------------------
 # Main tracker
 # ---------------------------------------------------------------------------
 
 """
     track_one_photon!(rng, det, eff, xcom, params) -> Symbol
 
-Shoot one γ from `eff` into `det`, sampling step lengths via μ_LXe and
-sampling interaction types from `xcom`'s per-component cross sections.
+Shoot one γ from `eff` into `det`. Pair-production interactions are
+fully tracked: the e⁺e⁻ kinetic energy is deposited at the conversion
+vertex and the two 511 keV annihilation γ's are propagated through the
+LXe with full physics.
+
 Returns one of `:escaped`, `:MS_rejected`, `:skin_vetoed`,
 `:SS_outside_FV`, `:SS_outside_ROI`, `:SS_in_ROI`.
 
-Companion-γ veto is NOT applied here — it will be added in MC4.
+Companion-γ veto is applied separately in `run_mc`.
 """
 function track_one_photon!(rng::AbstractRNG,
                             det::LXeDetector,
@@ -175,114 +292,17 @@ function track_one_photon!(rng::AbstractRNG,
                             params::MCParams;
                             hist::Union{HistogramSet, Nothing}=nothing,
                             scratch::Union{PhotonScratch, Nothing}=nothing)::Symbol
-    # Reset scratch for this photon
     scratch !== nothing && empty!(scratch.deposits)
 
-    # Sample entry point + initial direction
     x, y, z, dx, dy, dz = sample_entry(rng, det, eff)
-    E = eff.E_MeV
     state = PhotonState()
-    ρ = det.material.density
-    E_cutoff = E_tracking_cutoff_MeV(params)
+    _track_photon_segment!(rng, det, params, xcom, state, scratch,
+                            x, y, z, dx, dy, dz, eff.E_MeV)
 
-    # Tracking loop. The photon may pass through transparent regions
-    # (:gas, :fc_region) without interaction; in LXe regions it samples
-    # an exponential step length and either interacts or hits a region
-    # boundary first (in which case we re-classify).
-    while state.outcome === :in_progress
-        reg = region_at(det, x, y, z)
-
-        if reg === :outside_lxe
-            # Photon left the LXe envelope (entered the Ti vessel or beyond).
-            finalize_outcome!(state, rng, params)
-            break
-        end
-
-        if reg === :gas || reg === :fc_region
-            d = path_to_next_region(x, y, z, dx, dy, dz, det)
-            if d == Inf
-                # No further boundary — photon escapes
-                finalize_outcome!(state, rng, params)
-                break
-            end
-            # Step slightly past the boundary so re-classification lands
-            # in the next region rather than on the surface.
-            d_step = d + 1.0e-7
-            x += d_step * dx
-            y += d_step * dy
-            z += d_step * dz
-            state.total_path += d_step
-            continue
-        end
-
-        # reg ∈ (:active, :skin, :inert) — LXe with full attenuation
-        μ = μ_total_lin(xcom, E, ρ)
-        d_int = -log(rand(rng)) / μ
-        d_bnd = path_to_next_region(x, y, z, dx, dy, dz, det)
-
-        if d_int >= d_bnd
-            # Cross region boundary before interacting
-            d_step = d_bnd + 1.0e-7
-            x += d_step * dx
-            y += d_step * dy
-            z += d_step * dz
-            state.total_path += d_step
-            continue
-        end
-
-        # Interact
-        x += d_int * dx
-        y += d_int * dy
-        z += d_int * dz
-        state.total_path += d_int
-        state.n_int += 1
-
-        # Sample interaction type by σ-fractions
-        sP = σ_photo(xcom, E)
-        sC = σ_Compton(xcom, E)
-        sX = σ_pair(xcom, E)
-        sT = sP + sC + sX
-        r_branch = rand(rng)
-
-        if r_branch < sX / sT
-            # Pair production → MS rejected (the two 511 keV annihilation
-            # γ travel ~6 cm in LXe, virtually always producing spatially
-            # separated deposits).
-            state.outcome = :MS_rejected
-            break
-
-        elseif r_branch < (sX + sP) / sT
-            # Photoelectric absorption: full energy locally
-            handle_deposit!(state, det, params, x, y, z, E, scratch)
-            if state.outcome === :in_progress
-                finalize_outcome!(state, rng, params)
-            end
-            break
-
-        else
-            # Compton: KN scatter
-            E_scatt, cos_θ = sample_klein_nishina(rng, E)
-            E_dep = E - E_scatt
-            handle_deposit!(state, det, params, x, y, z, E_dep, scratch)
-            state.outcome === :in_progress || break
-
-            # Update direction & energy
-            φ_az = 2π * rand(rng)
-            dx, dy, dz = rotate_direction(dx, dy, dz, cos_θ, φ_az)
-            E = E_scatt
-
-            # Energy cutoff: deposit remainder locally
-            if E < E_cutoff
-                handle_deposit!(state, det, params, x, y, z, E, scratch)
-                if state.outcome === :in_progress
-                    finalize_outcome!(state, rng, params)
-                end
-                break
-            end
-        end
+    if state.outcome === :in_progress
+        finalize_outcome!(state, rng, params)
     end
 
-    # Update control histograms from this photon's scratch buffer
     if hist !== nothing && scratch !== nothing
         update_histograms!(hist, scratch, params)
     end

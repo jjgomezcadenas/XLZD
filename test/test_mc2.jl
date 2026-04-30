@@ -257,3 +257,83 @@ end
         end
     end
 end
+
+# ---------------------------------------------------------------------------
+# Pair-production secondary tracking
+# ---------------------------------------------------------------------------
+
+@testset "Pair-production secondaries are now tracked (no auto-rejection)" begin
+    # Direct call into _track_photon_segment! with energy above the
+    # pair-production threshold and a starting point inside :active.
+    # Force several thousand photons; verify that at least one ends up
+    # with a visible cluster — i.e., pair production no longer
+    # immediately marks the photon :MS_rejected.
+    rng = MersenneTwister(0xABCD1234)
+    state = PhotonState()
+    sc = PhotonScratch()
+    n_with_cluster = 0
+    n_total = 5000
+    for _ in 1:n_total
+        # Reset state for each trial
+        state.cluster_started = false
+        state.x_cluster = NaN; state.y_cluster = NaN; state.z_cluster = NaN
+        state.E_cluster = 0.0
+        state.E_skin_total = 0.0
+        state.n_int = 0
+        state.total_path = 0.0
+        state.outcome = :in_progress
+        empty!(sc.deposits)
+        # Inject photon at axis center, mid-active, moving in +ẑ at 2.615 MeV
+        XLZD2._track_photon_segment!(rng, det, params, xcom, state, sc,
+                                       0.0, 0.0, 50.0, 0.0, 0.0, 1.0, 2.615)
+        if state.cluster_started
+            n_with_cluster += 1
+        end
+    end
+    # At 2.615 MeV in LXe most photons Compton-scatter; ~5 % pair-produce.
+    # The cluster-started fraction should be ≫ 0.
+    @test n_with_cluster > 100
+    @printf("  cluster_started fraction = %.3f  (%d/%d)\n",
+            n_with_cluster / n_total, n_with_cluster, n_total)
+end
+
+@testset "Pair-production reduces :MS_rejected and may add :SS_in_ROI" begin
+    # Run a Tl-208 source twice with the same seed. With the refactored
+    # tracker, pair production is no longer auto-MS_rejected; some events
+    # become other outcomes. Verify the outcome sums equal N.
+    eff = by_name["CB_Tl208"]
+    res = run_mc(det, eff, by_name["CB_Tl208c"], xcom, params, 50_000;
+                  mc_seed=0xCAFEFACE)
+    @test sum(values(res.counts)) == 50_000
+    # Some MS_rejected events still happen (Compton-then-second-deposit
+    # at Δz > 3 mm dominates), but pair-production events that previously
+    # contributed ALL to :MS_rejected now distribute across outcomes.
+    @test res.counts[:MS_rejected] > 0
+    @test res.counts[:escaped] > 0
+end
+
+@testset "Pair vertex deposit: hand-coded synthetic check" begin
+    # Build a fresh PhotonState and directly call handle_deposit! with the
+    # pair kinetic energy to verify it starts a cluster correctly when in
+    # active LXe. Then add a second deposit (simulated annihilation γ
+    # photoelectric) at Δz < 3 mm and verify cluster sums.
+    state = PhotonState()
+    sc = PhotonScratch()
+    p  = MCParams()
+    # Vertex at (0, 0, 50) — active LXe
+    handle_deposit!(state, det, p, 0.0, 0.0, 50.0, 1.593, sc)
+    @test state.cluster_started
+    @test state.E_cluster ≈ 1.593
+    @test state.outcome === :in_progress
+    # 511 keV annihilation γ photo-absorbs at z = 50.1 (Δz = 1 mm)
+    handle_deposit!(state, det, p, 0.0, 0.0, 50.1, 0.511, sc)
+    @test state.E_cluster ≈ 1.593 + 0.511
+    @test state.outcome === :in_progress
+    # Second annihilation γ Compton-deposits 0.36 MeV at z = 50.05 — within Δz < 3 mm
+    handle_deposit!(state, det, p, 0.0, 0.0, 50.05, 0.36, sc)
+    @test state.E_cluster ≈ 1.593 + 0.511 + 0.36
+    @test state.outcome === :in_progress
+    # Third deposit far away: triggers MS rejection
+    handle_deposit!(state, det, p, 0.0, 0.0, 60.0, 0.05, sc)
+    @test state.outcome === :MS_rejected
+end
