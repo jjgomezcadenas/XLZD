@@ -14,6 +14,7 @@ include("sources.jl")
 include("transport.jl")
 include("effective_sources.jl")
 include("lxe_detector.jl")
+include("physics.jl")
 
 # Geometry primitives
 export GCyl, GDisk
@@ -62,5 +63,11 @@ export aggregate_dNdu, build_effective_source, build_effective_sources
 export LXeDetector, build_lxe_detector
 export region_at, μ_LXe
 export active_volume_cm3, active_mass_kg, skin_volume_cm3, skin_mass_kg
+
+# Photon physics
+export XCOMTable, load_xcom
+export σ_photo, σ_Compton, σ_pair, μ_total_lin
+export sample_klein_nishina, rotate_direction
+export ME_C2_MEV
 
 end # module XLZD2
