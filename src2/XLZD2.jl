@@ -16,6 +16,8 @@ include("effective_sources.jl")
 include("lxe_detector.jl")
 include("physics.jl")
 include("sampling.jl")
+include("mc_params.jl")
+include("mc.jl")
 
 # Geometry primitives
 export GCyl, GDisk
@@ -76,5 +78,11 @@ export build_cdf, sample_u
 export sample_barrel_entry, sample_endcap_entry, sample_entry
 export icv_top_inner_disk, icv_bot_inner_disk
 export ICV_TOP_ASPECT, ICV_BOT_ASPECT
+
+# MC params and tracker
+export MCParams, in_fv, classify_ss_energy
+export E_tracking_cutoff_MeV, Δz_threshold_cm
+export PhotonState, track_one_photon!, path_to_next_region
+export handle_deposit!, finalize_outcome!
 
 end # module XLZD2

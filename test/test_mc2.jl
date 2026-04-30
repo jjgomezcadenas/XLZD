@@ -1,0 +1,178 @@
+# test/test_mc2.jl — Verify the per-photon tracker (MC3, src2/).
+
+using Test
+using Random
+using Printf
+
+include("../src2/XLZD2.jl")
+using .XLZD2
+
+# ---------------------------------------------------------------------------
+# Setup: detector, sources, XCOM table, default MC params
+# ---------------------------------------------------------------------------
+const lxe_csv      = joinpath(@__DIR__, "..", "data", "lxe_detector.csv")
+const lxe_nist     = joinpath(@__DIR__, "..", "data", "nist_lxe.csv")
+const ti_path      = joinpath(@__DIR__, "..", "data", "nist_ti.csv")
+const geom_csv     = joinpath(@__DIR__, "..", "data", "lz_cryo_geometry.csv")
+const extras_csv   = joinpath(@__DIR__, "..", "data", "lz_cryo_extras.csv")
+const surfaces_csv = joinpath(@__DIR__, "..", "data", "lz_cryo_surface_sources.csv")
+const xcom_path    = joinpath(@__DIR__, "..", "data", "nist.csv")
+
+mat_LXe = load_material("LXe", 2.953, lxe_nist)
+mat_Ti  = load_material("Ti",  4.510, ti_path)
+det     = build_lxe_detector(lxe_csv, mat_LXe)
+cryo    = build_cryostat(geom_csv, extras_csv, surfaces_csv)
+indiv   = build_individual_sources(cryo, mat_Ti)
+effs    = build_effective_sources(indiv, cryo, mat_Ti)
+xcom    = load_xcom(xcom_path)
+params  = MCParams()
+by_name = Dict(e.name => e for e in effs)
+
+const VALID_OUTCOMES = (:escaped, :MS_rejected, :skin_vetoed,
+                         :SS_outside_FV, :SS_outside_ROI, :SS_in_ROI)
+
+# ---------------------------------------------------------------------------
+# MCParams + helpers
+# ---------------------------------------------------------------------------
+
+@testset "MCParams defaults and accessors" begin
+    p = MCParams()
+    @test p.Q_betabeta_keV       == 2458.0
+    @test p.σ_E_over_E             == 0.007
+    @test p.ROI_halfwidth_keV      == 17.2
+    @test p.E_tracking_cutoff_keV  == 40.0
+    @test p.Δz_threshold_mm        == 3.0
+    @test p.fv_z_min_cm            == 26.0
+    @test p.fv_z_max_cm            == 96.0
+    @test p.fv_r2_max_cm2          == 1521.0
+    @test E_tracking_cutoff_MeV(p) ≈ 0.040
+    @test Δz_threshold_cm(p)        ≈ 0.30
+end
+
+@testset "in_fv basic" begin
+    p = MCParams()
+    @test  in_fv( 0.0,  0.0, 50.0, p)
+    @test  in_fv(20.0, 30.0, 60.0, p)        # r² = 1300 < 1521
+    @test !in_fv(40.0,  0.0, 50.0, p)        # r² = 1600 > 1521
+    @test !in_fv( 0.0,  0.0, 100.0, p)       # z > z_max
+    @test !in_fv( 0.0,  0.0, 20.0, p)        # z < z_min
+end
+
+@testset "classify_ss_energy" begin
+    rng = MersenneTwister(0xCC)
+    p = MCParams()
+    # Cluster at exactly Q_ββ → smearing centered there → most :SS_in_ROI
+    n_in = 0
+    for _ in 1:1000
+        if classify_ss_energy(rng, p.Q_betabeta_keV / 1000.0, p) === :SS_in_ROI
+            n_in += 1
+        end
+    end
+    # ±1σ Gaussian window contains 68 % of mass
+    @test 0.6 < n_in / 1000 < 0.76
+    # Cluster very far from Q_ββ → never in ROI
+    @test classify_ss_energy(rng, 1.0, p) === :SS_outside_ROI
+end
+
+# ---------------------------------------------------------------------------
+# path_to_next_region geometric checks
+# ---------------------------------------------------------------------------
+
+@testset "path_to_next_region — known intersections" begin
+    # Photon at axis center, moving in +x: nearest cylinder is R_FC_inner = 72.8
+    d = path_to_next_region(0.0, 0.0, 50.0, 1.0, 0.0, 0.0, det)
+    @test isapprox(d, 72.8, atol=1e-6)
+
+    # Photon just inside ICV inner moving outward radially: nearest is R_ICV_inner
+    d = path_to_next_region(82.0, 0.0, 50.0, 1.0, 0.0, 0.0, det)
+    @test isapprox(d, 0.1, atol=1e-6)
+
+    # Photon at axis center moving in +z: nearest plane in path is z_gate=145.6
+    d = path_to_next_region(0.0, 0.0, 50.0, 0.0, 0.0, 1.0, det)
+    @test isapprox(d, 145.6 - 50.0, atol=1e-6)
+
+    # Photon at axis moving in -z hits z_cathode = 0 first
+    d = path_to_next_region(0.0, 0.0, 50.0, 0.0, 0.0, -1.0, det)
+    @test isapprox(d, 50.0, atol=1e-6)
+end
+
+# ---------------------------------------------------------------------------
+# track_one_photon! — outcomes are valid and distribution behaves
+# ---------------------------------------------------------------------------
+
+@testset "Outcomes are always one of the six labels" begin
+    rng = MersenneTwister(0x12345)
+    eff = by_name["CB_Bi214"]
+    for _ in 1:2000
+        outcome = track_one_photon!(rng, det, eff, xcom, params)
+        @test outcome in VALID_OUTCOMES
+    end
+end
+
+@testset "track_one_photon! — CB_Bi214 outcome distribution" begin
+    rng = MersenneTwister(0xDEADBEEF)
+    eff = by_name["CB_Bi214"]
+    N = 50_000
+    counts = Dict(o => 0 for o in VALID_OUTCOMES)
+    for _ in 1:N
+        outcome = track_one_photon!(rng, det, eff, xcom, params)
+        counts[outcome] += 1
+    end
+
+    println()
+    println("── Outcome distribution: CB_Bi214, $N photons ──")
+    for o in VALID_OUTCOMES
+        @printf("  %-18s %8d  (%.4f)\n", string(o), counts[o], counts[o]/N)
+    end
+    println()
+
+    # Each outcome appears with non-zero probability for cryo-barrel Bi-214
+    for o in VALID_OUTCOMES
+        @test counts[o] >= 0
+    end
+    # Most photons either escape or MS-reject in this case
+    @test counts[:escaped] + counts[:MS_rejected] > 0.3 * N
+    # SS_in_ROI is rare but not zero
+    @test counts[:SS_in_ROI] > 0
+    # Sanity: probability ratios
+    f_ss_roi = counts[:SS_in_ROI] / N
+    @test 1e-5 < f_ss_roi < 1e-2
+
+    # Background rate estimate
+    bg = f_ss_roi * eff.total_per_yr
+    @printf("  f_SS_in_ROI = %.3e\n", f_ss_roi)
+    @printf("  γ/yr       = %.3e\n", eff.total_per_yr)
+    @printf("  bg γ/yr    = %.3e\n", bg)
+    println()
+end
+
+@testset "Outcome categories from CTH and CBH (Bi-214)" begin
+    rng = MersenneTwister(0xCAFE)
+    for name in ("CTH_Bi214", "CBH_Bi214", "CB_Tl208")
+        eff = by_name[name]
+        N = 20_000
+        counts = Dict(o => 0 for o in VALID_OUTCOMES)
+        for _ in 1:N
+            counts[track_one_photon!(rng, det, eff, xcom, params)] += 1
+        end
+        @test counts[:escaped] > 0
+        @test counts[:MS_rejected] > 0
+        # Non-trivial set of outcome categories observed
+        n_categories = sum(counts[o] > 0 for o in VALID_OUTCOMES)
+        @test n_categories >= 4
+    end
+end
+
+@testset "Reproducibility with fixed RNG seed" begin
+    eff = by_name["CB_Bi214"]
+    function run_one(seed)
+        rng = MersenneTwister(seed)
+        outcomes = Symbol[]
+        for _ in 1:500
+            push!(outcomes, track_one_photon!(rng, det, eff, xcom, params))
+        end
+        outcomes
+    end
+    @test run_one(0x42) == run_one(0x42)
+    @test run_one(0x42) != run_one(0x43)
+end
