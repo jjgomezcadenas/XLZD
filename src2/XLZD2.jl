@@ -11,6 +11,8 @@ include("cryostat.jl")
 include("material.jl")
 include("pobjects.jl")
 include("sources.jl")
+include("transport.jl")
+include("effective_sources.jl")
 
 # Geometry primitives
 export GCyl, GDisk
@@ -47,5 +49,12 @@ export TI_BB0NU_U238_LATE_MBQKG, TI_BB0NU_TH232_LATE_MBQKG
 export GammaSource, make_gamma_source
 export pobjects_from_cryostat, build_individual_sources
 export DEFAULT_U_BINS
+
+# Transport
+export Slab, optical_depth, transmission_factor
+
+# Effective sources
+export SourceContribution, EffectiveSource
+export aggregate_dNdu, build_effective_source, build_effective_sources
 
 end # module XLZD2
