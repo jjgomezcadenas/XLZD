@@ -67,6 +67,10 @@ function parse_cli()
         "--no-cluster-histos"
             action   = :store_true
             help     = "Skip accumulating + writing ClusterHistogramSet CSVs."
+        "--sample-stack"
+            arg_type = Int
+            default  = 0
+            help     = "Stack-dump CSV: 0=off, -1=all events, n>0 ≈ uniform sample of n events per source."
     end
     parse_args(s)
 end
@@ -85,6 +89,12 @@ function main()
     do_rej_hist       = !args["no-rejection-histograms"]
     do_stack_hist     = !args["no-stack-histos"]
     do_cluster_hist   = !args["no-cluster-histos"]
+    sample_stack_n    = args["sample-stack"]
+
+    # Construct output directory up front so per-source paths can be
+    # built before the run_mc calls (needed for sample-stack output).
+    out_dir = joinpath(PROJECT_ROOT, "output", outname)
+    mkpath(out_dir)
 
     println("\n── src3/ MC driver — Cryostat backgrounds ──")
     @printf("  N samples per source : %d\n", N)
@@ -119,7 +129,9 @@ function main()
                               mc_seed=seed, verbose=true,
                               with_stack_histograms=do_stack_hist,
                               with_cluster_histograms=do_cluster_hist,
-                              with_rejection_histograms=do_rej_hist)
+                              with_rejection_histograms=do_rej_hist,
+                              sample_stack=sample_stack_n,
+                              sample_stack_dir=out_dir)
     else
         1 <= src_i <= length(main_names) ||
             error("source-index must be 1..$(length(main_names))")
@@ -130,11 +142,16 @@ function main()
             nothing
         end
         @printf("\n── Running %s ──\n", eff.name)
+        sample_path = sample_stack_n != 0 ?
+                      joinpath(out_dir, "hist_$(eff.name)", "stack_sample.csv") :
+                      nothing
         push!(results, run_mc(det, eff, comp_eff, xcom, params, N;
                                mc_seed=seed, verbose=true,
                                with_stack_histograms=do_stack_hist,
                                with_cluster_histograms=do_cluster_hist,
-                               with_rejection_histograms=do_rej_hist))
+                               with_rejection_histograms=do_rej_hist,
+                               sample_stack=sample_stack_n,
+                               sample_stack_path=sample_path))
     end
 
     # Print summary
@@ -169,8 +186,6 @@ function main()
     println()
 
     # Save CSV
-    out_dir = joinpath(PROJECT_ROOT, "output", outname)
-    mkpath(out_dir)
     csv_path = joinpath(out_dir, "summary.csv")
     open(csv_path, "w") do f
         println(f, "source,isotope,n_total,gamma_per_yr_total,f_SS_in_ROI,",

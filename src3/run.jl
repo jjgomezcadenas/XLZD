@@ -82,7 +82,10 @@ function run_mc(det::LXeDetector, eff::EffectiveSource,
                 verbose::Bool=false,
                 with_stack_histograms::Bool=true,
                 with_cluster_histograms::Bool=true,
-                with_rejection_histograms::Bool=true)::MCResult
+                with_rejection_histograms::Bool=true,
+                sample_stack::Int=0,
+                sample_stack_path::Union{AbstractString, Nothing}=nothing
+                )::MCResult
     n_threads  = Threads.nthreads()
     base       = div(n_samples, n_threads)
     rem        = n_samples - base * n_threads
@@ -111,6 +114,15 @@ function run_mc(det::LXeDetector, eff::EffectiveSource,
     thread_stack    = [PhotonStack()         for _ in 1:n_threads]
     thread_snapshot = [MersenneTwister(0)    for _ in 1:n_threads]
 
+    # --sample-stack: per-thread temp file paths (concatenated post-loop).
+    do_sample = sample_stack != 0 && sample_stack_path !== nothing
+    sample_tmp_paths = if do_sample
+        mkpath(dirname(sample_stack_path))
+        ["$(sample_stack_path).tid$tid.tmp" for tid in 1:n_threads]
+    else
+        String[]
+    end
+
     base_thread1 = base + (1 <= rem ? 1 : 0)
     report_every = max(1, base_thread1 ÷ 10)
 
@@ -124,6 +136,22 @@ function run_mc(det::LXeDetector, eff::EffectiveSource,
         local_cluster_hist = with_cluster_histograms ? thread_cluster_hist[tid] : nothing
         local_stack  = thread_stack[tid]
         local_snap   = thread_snapshot[tid]
+
+        # Per-thread stack-sample writer.
+        # `sample_stack`:
+        #   = -1   write every event with non-empty stack.
+        #   > 0    write the FIRST max(1, cld(sample_stack, n_threads))
+        #          events per thread that have a non-empty stack —
+        #          gives ~sample_stack total events across all threads.
+        local_sample_io = nothing
+        local_sample_target = 0
+        local_sample_written = 0
+        if do_sample
+            local_sample_io = open(sample_tmp_paths[tid], "w")
+            local_sample_target = sample_stack == -1 ?
+                                   typemax(Int) :
+                                   max(1, cld(sample_stack, n_threads))
+        end
         for i in 1:n_local
             copy!(local_snap, rng)
             fv = fast_veto(rng, det, eff, xcom, params; rej_hist=local_rej)
@@ -152,6 +180,20 @@ function run_mc(det::LXeDetector, eff::EffectiveSource,
                 end
             end
             local_counts[outcome] += 1
+
+            # Optional stack-sample dump: write the first `local_sample_target`
+            # events per thread with non-empty stacks.
+            if local_sample_io !== nothing && length(local_stack) > 0 &&
+               local_sample_written < local_sample_target
+                @inbounds for r in local_stack.rows
+                    println(local_sample_io,
+                            "$(tid),$(i),$(r.ng),$(r.nm),",
+                            "$(r.parent_region),$(r.region),$(r.interaction),",
+                            "$(r.x),$(r.y),$(r.z),$(r.epre),$(r.edep)")
+                end
+                local_sample_written += 1
+            end
+
             if verbose && tid == 1 && (i % report_every == 0)
                 est_done = i * n_threads
                 elapsed  = time() - t0
@@ -160,11 +202,27 @@ function run_mc(det::LXeDetector, eff::EffectiveSource,
                         est_done, n_samples, elapsed)
             end
         end
+        local_sample_io !== nothing && close(local_sample_io)
     end
     runtime = time() - t0
     if verbose
         @printf("    progress 100.0 %%  (%d / %d)  elapsed %.1f s\n",
                 n_samples, n_samples, runtime)
+    end
+
+    # Concatenate per-thread sample-stack temps into the final CSV.
+    if do_sample
+        open(sample_stack_path, "w") do f
+            println(f, "tid,event_idx,ng,nm,parent_region,region,",
+                       "interaction,x,y,z,epre,edep")
+            for tmp in sample_tmp_paths
+                isfile(tmp) || continue
+                for line in eachline(tmp)
+                    println(f, line)
+                end
+                rm(tmp)
+            end
+        end
     end
 
     counts = Dict{Symbol,Int}(
@@ -228,7 +286,10 @@ function run_mc_all(det::LXeDetector, effs::Vector{EffectiveSource},
                     verbose::Bool=false,
                     with_stack_histograms::Bool=true,
                     with_cluster_histograms::Bool=true,
-                    with_rejection_histograms::Bool=true)::Vector{MCResult}
+                    with_rejection_histograms::Bool=true,
+                    sample_stack::Int=0,
+                    sample_stack_dir::Union{AbstractString, Nothing}=nothing
+                    )::Vector{MCResult}
     by_name = Dict(e.name => e for e in effs)
     results = MCResult[]
     main_names = ["CB_Bi214", "CTH_Bi214", "CBH_Bi214",
@@ -245,11 +306,18 @@ function run_mc_all(det::LXeDetector, effs::Vector{EffectiveSource},
         seed = mc_seed + (i - 1) * 1_000_000
         verbose && @printf("\n── Running %s (%d / %d) ──\n",
                             mname, i, length(main_names))
+        sample_path = if sample_stack != 0 && sample_stack_dir !== nothing
+            joinpath(sample_stack_dir, "hist_$(eff.name)", "stack_sample.csv")
+        else
+            nothing
+        end
         push!(results, run_mc(det, eff, comp_eff, xcom, params, n_samples;
                               mc_seed=seed, verbose=verbose,
                               with_stack_histograms=with_stack_histograms,
                               with_cluster_histograms=with_cluster_histograms,
-                              with_rejection_histograms=with_rejection_histograms))
+                              with_rejection_histograms=with_rejection_histograms,
+                              sample_stack=sample_stack,
+                              sample_stack_path=sample_path))
     end
     results
 end
