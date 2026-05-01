@@ -1,46 +1,21 @@
 # src3/tracker.jl — Stack-based per-photon tracker (NEW; replaces the
 # legacy `track_one_photon!` in src3/mc.jl at cutover, step 11i).
 #
-# Contract (final, after step 11f):
+# Status:
+#   - 11a: scaffold + stub                                            DONE
+#   - 11b: source sampling + transparent advance + first interaction  DONE
+#          (forced PHOTO; one row per event)
+#   - 11c: cross-section sampling (photo / Compton / pair)            TODO
+#   - 11d: Compton recursion (`_track_child_photon!`)                 TODO
+#   - 11e: pair production children (back-to-back 511 keV)            TODO
+#   - 11f: skin + FV early-reject; rej_hist filling                   TODO
+#   - 11g: integrate into run_mc behind kwarg                         TODO
+#   - 11i: delete legacy tracker from src3/mc.jl                      TODO
 #
-#   track_photon_stack(rng, det, eff, xcom, params, stack;
-#                       rej_hist=nothing) -> status::Symbol
-#
-# 1. Sample one γ from `eff` (entry point + direction at the ICV inner
-#    surface). Mutate `stack` in place; the caller is expected to have
-#    called `empty!(stack)` first if reusing.
-#
-# 2. Transport the photon through the LXe regions (TPC / Skin / Inert /
-#    Gas) using μ_LXe(epre) for the interaction-distance sampling and
-#    `path_to_next_region` for the region-boundary distance. Whichever
-#    is smaller wins.
-#
-# 3. At each interaction, sample type via cross-section ratios
-#    (photo / Compton / pair). Push one StackRow per interaction. For
-#    Compton, recurse on the outgoing γ. For pair, push the vertex row,
-#    spawn two 511 keV children with a back-to-back random axis, and
-#    recurse on each.
-#
-# 4. Below-threshold termination: when a photon's energy falls below
-#    `params.E_tracking_cutoff_keV` between interactions, push one
-#    INT_BELOW_THRESH row at the current position with edep equal to
-#    the residual energy, and return.
-#
-# 5. Early-reject paths (write to `rej_hist` if provided, then return):
-#       - first :Skin interaction with cumulative skin energy above
-#         `det.E_skin_veto_keV`  -> :vetoed_skin
-#       - first :TPC interaction outside the FV box                -> :rejected_fv
-#
-# 6. Status return values (subset of TRACK_STATUSES):
-#       :completed   — tracker ran to completion; stack populated
-#       :escaped     — photon left LXe with no visible deposit
-#       :vetoed_skin — early-reject due to skin overflow
-#       :rejected_fv — early-reject due to FV box check
-#
-# Helpers `_propagate_to_first_lxe`, `_first_interaction`,
-# `_track_child_photon!` will be added in steps 11b–11e as their
-# callers materialize. They are deliberately NOT scaffolded here to
-# avoid unused-stub noise.
+# Region-class semantics:
+#   :TPC, :Skin, :Inert          -> interactive LXe; sample with μ_LXe(e)
+#   :FC, :Gas                    -> transparent (μ ≡ 0); advance through
+#   :Outside                     -> photon left LXe; tracker returns :escaped
 #
 # At cutover (step 11i) the legacy tracker is deleted from src3/mc.jl
 # and `path_to_next_region`, `companion_visible!`, `companion_reach_prob`
@@ -53,22 +28,86 @@ using Random: AbstractRNG
                         rej_hist=nothing) -> status::Symbol
 
 Stack-based per-photon tracker (work in progress; see file header for
-the final contract).
+the step-by-step status).
 
-**Step 11a stub:** returns `:escaped` and leaves `stack` untouched.
-The full transport, interaction, recursion, and early-reject logic
-land in steps 11b through 11f. Until then `track_photon_stack` is not
-called from `run_mc` — the legacy `track_one_photon!` (in `src3/mc.jl`)
-remains the active tracker.
+**Step 11b:** samples one γ from `eff`, walks through LXe regions
+until either the photon exits (`:Outside`) or an interaction is
+sampled. Interactions are currently FORCED to `INT_PHOTO` (full
+deposit; cross-section sampling lands in 11c). The function pushes at
+most one row to `stack` and returns `:completed` (deposit happened) or
+`:escaped` (photon left LXe before interacting).
 
 The returned symbol is a member of `TRACK_STATUSES` and is consumed by
 `classify_event` to produce the per-event outcome.
+
+`rej_hist` is accepted but unused until 11f.
 """
 function track_photon_stack(rng::AbstractRNG, det::LXeDetector,
                              eff::EffectiveSource, xcom::XCOMTable,
                              params::MCParams, stack::PhotonStack;
                              rej_hist::Union{RejectionHistograms, Nothing}=nothing
                              )::Symbol
-    # 11a stub: full implementation lands across steps 11b–11f.
-    return :escaped
+    # 1. Sample initial photon state from the source.
+    x, y, z, dx, dy, dz = sample_entry(rng, det, eff)
+    e             = eff.E_MeV
+    parent_region = eff.region        # :barrel / :endcap_top / :endcap_bottom
+
+    # 2. Transport loop: alternate between transparent advances (across
+    #    :FC / :Gas regions) and interactions (μ-step in interactive LXe).
+    ε = 1.0e-7   # boundary nudge; larger than path_to_next_region's EPS=1e-9
+    while true
+        region = region_at(det, x, y, z)
+
+        # Photon left the LXe envelope -> :escaped.
+        region === :Outside && return :escaped
+
+        # Defensive below-threshold dump (never triggers in 11b — source γ
+        # are all > 500 keV and there are no Compton recursions yet — but
+        # the symmetric handling for child photons lands here in 11d).
+        if e * 1000.0 < params.E_tracking_cutoff_keV
+            push_row!(stack; nm=0, parent_region=parent_region,
+                              region=region, interaction=INT_BELOW_THRESH,
+                              x=x, y=y, z=z, epre=e, edep=e)
+            return :completed
+        end
+
+        # :FC and :Gas are transparent — advance to the next boundary
+        # without sampling an interaction. If no boundary lies ahead
+        # (`Inf`), the photon escapes.
+        if region === :FC || region === :Gas
+            d = path_to_next_region(x, y, z, dx, dy, dz, det)
+            d == Inf && return :escaped
+            x += dx * (d + ε)
+            y += dy * (d + ε)
+            z += dz * (d + ε)
+            continue
+        end
+
+        # Interactive LXe region: sample μ-step and compare with boundary.
+        μ     = μ_LXe(det, e)
+        dint  = -log(rand(rng)) / μ
+        dnext = path_to_next_region(x, y, z, dx, dy, dz, det)
+
+        if dnext < dint
+            # Transparent advance to boundary; loop continues.
+            x += dx * (dnext + ε)
+            y += dy * (dnext + ε)
+            z += dz * (dnext + ε)
+        else
+            # Interaction. Forced PHOTO until 11c.
+            # Tag the row with `region` (the start region), not a
+            # post-advance reclassification — dint was sampled from this
+            # region's μ, so the interaction belongs to it. This also
+            # avoids floating-point edge cases at region boundaries when
+            # dint ≈ dnext.
+            x += dx * dint
+            y += dy * dint
+            z += dz * dint
+            push_row!(stack; nm=0, parent_region=parent_region,
+                              region=region,
+                              interaction=INT_PHOTO,
+                              x=x, y=y, z=z, epre=e, edep=e)
+            return :completed
+        end
+    end
 end
