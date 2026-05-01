@@ -106,13 +106,13 @@ export fill_N_clusters!, fill_N_extra!, fill_ssms!
 export Cluster, compute_clusters, build_clusters
 
 # Cluster selection predicates
-export select_SC, select_ROI
+export select_SC, select_ROI, select_FV, select_skin
 
 # Event-outcome classifier
 export classify_event, CLASSIFY_EVENT_OUTCOMES, TRACK_STATUSES
 
 # Stack tracker (Phase 2; src3/tracker.jl)
-export track_photon_stack
+export track_photon_stack, fast_veto
 
 # Rejection histograms
 export RejectionHistograms

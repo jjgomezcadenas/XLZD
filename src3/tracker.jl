@@ -10,8 +10,11 @@
 #   - 11d: Compton recursion (`_track_child_photon!`)                 DONE
 #          (Compton outgoing γ tracked; pair children still TODO)
 #   - 11e: pair production children (back-to-back 511 keV)            DONE
-#   - 11f: skin + FV early-reject; rej_hist filling                   TODO
-#   - 11g: integrate into run_mc behind kwarg                         TODO
+#   - 11f: fast_veto + slow checks in classify_event                  DONE
+#          (fast_veto here; select_skin / select_FV in select.jl;
+#           classify_event composes them; not yet called from run_mc)
+#   - 11g: integrate fast_veto + track_photon_stack into run_mc       TODO
+#          via per-thread RNG snapshot/restore
 #   - 11i: delete legacy tracker from src3/mc.jl                      TODO
 #
 # Region-class semantics:
@@ -208,5 +211,111 @@ function _track_child_photon!(stack::PhotonStack,
                                   ME_C2_MEV, region, ng_self)
             return
         end
+    end
+end
+
+# ===========================================================================
+# fast_veto — pre-tracking single-deposit reject screen
+# ===========================================================================
+"""
+    fast_veto(rng, det, eff, xcom, params; rej_hist=nothing) -> Symbol
+
+Quick first-interaction screen returning one of:
+  :pass         — first interaction does NOT trigger reject; caller
+                  should restore the RNG snapshot and run
+                  `track_photon_stack` for full tracking.
+  :vetoed_skin  — first interaction in `:Skin` with edep > E_skin_veto.
+  :rejected_fv  — first interaction in `:TPC` outside FV with
+                  edep > E_visible.
+
+Self-contained: samples source γ, transports through transparent
+regions, samples the FIRST interaction (μ-step + interaction-type)
+and applies the threshold check. Does NOT push to any stack and does
+NOT call `track_photon_stack` or `_track_child_photon!`.
+
+Caller (`run_mc` in 11g) should:
+    copy!(rng_snapshot, rng)
+    fv = fast_veto(rng, det, eff, xcom, params; rej_hist)
+    if fv === :pass
+        copy!(rng, rng_snapshot)
+        track_photon_stack(rng, det, eff, xcom, params, stack)
+        # ...build_clusters / classify_event...
+    end
+so that `track_photon_stack` re-samples the SAME first interaction
+(deterministic given equal RNG state) and continues the cascade.
+
+Threshold sources: `params.E_visible_keV`, `params.E_skin_veto_keV`.
+"""
+function fast_veto(rng::AbstractRNG, det::LXeDetector,
+                    eff::EffectiveSource, xcom::XCOMTable,
+                    params::MCParams;
+                    rej_hist::Union{RejectionHistograms, Nothing}=nothing
+                    )::Symbol
+    x, y, z, dx, dy, dz = sample_entry(rng, det, eff)
+    e   = eff.E_MeV
+    ε   = _TRACKER_BOUNDARY_NUDGE
+    E_visible_MeV   = params.E_visible_keV   / 1000.0
+    E_skin_veto_MeV = params.E_skin_veto_keV / 1000.0
+
+    while true
+        region = region_at(det, x, y, z)
+
+        # Photon left LXe envelope before any interaction → no reject possible.
+        region === :Outside && return :pass
+
+        # Sub-cutoff photon (defensive; source γ are all > 500 keV).
+        e * 1000.0 < params.E_tracking_cutoff_keV && return :pass
+
+        # :FC and :Gas are transparent — advance to next boundary or escape.
+        if region === :FC || region === :Gas
+            d = path_to_next_region(x, y, z, dx, dy, dz, det)
+            d == Inf && return :pass
+            x += dx * (d + ε); y += dy * (d + ε); z += dz * (d + ε)
+            continue
+        end
+
+        # Interactive LXe region: μ-step vs region boundary.
+        μ     = μ_LXe(det, e)
+        dint  = -log(rand(rng)) / μ
+        dnext = path_to_next_region(x, y, z, dx, dy, dz, det)
+
+        if dnext < dint
+            x += dx * (dnext + ε); y += dy * (dnext + ε); z += dz * (dnext + ε)
+            continue
+        end
+
+        # First interaction inside `region` at distance dint.
+        x += dx * dint
+        y += dy * dint
+        z += dz * dint
+
+        # Sample interaction type and compute edep.
+        sP = σ_photo(xcom, e)
+        sC = σ_Compton(xcom, e)
+        sX = σ_pair(xcom, e)
+        sT = sP + sC + sX
+        r  = rand(rng) * sT
+
+        edep = if r < sP
+            e
+        elseif r < sP + sC
+            E_prime, _cosθ = sample_klein_nishina(rng, e)
+            e - E_prime
+        else
+            e - 2.0 * ME_C2_MEV
+        end
+
+        # Apply the two fast-reject thresholds.
+        if region === :TPC && !in_fv(x, y, z, params) && edep > E_visible_MeV
+            rej_hist !== nothing && fill_rejected_fv!(rej_hist, x, y, z, edep)
+            return :rejected_fv
+        end
+        if region === :Skin && edep > E_skin_veto_MeV
+            rej_hist !== nothing && fill_rejected_skin!(rej_hist, x, y, z, edep)
+            return :vetoed_skin
+        end
+
+        # First interaction did not trigger fast reject; defer to slow checks.
+        return :pass
     end
 end

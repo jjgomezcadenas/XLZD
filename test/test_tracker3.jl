@@ -576,4 +576,62 @@ end
     @test n_walks_checked > 0
 end
 
-println("\n  ── test_tracker3.jl: track_photon_stack 11e OK ──\n")
+# ===========================================================================
+# fast_veto — independent first-interaction reject screen (step 11f)
+# ===========================================================================
+const FV_RESULTS = (:pass, :vetoed_skin, :rejected_fv)
+
+@testset "24. fast_veto: status alphabet at default params" begin
+    rng = MersenneTwister(0x24FF)
+    seen = Set{Symbol}()
+    for _ in 1:2000
+        s = fast_veto(rng, det, eff_test, xcom, params)
+        @test s in FV_RESULTS
+        push!(seen, s)
+    end
+    # :pass must dominate; the two reject statuses are minority but reachable.
+    @test :pass in seen
+    @test :vetoed_skin in seen || :rejected_fv in seen
+    println()
+    @printf("     fast_veto status set seen at N=2000: %s\n", seen)
+end
+
+@testset "25. fast_veto: rej_hist accumulates on rejects" begin
+    rng = MersenneTwister(0x25FF)
+    rej = RejectionHistograms(r2_max_cm2 = det.R_ICV_inner^2,
+                               z_min_cm   = det.z_LXe_bottom,
+                               z_max_cm   = det.z_gate)
+    skin_before = sum(rej.skin_E_counts)
+    fv_before   = sum(rej.fv_E_counts)
+    n_skin = 0
+    n_fv   = 0
+    for _ in 1:5000
+        s = fast_veto(rng, det, eff_test, xcom, params; rej_hist=rej)
+        s === :vetoed_skin && (n_skin += 1)
+        s === :rejected_fv && (n_fv   += 1)
+    end
+    skin_after = sum(rej.skin_E_counts)
+    fv_after   = sum(rej.fv_E_counts)
+    @printf("\n     fast_veto N=5000: vetoed_skin=%d, rejected_fv=%d\n",
+            n_skin, n_fv)
+    @test skin_after - skin_before == n_skin
+    @test fv_after   - fv_before   == n_fv
+    # Both paths should fire over 5000 events at default params.
+    @test n_skin > 0
+    @test n_fv   > 0
+end
+
+@testset "26. fast_veto: reproducibility on fixed seed" begin
+    function run_seq(seed)
+        rng = MersenneTwister(seed)
+        out = Symbol[]
+        for _ in 1:200
+            push!(out, fast_veto(rng, det, eff_test, xcom, params))
+        end
+        out
+    end
+    @test run_seq(0x26FF) == run_seq(0x26FF)
+    @test run_seq(0x26FF) != run_seq(0x27FF)
+end
+
+println("\n  ── test_tracker3.jl: track_photon_stack 11e + fast_veto 11f OK ──\n")
