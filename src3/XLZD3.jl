@@ -20,6 +20,7 @@ include("mc_params.jl")
 include("stack.jl")
 include("histograms.jl")
 include("classify.jl")
+include("select.jl")
 include("mc.jl")
 include("run.jl")
 
@@ -101,6 +102,9 @@ export fill_N_clusters!, fill_N_extra!, fill_ssms!
 
 # Cluster computation
 export Cluster, compute_clusters, build_clusters
+
+# Cluster selection predicates
+export select_SC, select_ROI
 
 # Rejection histograms
 export RejectionHistograms

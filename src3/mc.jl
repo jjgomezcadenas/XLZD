@@ -185,7 +185,7 @@ function finalize_outcome!(state::PhotonState, rng::AbstractRNG,
     # SS / MS classification from cluster grouping
     clusters = scratch === nothing ?
                Cluster[Cluster(state.x_cluster, state.y_cluster,
-                               state.z_cluster, state.E_cluster)] :
+                               state.z_cluster, state.E_cluster, 0.0)] :
                compute_clusters(scratch.deposits, params)
     if length(clusters) > 1
         state.outcome = :MS_rejected

@@ -5,9 +5,11 @@
 #   * `compute_clusters(deposits, params)` — operates on the legacy
 #     `Vector{LXeDeposit}` produced by the current src3 tracker
 #     (`PhotonScratch.deposits`). Pre-refactor; will be deleted at cutover.
+#     Does not smear: leaves `Cluster.es = 0.0`.
 #
-#   * `build_clusters(stack, params)` — operates on the new `PhotonStack`
-#     produced by the upcoming stack-based tracker.
+#   * `build_clusters(rng, stack, params)` — operates on the new `PhotonStack`
+#     produced by the upcoming stack-based tracker. Smears each cluster's
+#     energy at construction.
 #
 # Both produce a `Vector{Cluster}` and use the same z-only adjacency rule
 # (`Δz < params.Δz_threshold_mm`) and energy-weighted centroid.
@@ -15,17 +17,27 @@
 # Note: neither of these classifies the event. The event-outcome classifier
 # (`classify_event`, added later) decides the per-event outcome symbol.
 
+using Random: AbstractRNG, randn
+
 """
     Cluster
 
 A z-cluster of energy depositions in the active LXe region:
-energy-weighted centroid (xc, yc, zc) and total energy `ec` (MeV).
+
+  * `xc, yc, zc` — energy-weighted centroid (cm)
+  * `ec`        — true (deterministic) cluster energy = Σ edep (MeV)
+  * `es`        — smeared (measured) cluster energy (MeV). One realization
+                  of `ec + σ_E·ξ`, where σ_E = `params.σ_E_over_E · ec`
+                  and ξ ~ N(0,1). Filled by `build_clusters`. Legacy
+                  `compute_clusters` leaves it 0.0; consumers of the
+                  legacy path do not read `es`.
 """
 struct Cluster
     xc::Float64
     yc::Float64
     zc::Float64
     ec::Float64
+    es::Float64
 end
 
 """
@@ -34,7 +46,7 @@ end
 Group `:active` deposits in `deposits` (any region; non-`:active` ignored)
 into z-clusters: sort by z, group consecutive entries with Δz <
 `params.Δz_threshold_mm` after sorting, compute energy-weighted (x, y, z)
-and total E per cluster.
+and total E per cluster. Pre-refactor; does not smear (`es = 0.0`).
 """
 function compute_clusters(deposits::Vector{LXeDeposit},
                            params::MCParams)::Vector{Cluster}
@@ -59,7 +71,8 @@ function compute_clusters(deposits::Vector{LXeDeposit},
             cum_yE += sorted[i].y * sorted[i].E_dep
             cum_zE += sorted[i].z * sorted[i].E_dep
         else
-            push!(out, Cluster(cum_xE/cum_E, cum_yE/cum_E, cum_zE/cum_E, cum_E))
+            push!(out, Cluster(cum_xE/cum_E, cum_yE/cum_E, cum_zE/cum_E,
+                               cum_E, 0.0))
             cum_E  = sorted[i].E_dep
             cum_xE = sorted[i].x * sorted[i].E_dep
             cum_yE = sorted[i].y * sorted[i].E_dep
@@ -67,12 +80,13 @@ function compute_clusters(deposits::Vector{LXeDeposit},
         end
         z_prev = z_i
     end
-    push!(out, Cluster(cum_xE/cum_E, cum_yE/cum_E, cum_zE/cum_E, cum_E))
+    push!(out, Cluster(cum_xE/cum_E, cum_yE/cum_E, cum_zE/cum_E, cum_E, 0.0))
     out
 end
 
 """
-    build_clusters(stack::PhotonStack, params::MCParams) -> Vector{Cluster}
+    build_clusters(rng::AbstractRNG, stack::PhotonStack, params::MCParams)
+        -> Vector{Cluster}
 
 Build z-clusters from the rows of `stack`. Same algorithm as
 `compute_clusters`, but the input is the new `PhotonStack` produced
@@ -86,14 +100,18 @@ source-region rows.
 
 Grouping: sort filtered rows by z, group consecutive rows with
 `Δz < params.Δz_threshold_mm`. Centroid is energy-weighted; cluster
-energy is the sum of `edep`.
+energy `ec` is the sum of `edep`.
+
+Smearing: each cluster's smeared energy `es` is sampled once at
+construction as `es = ec + σ_E · randn(rng)`, with
+`σ_E = params.σ_E_over_E · ec` (both in MeV). One RNG draw per cluster.
 
 Note on naming: this function only *builds* clusters; it does not
 classify the event. The event-outcome classifier is `classify_event`
 (added in a later step), which decides :SS_in_ROI / :MS_rejected /
 :skin_vetoed / etc. from clusters and rejection state.
 """
-function build_clusters(stack::PhotonStack,
+function build_clusters(rng::AbstractRNG, stack::PhotonStack,
                          params::MCParams)::Vector{Cluster}
     actives = [r for r in stack.rows if r.region === :TPC && r.edep > 0]
     n = length(actives)
@@ -101,6 +119,10 @@ function build_clusters(stack::PhotonStack,
 
     sorted = sort(actives; by = r -> r.z)
     Δz_thresh = Δz_threshold_cm(params)
+
+    @inline function smear(ec::Float64)::Float64
+        ec + (params.σ_E_over_E * ec) * randn(rng)
+    end
 
     out = Cluster[]
     cum_E  = sorted[1].edep
@@ -116,7 +138,8 @@ function build_clusters(stack::PhotonStack,
             cum_yE += sorted[i].y * sorted[i].edep
             cum_zE += sorted[i].z * sorted[i].edep
         else
-            push!(out, Cluster(cum_xE/cum_E, cum_yE/cum_E, cum_zE/cum_E, cum_E))
+            push!(out, Cluster(cum_xE/cum_E, cum_yE/cum_E, cum_zE/cum_E,
+                               cum_E, smear(cum_E)))
             cum_E  = sorted[i].edep
             cum_xE = sorted[i].x * sorted[i].edep
             cum_yE = sorted[i].y * sorted[i].edep
@@ -124,6 +147,7 @@ function build_clusters(stack::PhotonStack,
         end
         z_prev = z_i
     end
-    push!(out, Cluster(cum_xE/cum_E, cum_yE/cum_E, cum_zE/cum_E, cum_E))
+    push!(out, Cluster(cum_xE/cum_E, cum_yE/cum_E, cum_zE/cum_E,
+                       cum_E, smear(cum_E)))
     out
 end

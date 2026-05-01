@@ -22,6 +22,7 @@ const TEST_FILES = [
     "test_sampling3.jl",
     "test_stack3.jl",
     "test_build_clusters3.jl",
+    "test_select3.jl",
     "test_histograms3.jl",
     "test_mc3.jl",
 ]
