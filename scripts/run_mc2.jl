@@ -49,6 +49,18 @@ function parse_cli()
         "--histograms"
             action   = :store_true
             help     = "Accumulate and save the 6 control histograms."
+        "--fv-z-min"
+            arg_type = Float64
+            default  = 26.0
+            help     = "FV z minimum (cm). Default = bb0nu inner volume."
+        "--fv-z-max"
+            arg_type = Float64
+            default  = 96.0
+            help     = "FV z maximum (cm)."
+        "--fv-r-max"
+            arg_type = Float64
+            default  = 39.0
+            help     = "FV r maximum (cm). r² = (fv-r-max)² is what MCParams stores."
     end
     parse_args(s)
 end
@@ -62,6 +74,9 @@ function main()
     sigma_e   = args["sigma-e"]
     roi_half  = args["roi-halfwidth"]
     do_hist   = args["histograms"]
+    fv_z_min  = args["fv-z-min"]
+    fv_z_max  = args["fv-z-max"]
+    fv_r_max  = args["fv-r-max"]
 
     println("\n── src2/ MC driver — Cryostat backgrounds ──")
     @printf("  N samples per source : %d\n", N)
@@ -69,6 +84,8 @@ function main()
     @printf("  Threads              : %d\n", Threads.nthreads())
     @printf("  σ_E / E              : %.4f\n", sigma_e)
     @printf("  ROI half-width       : %.2f keV\n", roi_half)
+    @printf("  FV z range           : [%.1f, %.1f] cm\n", fv_z_min, fv_z_max)
+    @printf("  FV r max             : %.1f cm\n", fv_r_max)
 
     # Load
     mat_LXe = load_material("LXe", 2.953, LXE_NIST)
@@ -79,7 +96,10 @@ function main()
     effs    = build_effective_sources(indiv, cryo, mat_Ti)
     xcom    = load_xcom(XCOM_PATH)
     params  = MCParams(σ_E_over_E       = sigma_e,
-                       ROI_halfwidth_keV = roi_half)
+                       ROI_halfwidth_keV = roi_half,
+                       fv_z_min_cm       = fv_z_min,
+                       fv_z_max_cm       = fv_z_max,
+                       fv_r2_max_cm2     = fv_r_max^2)
 
     # Run
     main_names = ["CB_Bi214", "CTH_Bi214", "CBH_Bi214",
