@@ -19,6 +19,7 @@ include("sampling.jl")
 include("mc_params.jl")
 include("stack.jl")
 include("histograms.jl")
+include("classify.jl")
 include("mc.jl")
 include("run.jl")
 

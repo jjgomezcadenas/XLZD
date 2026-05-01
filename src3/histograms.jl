@@ -223,66 +223,6 @@ function merge_histograms!(into::HistogramSet, src::HistogramSet)
 end
 
 # ---------------------------------------------------------------------------
-# Cluster computation (post-tracking)
-# ---------------------------------------------------------------------------
-
-"""
-    Cluster
-
-A z-cluster of `:active` deposits: energy-weighted centroid (xc, yc, zc)
-and total energy `ec` (MeV).
-"""
-struct Cluster
-    xc::Float64
-    yc::Float64
-    zc::Float64
-    ec::Float64
-end
-
-"""
-    compute_clusters(deposits::Vector{LXeDeposit}, params::MCParams) -> Vector{Cluster}
-
-Group `:active` deposits in `deposits` (any region; non-`:active` ignored)
-into z-clusters: sort by z, group consecutive entries with Δz <
-`params.Δz_threshold_mm` after sorting, compute energy-weighted (x, y, z)
-and total E per cluster.
-"""
-function compute_clusters(deposits::Vector{LXeDeposit},
-                           params::MCParams)::Vector{Cluster}
-    actives = [d for d in deposits if d.region === :active]
-    n = length(actives)
-    n == 0 && return Cluster[]
-
-    sorted = sort(actives; by = d -> d.z)
-    Δz_thresh = Δz_threshold_cm(params)
-
-    out = Cluster[]
-    cum_E = sorted[1].E_dep
-    cum_xE = sorted[1].x * sorted[1].E_dep
-    cum_yE = sorted[1].y * sorted[1].E_dep
-    cum_zE = sorted[1].z * sorted[1].E_dep
-    z_prev = sorted[1].z
-    @inbounds for i in 2:n
-        z_i = sorted[i].z
-        if z_i - z_prev < Δz_thresh
-            cum_E  += sorted[i].E_dep
-            cum_xE += sorted[i].x * sorted[i].E_dep
-            cum_yE += sorted[i].y * sorted[i].E_dep
-            cum_zE += sorted[i].z * sorted[i].E_dep
-        else
-            push!(out, Cluster(cum_xE/cum_E, cum_yE/cum_E, cum_zE/cum_E, cum_E))
-            cum_E  = sorted[i].E_dep
-            cum_xE = sorted[i].x * sorted[i].E_dep
-            cum_yE = sorted[i].y * sorted[i].E_dep
-            cum_zE = sorted[i].z * sorted[i].E_dep
-        end
-        z_prev = z_i
-    end
-    push!(out, Cluster(cum_xE/cum_E, cum_yE/cum_E, cum_zE/cum_E, cum_E))
-    out
-end
-
-# ---------------------------------------------------------------------------
 # RejectionHistograms — diagnostic output for early-skin-reject and early-fv-reject
 # ---------------------------------------------------------------------------
 
