@@ -1,4 +1,4 @@
-# src3/classify.jl — Cluster type and the functions that produce clusters.
+# src3/clusters.jl — Cluster type and the functions that produce clusters.
 #
 # Two cluster-building functions live here:
 #
@@ -15,7 +15,8 @@
 # (`Δz < params.Δz_threshold_mm`) and energy-weighted centroid.
 #
 # Note: neither of these classifies the event. The event-outcome classifier
-# (`classify_event`, added later) decides the per-event outcome symbol.
+# `classify_event` lives in `src3/classify.jl` (added in step 10) and
+# decides the per-event outcome symbol.
 
 using Random: AbstractRNG, randn
 
