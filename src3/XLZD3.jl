@@ -108,7 +108,7 @@ export Cluster, compute_clusters, build_clusters
 export select_SC, select_ROI
 
 # Event-outcome classifier
-export classify_event, CLASSIFY_EVENT_OUTCOMES, CLASSIFY_EVENT_REASONS
+export classify_event, CLASSIFY_EVENT_OUTCOMES, TRACK_STATUSES
 
 # Rejection histograms
 export RejectionHistograms

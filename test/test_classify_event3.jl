@@ -1,6 +1,6 @@
 # test/test_classify_event3.jl — Pure-decision tests for classify_event.
 #
-# Hand-built (reject_reason, clusters) inputs, no MC, no tracking.
+# Hand-built (status, clusters) inputs, no MC, no tracking.
 # Each testset asserts the resulting outcome symbol.
 
 using Test
@@ -23,20 +23,20 @@ const R_OUT  = sqrt(params.fv_r2_max_cm2) + 1.0                  # outside FV by
 mk(; x=0.0, y=0.0, z=Z_MID, ec=Q_MeV, es=Q_MeV) = Cluster(x, y, z, ec, es)
 
 # ---------------------------------------------------------------------------
-# 1. reject_reason = :rejected_skin → :skin_vetoed (clusters ignored)
+# 1. status = :vetoed_skin → :skin_vetoed (clusters ignored)
 # ---------------------------------------------------------------------------
 
-@testset "1. :rejected_skin → :skin_vetoed (clusters ignored)" begin
+@testset "1. :vetoed_skin → :skin_vetoed (clusters ignored)" begin
     cs_in_fv  = [mk()]
     cs_empty  = Cluster[]
     cs_two    = [mk(z=30.0), mk(z=60.0)]
-    @test classify_event(:rejected_skin, cs_in_fv, params) === :skin_vetoed
-    @test classify_event(:rejected_skin, cs_empty, params) === :skin_vetoed
-    @test classify_event(:rejected_skin, cs_two,   params) === :skin_vetoed
+    @test classify_event(:vetoed_skin, cs_in_fv, params) === :skin_vetoed
+    @test classify_event(:vetoed_skin, cs_empty, params) === :skin_vetoed
+    @test classify_event(:vetoed_skin, cs_two,   params) === :skin_vetoed
 end
 
 # ---------------------------------------------------------------------------
-# 2. reject_reason = :rejected_fv → :SS_outside_FV (clusters ignored)
+# 2. status = :rejected_fv → :SS_outside_FV (clusters ignored)
 # ---------------------------------------------------------------------------
 
 @testset "2. :rejected_fv → :SS_outside_FV (clusters ignored)" begin
@@ -45,29 +45,29 @@ end
 end
 
 # ---------------------------------------------------------------------------
-# 3. reject_reason = :no_lxe_entry → :escaped (clusters ignored)
+# 3. status = :escaped → :escaped (clusters ignored)
 # ---------------------------------------------------------------------------
 
-@testset "3. :no_lxe_entry → :escaped" begin
-    @test classify_event(:no_lxe_entry, Cluster[], params) === :escaped
-    @test classify_event(:no_lxe_entry, [mk()],    params) === :escaped
+@testset "3. :escaped → :escaped" begin
+    @test classify_event(:escaped, Cluster[], params) === :escaped
+    @test classify_event(:escaped, [mk()],    params) === :escaped
 end
 
 # ---------------------------------------------------------------------------
-# 4. reject_reason = :none, empty clusters → :escaped
+# 4. status = :completed, empty clusters → :escaped
 # ---------------------------------------------------------------------------
 
-@testset "4. :none + empty clusters → :escaped" begin
-    @test classify_event(:none, Cluster[], params) === :escaped
+@testset "4. :completed + empty clusters → :escaped" begin
+    @test classify_event(:completed, Cluster[], params) === :escaped
 end
 
 # ---------------------------------------------------------------------------
-# 5. reject_reason = :none, ≥ 2 clusters → :MS_rejected
+# 5. status = :completed, ≥ 2 clusters → :MS_rejected
 # ---------------------------------------------------------------------------
 
-@testset "5. :none + 2 clusters → :MS_rejected" begin
-    @test classify_event(:none, [mk(z=40.0), mk(z=60.0)], params) === :MS_rejected
-    @test classify_event(:none, [mk(z=40.0), mk(z=60.0), mk(z=80.0)], params) === :MS_rejected
+@testset "5. :completed + 2 clusters → :MS_rejected" begin
+    @test classify_event(:completed, [mk(z=40.0), mk(z=60.0)], params) === :MS_rejected
+    @test classify_event(:completed, [mk(z=40.0), mk(z=60.0), mk(z=80.0)], params) === :MS_rejected
 end
 
 # ---------------------------------------------------------------------------
@@ -75,7 +75,7 @@ end
 # ---------------------------------------------------------------------------
 
 @testset "6. SS cluster z < fv_z_min → :SS_outside_FV" begin
-    @test classify_event(:none, [mk(z=Z_LOW)], params) === :SS_outside_FV
+    @test classify_event(:completed, [mk(z=Z_LOW)], params) === :SS_outside_FV
 end
 
 # ---------------------------------------------------------------------------
@@ -83,7 +83,7 @@ end
 # ---------------------------------------------------------------------------
 
 @testset "7. SS cluster z > fv_z_max → :SS_outside_FV" begin
-    @test classify_event(:none, [mk(z=Z_HIGH)], params) === :SS_outside_FV
+    @test classify_event(:completed, [mk(z=Z_HIGH)], params) === :SS_outside_FV
 end
 
 # ---------------------------------------------------------------------------
@@ -91,7 +91,7 @@ end
 # ---------------------------------------------------------------------------
 
 @testset "8. SS cluster r² > fv_r2_max → :SS_outside_FV" begin
-    @test classify_event(:none, [mk(x=R_OUT, y=0.0, z=Z_MID)], params) === :SS_outside_FV
+    @test classify_event(:completed, [mk(x=R_OUT, y=0.0, z=Z_MID)], params) === :SS_outside_FV
 end
 
 # ---------------------------------------------------------------------------
@@ -99,7 +99,7 @@ end
 # ---------------------------------------------------------------------------
 
 @testset "9. SS in FV, es == Q → :SS_in_ROI" begin
-    @test classify_event(:none, [mk(es=Q_MeV)], params) === :SS_in_ROI
+    @test classify_event(:completed, [mk(es=Q_MeV)], params) === :SS_in_ROI
 end
 
 # ---------------------------------------------------------------------------
@@ -107,9 +107,9 @@ end
 # ---------------------------------------------------------------------------
 
 @testset "10. SS in FV, es far from Q → :SS_outside_ROI" begin
-    @test classify_event(:none, [mk(es=Q_MeV + 5*HW_MeV)], params) === :SS_outside_ROI
-    @test classify_event(:none, [mk(es=Q_MeV - 5*HW_MeV)], params) === :SS_outside_ROI
-    @test classify_event(:none, [mk(es=1.0)],              params) === :SS_outside_ROI
+    @test classify_event(:completed, [mk(es=Q_MeV + 5*HW_MeV)], params) === :SS_outside_ROI
+    @test classify_event(:completed, [mk(es=Q_MeV - 5*HW_MeV)], params) === :SS_outside_ROI
+    @test classify_event(:completed, [mk(es=1.0)],              params) === :SS_outside_ROI
 end
 
 # ---------------------------------------------------------------------------
@@ -118,24 +118,24 @@ end
 
 @testset "11. coverage of CLASSIFY_EVENT_OUTCOMES (sans :companion_vetoed)" begin
     reached = Set{Symbol}()
-    push!(reached, classify_event(:rejected_skin, Cluster[], params))           # :skin_vetoed
+    push!(reached, classify_event(:vetoed_skin, Cluster[], params))           # :skin_vetoed
     push!(reached, classify_event(:rejected_fv,   Cluster[], params))           # :SS_outside_FV
-    push!(reached, classify_event(:none,           Cluster[], params))           # :escaped
-    push!(reached, classify_event(:none, [mk(z=40.0), mk(z=60.0)], params))     # :MS_rejected
-    push!(reached, classify_event(:none, [mk(es=Q_MeV)], params))                # :SS_in_ROI
-    push!(reached, classify_event(:none, [mk(es=1.0)],   params))                # :SS_outside_ROI
+    push!(reached, classify_event(:completed,           Cluster[], params))           # :escaped
+    push!(reached, classify_event(:completed, [mk(z=40.0), mk(z=60.0)], params))     # :MS_rejected
+    push!(reached, classify_event(:completed, [mk(es=Q_MeV)], params))                # :SS_in_ROI
+    push!(reached, classify_event(:completed, [mk(es=1.0)],   params))                # :SS_outside_ROI
     expected = setdiff(Set(CLASSIFY_EVENT_OUTCOMES), Set([:companion_vetoed]))
     # All six output symbols are reachable from the inputs above.
     @test reached == expected
 end
 
 # ---------------------------------------------------------------------------
-# 12. Edge case: rejected_skin takes priority over clusters
+# 12. Edge case: vetoed_skin takes priority over clusters
 # ---------------------------------------------------------------------------
 
-@testset "12. rejected_skin priority over even SS-in-ROI clusters" begin
+@testset "12. vetoed_skin priority over even SS-in-ROI clusters" begin
     # Even a perfect SS-in-ROI cluster cannot rescue a skin-vetoed event.
-    @test classify_event(:rejected_skin, [mk(es=Q_MeV)], params) === :skin_vetoed
+    @test classify_event(:vetoed_skin, [mk(es=Q_MeV)], params) === :skin_vetoed
 end
 
 println("\n  ── test_classify_event3.jl: classify_event OK ──\n")
