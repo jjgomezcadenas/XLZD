@@ -168,7 +168,7 @@ function main()
     for r in results
         @printf("  %-12s %10d %10d %10d %10d %10d %10d %10d\n",
                 r.name, r.counts[:escaped], r.counts[:MS_rejected],
-                r.counts[:skin_vetoed], r.counts[:SS_outside_FV],
+                r.counts[:skin_vetoed], r.counts[:outside_FV],
                 r.counts[:SS_outside_ROI], r.counts[:SS_in_ROI],
                 r.counts[:companion_vetoed])
     end
@@ -192,7 +192,7 @@ function main()
                 @sprintf("%.6e", r.r_comp),
                 @sprintf("%.3f",  r.runtime_s),
                 r.counts[:escaped], r.counts[:MS_rejected],
-                r.counts[:skin_vetoed], r.counts[:SS_outside_FV],
+                r.counts[:skin_vetoed], r.counts[:outside_FV],
                 r.counts[:SS_outside_ROI], r.counts[:SS_in_ROI],
                 r.counts[:companion_vetoed],
             ], ","))

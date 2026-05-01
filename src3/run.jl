@@ -31,7 +31,7 @@ struct MCResult
 end
 
 const _MC_OUTCOMES = (:escaped, :MS_rejected, :skin_vetoed,
-                      :SS_outside_FV, :SS_outside_ROI, :SS_in_ROI,
+                      :outside_FV, :SS_outside_ROI, :SS_in_ROI,
                       :companion_vetoed)
 
 """

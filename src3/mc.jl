@@ -6,7 +6,7 @@
 #   :escaped         — photon left without depositing visible energy
 #   :MS_rejected     — multiple sites separated by ≥ Δz_threshold (or pair production)
 #   :skin_vetoed     — accumulated skin deposit ≥ E_skin_veto
-#   :SS_outside_FV   — single site, but cluster outside the FV box
+#   :outside_FV   — single site, but cluster outside the FV box
 #   :SS_outside_ROI  — single site in FV, energy outside the ROI window
 #   :SS_in_ROI       — single site in FV, smeared energy in the ROI (the signal)
 #
@@ -152,7 +152,7 @@ Post-tracking classification. Called once after `_track_photon_segment!`
 returns. Sets `state.outcome` based on:
   - `state.skin_overflow` → :skin_vetoed
   - no cluster started   → :escaped
-  - first :TPC deposit outside FV → :SS_outside_FV
+  - first :TPC deposit outside FV → :outside_FV
   - else: cluster grouping from `scratch.deposits`. ng > 1 → :MS_rejected;
     ng = 1 → smear E and apply ROI cut.
 
@@ -178,7 +178,7 @@ function finalize_outcome!(state::PhotonState, rng::AbstractRNG,
 
     # First :TPC deposit outside FV?
     if !in_fv(state.x_cluster, state.y_cluster, state.z_cluster, params)
-        state.outcome = :SS_outside_FV
+        state.outcome = :outside_FV
         return
     end
 
@@ -291,7 +291,7 @@ function _track_photon_segment!(rng::AbstractRNG, det::LXeDetector,
                                               state.x_cluster, state.y_cluster,
                                               state.z_cluster, state.E_cluster)
                         end
-                        state.outcome = :SS_outside_FV
+                        state.outcome = :outside_FV
                     end
                 end
             end
@@ -368,7 +368,7 @@ vertex and the two 511 keV annihilation γ's are propagated through the
 LXe with full physics.
 
 Returns one of `:escaped`, `:MS_rejected`, `:skin_vetoed`,
-`:SS_outside_FV`, `:SS_outside_ROI`, `:SS_in_ROI`.
+`:outside_FV`, `:SS_outside_ROI`, `:SS_in_ROI`.
 
 Companion-γ veto is applied separately in `run_mc`.
 """

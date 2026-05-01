@@ -29,7 +29,7 @@ params  = MCParams()
 by_name = Dict(e.name => e for e in effs)
 
 const VALID_OUTCOMES = (:escaped, :MS_rejected, :skin_vetoed,
-                         :SS_outside_FV, :SS_outside_ROI, :SS_in_ROI)
+                         :outside_FV, :SS_outside_ROI, :SS_in_ROI)
 
 # ---------------------------------------------------------------------------
 # MCParams + helpers
@@ -131,9 +131,9 @@ end
         @test counts[o] >= 0
     end
     # With early-FV-reject (default TRUE) most photons end as either
-    # :escaped (no visible deposit) or :SS_outside_FV (first deposit
+    # :escaped (no visible deposit) or :outside_FV (first deposit
     # outside the FV box, terminates immediately).
-    @test counts[:escaped] + counts[:SS_outside_FV] > 0.3 * N
+    @test counts[:escaped] + counts[:outside_FV] > 0.3 * N
     # f_SS_in_ROI is on the order of 1e-5; at 50k samples could be 0
     f_ss_roi = counts[:SS_in_ROI] / N
     @test 0.0 <= f_ss_roi < 1e-2
@@ -157,7 +157,7 @@ end
         end
         @test counts[:escaped] > 0
         # With early-FV-reject default ON, most events either escape or
-        # land in :SS_outside_FV. :MS_rejected only happens for the
+        # land in :outside_FV. :MS_rejected only happens for the
         # subset that passes FV and then has multiple clusters.
         n_categories = sum(counts[o] > 0 for o in VALID_OUTCOMES)
         @test n_categories >= 2

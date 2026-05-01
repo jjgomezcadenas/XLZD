@@ -36,12 +36,12 @@ mk(; x=0.0, y=0.0, z=Z_MID, ec=Q_MeV, es=Q_MeV) = Cluster(x, y, z, ec, es)
 end
 
 # ---------------------------------------------------------------------------
-# 2. status = :rejected_fv → :SS_outside_FV (clusters ignored)
+# 2. status = :rejected_fv → :outside_FV (clusters ignored)
 # ---------------------------------------------------------------------------
 
-@testset "2. :rejected_fv → :SS_outside_FV (clusters ignored)" begin
-    @test classify_event(:rejected_fv, [mk()],     params) === :SS_outside_FV
-    @test classify_event(:rejected_fv, Cluster[],  params) === :SS_outside_FV
+@testset "2. :rejected_fv → :outside_FV (clusters ignored)" begin
+    @test classify_event(:rejected_fv, [mk()],     params) === :outside_FV
+    @test classify_event(:rejected_fv, Cluster[],  params) === :outside_FV
 end
 
 # ---------------------------------------------------------------------------
@@ -71,27 +71,27 @@ end
 end
 
 # ---------------------------------------------------------------------------
-# 6. SS, cluster z below FV → :SS_outside_FV
+# 6. SS, cluster z below FV → :outside_FV
 # ---------------------------------------------------------------------------
 
-@testset "6. SS cluster z < fv_z_min → :SS_outside_FV" begin
-    @test classify_event(:completed, [mk(z=Z_LOW)], params) === :SS_outside_FV
+@testset "6. SS cluster z < fv_z_min → :outside_FV" begin
+    @test classify_event(:completed, [mk(z=Z_LOW)], params) === :outside_FV
 end
 
 # ---------------------------------------------------------------------------
-# 7. SS, cluster z above FV → :SS_outside_FV
+# 7. SS, cluster z above FV → :outside_FV
 # ---------------------------------------------------------------------------
 
-@testset "7. SS cluster z > fv_z_max → :SS_outside_FV" begin
-    @test classify_event(:completed, [mk(z=Z_HIGH)], params) === :SS_outside_FV
+@testset "7. SS cluster z > fv_z_max → :outside_FV" begin
+    @test classify_event(:completed, [mk(z=Z_HIGH)], params) === :outside_FV
 end
 
 # ---------------------------------------------------------------------------
-# 8. SS, cluster outside r² → :SS_outside_FV
+# 8. SS, cluster outside r² → :outside_FV
 # ---------------------------------------------------------------------------
 
-@testset "8. SS cluster r² > fv_r2_max → :SS_outside_FV" begin
-    @test classify_event(:completed, [mk(x=R_OUT, y=0.0, z=Z_MID)], params) === :SS_outside_FV
+@testset "8. SS cluster r² > fv_r2_max → :outside_FV" begin
+    @test classify_event(:completed, [mk(x=R_OUT, y=0.0, z=Z_MID)], params) === :outside_FV
 end
 
 # ---------------------------------------------------------------------------
@@ -119,7 +119,7 @@ end
 @testset "11. coverage of CLASSIFY_EVENT_OUTCOMES (sans :companion_vetoed)" begin
     reached = Set{Symbol}()
     push!(reached, classify_event(:vetoed_skin, Cluster[], params))           # :skin_vetoed
-    push!(reached, classify_event(:rejected_fv,   Cluster[], params))           # :SS_outside_FV
+    push!(reached, classify_event(:rejected_fv,   Cluster[], params))           # :outside_FV
     push!(reached, classify_event(:completed,           Cluster[], params))           # :escaped
     push!(reached, classify_event(:completed, [mk(z=40.0), mk(z=60.0)], params))     # :MS_rejected
     push!(reached, classify_event(:completed, [mk(es=Q_MeV)], params))                # :SS_in_ROI

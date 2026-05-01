@@ -15,7 +15,7 @@
 #   :skin_vetoed      — photon deposited > E_skin_veto_keV in :Skin
 #                       (tracker's early-skin-reject decision)
 #   :MS_rejected      — multiple clusters
-#   :SS_outside_FV    — single cluster (or first deposit) outside FV box
+#   :outside_FV    — single cluster (or first deposit) outside FV box
 #   :SS_outside_ROI   — single cluster, in FV, smeared E outside ROI window
 #   :SS_in_ROI        — single cluster, in FV, smeared E inside ROI window
 #
@@ -32,7 +32,7 @@
 
 const CLASSIFY_EVENT_OUTCOMES = (
     :escaped, :MS_rejected, :skin_vetoed,
-    :SS_outside_FV, :SS_outside_ROI, :SS_in_ROI,
+    :outside_FV, :SS_outside_ROI, :SS_in_ROI,
 )
 
 const TRACK_STATUSES = (
@@ -52,12 +52,12 @@ Assign one of the symbols in `CLASSIFY_EVENT_OUTCOMES` (excluding
 Decision chain (first match wins):
 
     vetoed_skin    → :skin_vetoed
-    rejected_fv    → :SS_outside_FV
+    rejected_fv    → :outside_FV
     escaped        → :escaped
     empty clusters → :escaped
     >1 cluster     → :MS_rejected
     1 cluster:
-        cluster outside FV → :SS_outside_FV
+        cluster outside FV → :outside_FV
         else if in ROI     → :SS_in_ROI
         else               → :SS_outside_ROI
 
@@ -68,7 +68,7 @@ function classify_event(status::Symbol,
                          clusters::Vector{Cluster},
                          params::MCParams)::Symbol
     status === :vetoed_skin   && return :skin_vetoed
-    status === :rejected_fv   && return :SS_outside_FV
+    status === :rejected_fv   && return :outside_FV
     status === :escaped       && return :escaped
     isempty(clusters)         && return :escaped
     if !select_SC(clusters)
@@ -76,7 +76,7 @@ function classify_event(status::Symbol,
     end
     c = clusters[1]
     if !in_fv(c.xc, c.yc, c.zc, params)
-        return :SS_outside_FV
+        return :outside_FV
     end
     return select_ROI(c, params) ? :SS_in_ROI : :SS_outside_ROI
 end
