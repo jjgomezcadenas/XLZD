@@ -44,14 +44,14 @@ end
 """
     compute_clusters(deposits::Vector{LXeDeposit}, params::MCParams) -> Vector{Cluster}
 
-Group `:active` deposits in `deposits` (any region; non-`:active` ignored)
+Group `:TPC` deposits in `deposits` (any region; non-`:TPC` ignored)
 into z-clusters: sort by z, group consecutive entries with Δz <
 `params.Δz_threshold_mm` after sorting, compute energy-weighted (x, y, z)
 and total E per cluster. Pre-refactor; does not smear (`es = 0.0`).
 """
 function compute_clusters(deposits::Vector{LXeDeposit},
                            params::MCParams)::Vector{Cluster}
-    actives = [d for d in deposits if d.region === :active]
+    actives = [d for d in deposits if d.region === :TPC]
     n = length(actives)
     n == 0 && return Cluster[]
 

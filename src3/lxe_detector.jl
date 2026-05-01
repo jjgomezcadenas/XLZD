@@ -73,26 +73,26 @@ end
 """
     region_at(det, x, y, z) -> Symbol
 
-Classify a point as one of `:gas`, `:outside_lxe`, `:skin`, `:fc_region`,
-`:active`, `:inert`. The FC annulus (`R_FC_inner < r < R_FC_outer`) is
+Classify a point as one of `:Gas`, `:Outside`, `:Skin`, `:FC`,
+`:TPC`, `:Inert`. The FC annulus (`R_FC_inner < r < R_FC_outer`) is
 treated as transparent (vacuum) per project convention; the per-photon
-MC handles `:fc_region` exactly like `:gas`.
+MC handles `:FC` exactly like `:Gas`.
 """
 function region_at(det::LXeDetector, x::Real, y::Real, z::Real)::Symbol
     r2 = x*x + y*y
-    z > det.z_gate                                              && return :gas
-    r2 > det.R_ICV_inner^2                                       && return :outside_lxe
+    z > det.z_gate                                              && return :Gas
+    r2 > det.R_ICV_inner^2                                       && return :Outside
 
     if z >= det.z_RFR_bottom
         # In the FC-bearing z range
-        r2 > det.R_FC_outer^2  && return :skin
-        r2 > det.R_FC_inner^2  && return :fc_region
+        r2 > det.R_FC_outer^2  && return :Skin
+        r2 > det.R_FC_inner^2  && return :FC
         # r ≤ R_FC_inner
-        z >= det.z_cathode      && return :active   # drift region
-        return :inert                               # RFR (below cathode)
+        z >= det.z_cathode      && return :TPC   # drift region
+        return :Inert                               # RFR (below cathode)
     else
         # Below z_RFR_bottom — dome LXe (no FC structure here)
-        return :inert
+        return :Inert
     end
 end
 

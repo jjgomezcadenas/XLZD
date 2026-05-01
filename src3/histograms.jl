@@ -2,15 +2,15 @@
 #
 # Six histograms describe the visible-deposit structure of each photon:
 #   1. SS / MS / no_cluster bucket counts
-#   2. Δz from the first :active deposit to every subsequent :active deposit
-#   3. Energy of the first :active deposit
-#   4. Energy of each cluster (group of :active deposits with adjacent Δz < 3 mm)
+#   2. Δz from the first :TPC deposit to every subsequent :TPC deposit
+#   3. Energy of the first :TPC deposit
+#   4. Energy of each cluster (group of :TPC deposits with adjacent Δz < 3 mm)
 #   5. Number of clusters per photon
 #   6. Number of "extra" clusters (= n_clusters − 1)  [item 6 = option (a)]
 #
-# Only :active deposits feed into these histograms — same definition the
-# main SS/MS outcome logic uses. Deposits in :skin or :inert are ignored
-# here. Pair production and other events with no :active deposits go into
+# Only :TPC deposits feed into these histograms — same definition the
+# main SS/MS outcome logic uses. Deposits in :Skin or :Inert are ignored
+# here. Pair production and other events with no :TPC deposits go into
 # the `no_cluster` bucket (and N_clusters = 0).
 
 # ---------------------------------------------------------------------------
@@ -20,8 +20,8 @@
 """
     LXeDeposit
 
-One LXe deposit recorded by the MC. `region` is one of `:active`, `:skin`,
-`:inert`. `(x, y, z)` and `E_dep` are in cm and MeV respectively.
+One LXe deposit recorded by the MC. `region` is one of `:TPC`, `:Skin`,
+`:Inert`. `(x, y, z)` and `E_dep` are in cm and MeV respectively.
 """
 struct LXeDeposit
     x::Float64
@@ -155,9 +155,9 @@ histograms in `h`.
 """
 function update_histograms!(h::HistogramSet, scratch::PhotonScratch,
                              params::MCParams)
-    # Filter to :active deposits only (the histogram set describes the
+    # Filter to :TPC deposits only (the histogram set describes the
     # active-LXe cluster structure)
-    actives = [d for d in scratch.deposits if d.region === :active]
+    actives = [d for d in scratch.deposits if d.region === :TPC]
     n = length(actives)
     if n == 0
         fill_ssms!(h, :no_cluster)

@@ -30,37 +30,37 @@ end
 
 @testset "region_at — interior representatives" begin
     # On-axis active drift region
-    @test region_at(det, 0.0,  0.0, 50.0)  === :active
-    @test region_at(det, 0.0,  0.0, 100.0) === :active
+    @test region_at(det, 0.0,  0.0, 50.0)  === :TPC
+    @test region_at(det, 0.0,  0.0, 100.0) === :TPC
     # Off-axis but inside FC inner radius
-    @test region_at(det, 50.0, 0.0, 50.0)  === :active
-    @test region_at(det, 0.0, 50.0, 50.0)  === :active
+    @test region_at(det, 50.0, 0.0, 50.0)  === :TPC
+    @test region_at(det, 0.0, 50.0, 50.0)  === :TPC
 
     # FC annulus (transparent)
-    @test region_at(det, 73.5, 0.0,  50.0) === :fc_region
-    @test region_at(det, 0.0,  73.5, 100.0) === :fc_region
+    @test region_at(det, 73.5, 0.0,  50.0) === :FC
+    @test region_at(det, 0.0,  73.5, 100.0) === :FC
     # FC annulus also exists in the RFR z range
-    @test region_at(det, 73.5, 0.0, -10.0) === :fc_region
+    @test region_at(det, 73.5, 0.0, -10.0) === :FC
 
     # Skin (between FC outer and ICV inner, in the FC-bearing z range)
-    @test region_at(det, 78.0, 0.0,  50.0) === :skin
-    @test region_at(det, 80.0, 0.0,  100.0) === :skin
-    @test region_at(det, 78.0, 0.0, -10.0) === :skin   # skin extends through RFR z
+    @test region_at(det, 78.0, 0.0,  50.0) === :Skin
+    @test region_at(det, 80.0, 0.0,  100.0) === :Skin
+    @test region_at(det, 78.0, 0.0, -10.0) === :Skin   # skin extends through RFR z
 
     # RFR + dome inert LXe
-    @test region_at(det, 0.0, 0.0, -5.0)  === :inert   # RFR (below cathode, above z_RFR_bottom)
-    @test region_at(det, 0.0, 0.0, -30.0) === :inert   # dome (below z_RFR_bottom)
-    @test region_at(det, 50.0, 0.0, -50.0) === :inert  # dome
-    @test region_at(det, 78.0, 0.0, -30.0) === :inert  # below z_RFR_bottom — no skin here
+    @test region_at(det, 0.0, 0.0, -5.0)  === :Inert   # RFR (below cathode, above z_RFR_bottom)
+    @test region_at(det, 0.0, 0.0, -30.0) === :Inert   # dome (below z_RFR_bottom)
+    @test region_at(det, 50.0, 0.0, -50.0) === :Inert  # dome
+    @test region_at(det, 78.0, 0.0, -30.0) === :Inert  # below z_RFR_bottom — no skin here
 
     # Gas above the liquid
-    @test region_at(det, 0.0,  0.0, 150.0) === :gas
-    @test region_at(det, 0.0,  0.0, 180.0) === :gas
-    @test region_at(det, 50.0, 0.0, 160.0) === :gas
+    @test region_at(det, 0.0,  0.0, 150.0) === :Gas
+    @test region_at(det, 0.0,  0.0, 180.0) === :Gas
+    @test region_at(det, 50.0, 0.0, 160.0) === :Gas
 
     # Outside the LXe (radially in the ICV wall or beyond)
-    @test region_at(det, 85.0, 0.0,  50.0) === :outside_lxe
-    @test region_at(det, 0.0, 90.0, -20.0) === :outside_lxe
+    @test region_at(det, 85.0, 0.0,  50.0) === :Outside
+    @test region_at(det, 0.0, 90.0, -20.0) === :Outside
 end
 
 @testset "region_at — small jitters around boundaries" begin
@@ -68,21 +68,21 @@ end
     eps_z = 1e-6
 
     # r = R_FC_inner ± ε at active z
-    @test region_at(det, det.R_FC_inner - eps_r, 0.0, 50.0) === :active
-    @test region_at(det, det.R_FC_inner + eps_r, 0.0, 50.0) === :fc_region
+    @test region_at(det, det.R_FC_inner - eps_r, 0.0, 50.0) === :TPC
+    @test region_at(det, det.R_FC_inner + eps_r, 0.0, 50.0) === :FC
 
     # r = R_FC_outer ± ε
-    @test region_at(det, det.R_FC_outer - eps_r, 0.0, 50.0) === :fc_region
-    @test region_at(det, det.R_FC_outer + eps_r, 0.0, 50.0) === :skin
+    @test region_at(det, det.R_FC_outer - eps_r, 0.0, 50.0) === :FC
+    @test region_at(det, det.R_FC_outer + eps_r, 0.0, 50.0) === :Skin
 
     # r = R_ICV_inner ± ε
-    @test region_at(det, det.R_ICV_inner - eps_r, 0.0, 50.0) === :skin
-    @test region_at(det, det.R_ICV_inner + eps_r, 0.0, 50.0) === :outside_lxe
+    @test region_at(det, det.R_ICV_inner - eps_r, 0.0, 50.0) === :Skin
+    @test region_at(det, det.R_ICV_inner + eps_r, 0.0, 50.0) === :Outside
 
     # z just above gate → gas
-    @test region_at(det, 0.0, 0.0, det.z_gate + eps_z) === :gas
+    @test region_at(det, 0.0, 0.0, det.z_gate + eps_z) === :Gas
     # z just below z_RFR_bottom (and above the cathode is impossible — z_RFR_bottom < z_cathode):
-    @test region_at(det, 0.0, 0.0, det.z_RFR_bottom - eps_z) === :inert
+    @test region_at(det, 0.0, 0.0, det.z_RFR_bottom - eps_z) === :Inert
 end
 
 @testset "Sanity: μ_LXe and masses" begin

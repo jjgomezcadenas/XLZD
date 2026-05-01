@@ -265,7 +265,7 @@ end
 
 @testset "Pair-production secondaries are now tracked (no auto-rejection)" begin
     # Direct call into _track_photon_segment! with energy above the
-    # pair-production threshold and a starting point inside :active.
+    # pair-production threshold and a starting point inside :TPC.
     # Force several thousand photons; verify that at least one ends up
     # with a visible cluster — i.e., pair production no longer
     # immediately marks the photon :MS_rejected.

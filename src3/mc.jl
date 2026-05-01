@@ -11,8 +11,8 @@
 #   :SS_in_ROI       — single site in FV, smeared energy in the ROI (the signal)
 #
 # The MC uses `region_at` to classify every interaction into one of
-# {:active, :skin, :inert, :gas, :fc_region, :outside_lxe}. The two
-# transparent regions (:gas, :fc_region) are advanced through without
+# {:TPC, :Skin, :Inert, :Gas, :FC, :Outside}. The two
+# transparent regions (:Gas, :FC) are advanced through without
 # interaction; LXe regions interact with μ_LXe(E) and have region-specific
 # deposit bookkeeping. Companion-γ veto for Tl-208 is NOT in this commit
 # (handled in MC4).
@@ -79,7 +79,7 @@ mutable struct PhotonState
     z_cluster::Float64
     E_cluster::Float64       # sum of deposits within Δz of first deposit
     E_skin_total::Float64
-    nskin::Int               # count of :skin interactions
+    nskin::Int               # count of :Skin interactions
     skin_overflow::Bool      # E_skin_total ≥ veto threshold
     n_int::Int
     total_path::Float64
@@ -97,8 +97,8 @@ PhotonState() = PhotonState(false, NaN, NaN, NaN, 0.0, 0.0, 0, false, 0, 0.0, :i
 
 Apply the deposit bookkeeping for the given interaction point. May set
 `state.outcome` to `:MS_rejected` (Δz exceeded) or `:skin_vetoed`
-(skin total ≥ veto). Does nothing for `:inert`, `:gas`, `:fc_region`,
-or `:outside_lxe`.
+(skin total ≥ veto). Does nothing for `:Inert`, `:Gas`, `:FC`,
+or `:Outside`.
 """
 function handle_deposit!(state::PhotonState, det::LXeDetector,
                           params::MCParams,
@@ -110,11 +110,11 @@ function handle_deposit!(state::PhotonState, det::LXeDetector,
     E_skin_veto_MeV = det.E_skin_veto_keV * 1.0e-3
     Δz_thresh = Δz_threshold_cm(params)
 
-    if reg === :active
+    if reg === :TPC
         E_dep < E_visible_MeV && return
         # Record for control histograms / cluster computation
         scratch !== nothing && push!(scratch.deposits,
-                                      LXeDeposit(x, y, z, E_dep, :active))
+                                      LXeDeposit(x, y, z, E_dep, :TPC))
         if !state.cluster_started
             state.x_cluster = x
             state.y_cluster = y
@@ -128,16 +128,16 @@ function handle_deposit!(state::PhotonState, det::LXeDetector,
                 state.E_cluster += E_dep
             end
         end
-    elseif reg === :skin
+    elseif reg === :Skin
         scratch !== nothing && push!(scratch.deposits,
-                                      LXeDeposit(x, y, z, E_dep, :skin))
+                                      LXeDeposit(x, y, z, E_dep, :Skin))
         state.E_skin_total += E_dep
         state.nskin        += 1
         if state.E_skin_total >= E_skin_veto_MeV
             state.skin_overflow = true
         end
     end
-    # :inert / :gas / :fc_region / :outside_lxe → no signal
+    # :Inert / :Gas / :FC / :Outside → no signal
     nothing
 end
 
@@ -152,7 +152,7 @@ Post-tracking classification. Called once after `_track_photon_segment!`
 returns. Sets `state.outcome` based on:
   - `state.skin_overflow` → :skin_vetoed
   - no cluster started   → :escaped
-  - first :active deposit outside FV → :SS_outside_FV
+  - first :TPC deposit outside FV → :SS_outside_FV
   - else: cluster grouping from `scratch.deposits`. ng > 1 → :MS_rejected;
     ng = 1 → smear E and apply ROI cut.
 
@@ -176,7 +176,7 @@ function finalize_outcome!(state::PhotonState, rng::AbstractRNG,
         return
     end
 
-    # First :active deposit outside FV?
+    # First :TPC deposit outside FV?
     if !in_fv(state.x_cluster, state.y_cluster, state.z_cluster, params)
         state.outcome = :SS_outside_FV
         return
@@ -230,11 +230,11 @@ function _track_photon_segment!(rng::AbstractRNG, det::LXeDetector,
     while state.outcome === :in_progress
         reg = region_at(det, x, y, z)
 
-        if reg === :outside_lxe
+        if reg === :Outside
             return
         end
 
-        if reg === :gas || reg === :fc_region
+        if reg === :Gas || reg === :FC
             d = path_to_next_region(x, y, z, dx, dy, dz, det)
             d == Inf && return
             d_step = d + 1.0e-7
@@ -281,7 +281,7 @@ function _track_photon_segment!(rng::AbstractRNG, det::LXeDetector,
                     state.outcome = :skin_vetoed
                 end
             end
-            # First :active deposit just happened? Check FV
+            # First :TPC deposit just happened? Check FV
             if state.outcome === :in_progress &&
                !prev_cluster_started && state.cluster_started
                 if !in_fv(state.x_cluster, state.y_cluster, state.z_cluster, params)
@@ -411,7 +411,7 @@ end
 
 Track one companion γ from `comp_eff` (lumped at 583 keV) into the
 LXe and return `true` iff it produces a visible deposit anywhere —
-i.e. any single deposit ≥ `det.E_visible_keV` in `:active` LXe, OR the
+i.e. any single deposit ≥ `det.E_visible_keV` in `:TPC` LXe, OR the
 accumulated skin deposit ≥ `det.E_skin_veto_keV`. Pair production is
 treated as visible (the two annihilation γ guarantee a visible deposit).
 
@@ -434,11 +434,11 @@ function companion_visible!(rng::AbstractRNG, det::LXeDetector,
 
     while true
         reg = region_at(det, x, y, z)
-        if reg === :outside_lxe
+        if reg === :Outside
             return false
         end
 
-        if reg === :gas || reg === :fc_region
+        if reg === :Gas || reg === :FC
             d = path_to_next_region(x, y, z, dx, dy, dz, det)
             d == Inf && return false
             d_step = d + 1.0e-7
@@ -489,9 +489,9 @@ function companion_visible!(rng::AbstractRNG, det::LXeDetector,
 
         # Visibility check on this deposit
         reg_dep = region_at(det, x, y, z)
-        if reg_dep === :active
+        if reg_dep === :TPC
             E_dep >= E_visible_MeV && return true
-        elseif reg_dep === :skin
+        elseif reg_dep === :Skin
             E_skin_total += E_dep
             E_skin_total >= E_skin_veto_MeV && return true
         end
