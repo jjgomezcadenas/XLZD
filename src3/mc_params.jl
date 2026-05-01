@@ -42,20 +42,3 @@ E_tracking_cutoff_MeV(p::MCParams) = p.E_tracking_cutoff_keV / 1000.0
     z >= p.fv_z_min_cm && z <= p.fv_z_max_cm &&
     (x*x + y*y) <= p.fv_r2_max_cm2
 
-"""
-    classify_ss_energy(rng, E_cluster_MeV, p::MCParams) -> Symbol
-
-Apply Gaussian energy smearing (σ/E = `p.σ_E_over_E`) to the cluster
-energy and check the ±`p.ROI_halfwidth_keV` window around `p.Q_betabeta_keV`.
-Returns `:SS_in_ROI` or `:SS_outside_ROI`.
-"""
-function classify_ss_energy(rng::AbstractRNG, E_cluster_MeV::Float64,
-                             p::MCParams)::Symbol
-    σ_E = p.σ_E_over_E * E_cluster_MeV
-    E_smeared_keV = (E_cluster_MeV + σ_E * randn(rng)) * 1000.0
-    if abs(E_smeared_keV - p.Q_betabeta_keV) <= p.ROI_halfwidth_keV
-        return :SS_in_ROI
-    else
-        return :SS_outside_ROI
-    end
-end

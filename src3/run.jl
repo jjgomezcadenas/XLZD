@@ -15,8 +15,14 @@ Fields:
   * `f_SS_in_ROI`    — `counts[:SS_in_ROI] / n_total`
   * `bg_per_yr`      — `γ_per_yr_total × f_SS_in_ROI` (events/yr in ROI)
   * `r_comp`         — companion-reach probability used (0 for non-Tl208)
-  * `histograms`     — currently always `nothing`. Stack-based control
-                       histograms come in a later step.
+  * `stack_hists`    — StackHistogramSet diagnostic accumulator
+                       (chain depth, first-interaction type, per-region
+                       deposit counts, inclusive edep, Δz, E_first).
+                       `nothing` if `with_stack_histograms=false`.
+  * `cluster_hists`  — ClusterHistogramSet diagnostic accumulator
+                       (per-cluster energy, multiplicity, pair distances,
+                       r²/D vs z heatmaps).
+                       `nothing` if `with_cluster_histograms=false`.
   * `rej_hist`       — RejectionHistograms (skin/FV early-reject diagnostics).
 """
 struct MCResult
@@ -29,7 +35,8 @@ struct MCResult
     f_SS_in_ROI::Float64
     bg_per_yr::Float64
     r_comp::Float64
-    histograms::Union{HistogramSet, Nothing}
+    stack_hists::Union{StackHistogramSet, Nothing}
+    cluster_hists::Union{ClusterHistogramSet, Nothing}
     rej_hist::Union{RejectionHistograms, Nothing}
 end
 
@@ -73,7 +80,8 @@ function run_mc(det::LXeDetector, eff::EffectiveSource,
                 xcom::XCOMTable, params::MCParams,
                 n_samples::Integer; mc_seed::Integer=1234,
                 verbose::Bool=false,
-                with_histograms::Bool=false,
+                with_stack_histograms::Bool=true,
+                with_cluster_histograms::Bool=true,
                 with_rejection_histograms::Bool=true)::MCResult
     n_threads  = Threads.nthreads()
     base       = div(n_samples, n_threads)
@@ -90,6 +98,16 @@ function run_mc(det::LXeDetector, eff::EffectiveSource,
                                             z_max_cm   = det.z_gate)
                        for _ in 1:n_threads] :
                       Vector{RejectionHistograms}()
+    thread_stack_hist = with_stack_histograms ?
+                        [StackHistogramSet() for _ in 1:n_threads] :
+                        Vector{StackHistogramSet}()
+    thread_cluster_hist = with_cluster_histograms ?
+                          [ClusterHistogramSet(
+                              r2_max_cm2 = det.R_ICV_inner^2,
+                              z_min_cm   = det.z_LXe_bottom,
+                              z_max_cm   = det.z_gate)
+                           for _ in 1:n_threads] :
+                          Vector{ClusterHistogramSet}()
     thread_stack    = [PhotonStack()         for _ in 1:n_threads]
     thread_snapshot = [MersenneTwister(0)    for _ in 1:n_threads]
 
@@ -102,6 +120,8 @@ function run_mc(det::LXeDetector, eff::EffectiveSource,
         rng          = MersenneTwister(mc_seed + tid)
         local_counts = thread_counts[tid]
         local_rej    = with_rejection_histograms ? thread_rej_hist[tid] : nothing
+        local_stack_hist   = with_stack_histograms   ? thread_stack_hist[tid]   : nothing
+        local_cluster_hist = with_cluster_histograms ? thread_cluster_hist[tid] : nothing
         local_stack  = thread_stack[tid]
         local_snap   = thread_snapshot[tid]
         for i in 1:n_local
@@ -115,6 +135,10 @@ function run_mc(det::LXeDetector, eff::EffectiveSource,
                 clusters = build_clusters(rng, local_stack, params)
                 outcome  = classify_event(status, local_stack,
                                           clusters, params)
+                local_stack_hist   !== nothing &&
+                    update_stack_histograms!(local_stack_hist, local_stack, params)
+                local_cluster_hist !== nothing &&
+                    update_cluster_histograms!(local_cluster_hist, clusters, params)
             elseif fv === :vetoed_skin
                 outcome = :skin_vetoed
             else  # :rejected_fv
@@ -163,8 +187,31 @@ function run_mc(det::LXeDetector, eff::EffectiveSource,
         nothing
     end
 
+    merged_stack_hist = if with_stack_histograms
+        sh = StackHistogramSet()
+        for th in thread_stack_hist
+            merge_stack_histograms!(sh, th)
+        end
+        sh
+    else
+        nothing
+    end
+
+    merged_cluster_hist = if with_cluster_histograms
+        ch = ClusterHistogramSet(r2_max_cm2 = det.R_ICV_inner^2,
+                                  z_min_cm   = det.z_LXe_bottom,
+                                  z_max_cm   = det.z_gate)
+        for tc in thread_cluster_hist
+            merge_cluster_histograms!(ch, tc)
+        end
+        ch
+    else
+        nothing
+    end
+
     MCResult(eff.name, eff.isotope, counts, n_total, runtime,
-             eff.total_per_yr, f_ss_roi, bg, r_comp, nothing, merged_rej)
+             eff.total_per_yr, f_ss_roi, bg, r_comp,
+             merged_stack_hist, merged_cluster_hist, merged_rej)
 end
 
 """
@@ -179,7 +226,8 @@ function run_mc_all(det::LXeDetector, effs::Vector{EffectiveSource},
                     n_samples::Integer;
                     mc_seed::Integer=1234,
                     verbose::Bool=false,
-                    with_histograms::Bool=false,
+                    with_stack_histograms::Bool=true,
+                    with_cluster_histograms::Bool=true,
                     with_rejection_histograms::Bool=true)::Vector{MCResult}
     by_name = Dict(e.name => e for e in effs)
     results = MCResult[]
@@ -199,7 +247,8 @@ function run_mc_all(det::LXeDetector, effs::Vector{EffectiveSource},
                             mname, i, length(main_names))
         push!(results, run_mc(det, eff, comp_eff, xcom, params, n_samples;
                               mc_seed=seed, verbose=verbose,
-                              with_histograms=with_histograms,
+                              with_stack_histograms=with_stack_histograms,
+                              with_cluster_histograms=with_cluster_histograms,
                               with_rejection_histograms=with_rejection_histograms))
     end
     results

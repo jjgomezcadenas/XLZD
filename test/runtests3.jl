@@ -26,6 +26,8 @@ const TEST_FILES = [
     "test_classify_event3.jl",
     "test_tracker3.jl",
     "test_histograms3.jl",
+    "test_stack_histograms3.jl",
+    "test_cluster_histograms3.jl",
     "test_mc3.jl",
 ]
 

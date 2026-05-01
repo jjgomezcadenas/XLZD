@@ -18,8 +18,8 @@ include("physics.jl")
 include("sampling.jl")
 include("mc_params.jl")
 include("stack.jl")
-include("histograms.jl")
 include("clusters.jl")
+include("histograms.jl")
 include("select.jl")
 include("classify.jl")
 include("tracker.jl")
@@ -87,21 +87,15 @@ export icv_top_inner_disk, icv_bot_inner_disk
 export ICV_TOP_ASPECT, ICV_BOT_ASPECT
 
 # MC params and helper functions
-export MCParams, in_fv, classify_ss_energy
+export MCParams, in_fv
 export E_tracking_cutoff_MeV, Δz_threshold_cm
 export path_to_next_region, companion_visible!, companion_reach_prob
 
 # Run driver
 export MCResult, run_mc, run_mc_all
 
-# Control histograms
-export HistogramSet, PhotonScratch, LXeDeposit
-export update_histograms!, merge_histograms!
-export fill_Δz!, fill_E_first!, fill_E_cluster!
-export fill_N_clusters!, fill_N_extra!, fill_ssms!
-
-# Cluster computation
-export Cluster, compute_clusters, build_clusters
+# Cluster type and builder
+export Cluster, build_clusters
 
 # Cluster selection predicates
 export select_SC, select_ROI, select_FV, select_skin
@@ -111,6 +105,10 @@ export classify_event, CLASSIFY_EVENT_OUTCOMES, TRACK_STATUSES
 
 # Stack tracker (Phase 2; src3/tracker.jl)
 export track_photon_stack, fast_veto
+
+# Stack & cluster diagnostic histograms
+export StackHistogramSet, update_stack_histograms!, merge_stack_histograms!
+export ClusterHistogramSet, update_cluster_histograms!, merge_cluster_histograms!
 
 # Rejection histograms
 export RejectionHistograms

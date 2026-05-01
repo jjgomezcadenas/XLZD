@@ -56,22 +56,6 @@ end
     @test !in_fv( 0.0,  0.0, 20.0, p)        # z < z_min
 end
 
-@testset "classify_ss_energy" begin
-    rng = MersenneTwister(0xCC)
-    p = MCParams()
-    # Cluster at exactly Q_ββ → smearing centered there → most :SS_in_ROI
-    n_in = 0
-    for _ in 1:1000
-        if classify_ss_energy(rng, p.Q_betabeta_keV / 1000.0, p) === :SS_in_ROI
-            n_in += 1
-        end
-    end
-    # ±1σ Gaussian window contains 68 % of mass
-    @test 0.6 < n_in / 1000 < 0.76
-    # Cluster very far from Q_ββ → never in ROI
-    @test classify_ss_energy(rng, 1.0, p) === :SS_outside_ROI
-end
-
 # ---------------------------------------------------------------------------
 # path_to_next_region geometric checks
 # ---------------------------------------------------------------------------
@@ -237,14 +221,32 @@ end
     @test length(rs) == 6
     for r in rs
         @test sum(values(r.counts)) == 500
-        @test r.histograms === nothing   # control hists not yet wired
+        @test r.stack_hists   isa StackHistogramSet
+        @test r.cluster_hists isa ClusterHistogramSet
     end
 end
 
-@testset "with_histograms is currently a no-op (stack histograms TODO)" begin
+@testset "stack/cluster histograms populated under default kwargs" begin
     eff = by_name["CB_Bi214"]
-    res = run_mc(det, eff, nothing, xcom, params, 500;
-                  mc_seed=0x1234,
-                  with_histograms=true)
-    @test res.histograms === nothing
+    res = run_mc(det, eff, nothing, xcom, params, 1000; mc_seed=0x1234)
+    @test res.stack_hists   isa StackHistogramSet
+    @test res.cluster_hists isa ClusterHistogramSet
+    # Stack/cluster histograms accumulate ONCE per event that reaches
+    # full tracking (i.e. fast_veto returned :pass). Events fast-rejected
+    # (:vetoed_skin / :rejected_fv from the FAST path) skip the update.
+    # The two sums must therefore agree with each other and be > 0 and
+    # ≤ n_total.
+    n_h = sum(res.stack_hists.ng_max_counts)
+    @test n_h == sum(res.cluster_hists.N_clusters_counts)
+    @test 0 < n_h <= res.n_total
+end
+
+@testset "with_*_histograms=false leaves them as nothing" begin
+    eff = by_name["CB_Bi214"]
+    res = run_mc(det, eff, nothing, xcom, params, 200;
+                  mc_seed=0x4321,
+                  with_stack_histograms=false,
+                  with_cluster_histograms=false)
+    @test res.stack_hists   === nothing
+    @test res.cluster_hists === nothing
 end

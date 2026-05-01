@@ -46,9 +46,6 @@ function parse_cli()
             arg_type = Float64
             default  = 17.2        # keV; ±1σ at σ/E = 0.7 % and Q = 2458 keV
             help     = "ROI half-width in keV (±1σ around Q_ββ)."
-        "--histograms"
-            action   = :store_true
-            help     = "Accumulate and save the 6 control histograms."
         "--fv-z-min"
             arg_type = Float64
             default  = 26.0
@@ -76,7 +73,6 @@ function main()
     src_i     = args["source-index"]
     sigma_e   = args["sigma-e"]
     roi_half  = args["roi-halfwidth"]
-    do_hist   = args["histograms"]
     fv_z_min  = args["fv-z-min"]
     fv_z_max  = args["fv-z-max"]
     fv_r_max  = args["fv-r-max"]
@@ -113,7 +109,6 @@ function main()
     if src_i == 0
         results = run_mc_all(det, effs, xcom, params, N;
                               mc_seed=seed, verbose=true,
-                              with_histograms=do_hist,
                               with_rejection_histograms=do_rej_hist)
     else
         1 <= src_i <= length(main_names) ||
@@ -127,7 +122,6 @@ function main()
         @printf("\n── Running %s ──\n", eff.name)
         push!(results, run_mc(det, eff, comp_eff, xcom, params, N;
                                mc_seed=seed, verbose=true,
-                               with_histograms=do_hist,
                                with_rejection_histograms=do_rej_hist))
     end
 
@@ -188,20 +182,16 @@ function main()
     end
     println("  → wrote $csv_path")
 
-    # ───────── Histogram CSVs (one folder per source) ─────────
-    if do_hist || do_rej_hist
+    # ───────── Rejection histogram CSVs (one folder per source) ─────────
+    # Stack/cluster histogram CSV writers come in a follow-up commit; for
+    # now run_mc populates MCResult.{stack_hists, cluster_hists} but the
+    # script does not yet write them to disk.
+    if do_rej_hist
         for r in results
+            r.rej_hist === nothing && continue
             h_dir = joinpath(out_dir, "hist_$(r.name)")
-            need_dir = (do_hist && r.histograms !== nothing) ||
-                        (do_rej_hist && r.rej_hist !== nothing)
-            need_dir || continue
             mkpath(h_dir)
-            if do_hist && r.histograms !== nothing
-                _save_histogram_csvs(h_dir, r.histograms)
-            end
-            if do_rej_hist && r.rej_hist !== nothing
-                _save_rejection_csvs(h_dir, r.rej_hist)
-            end
+            _save_rejection_csvs(h_dir, r.rej_hist)
             println("  → wrote $h_dir")
         end
     end
@@ -236,48 +226,6 @@ function _save_rejection_csvs(dir::String, rh::RejectionHistograms)
     _write_E(  joinpath(dir, "rejected_skin_E.csv"),   rh.skin_E_counts)
     _write_r2z(joinpath(dir, "rejected_fv_r2z.csv"),   rh.fv_r2z_counts)
     _write_E(  joinpath(dir, "rejected_fv_E.csv"),     rh.fv_E_counts)
-end
-
-function _save_histogram_csvs(dir::String, h::HistogramSet)
-    open(joinpath(dir, "ssms_counts.csv"), "w") do f
-        println(f, "bucket,count")
-        println(f, "SS,$(h.ssms_counts[1])")
-        println(f, "MS,$(h.ssms_counts[2])")
-        println(f, "no_cluster,$(h.ssms_counts[3])")
-    end
-    open(joinpath(dir, "delta_z.csv"), "w") do f
-        println(f, "bin_left_cm,bin_right_cm,count")
-        bw = h.Δz_max_cm / h.Δz_n_bins
-        for i in 1:h.Δz_n_bins
-            println(f, "$((i-1)*bw),$(i*bw),$(h.Δz_counts[i])")
-        end
-    end
-    open(joinpath(dir, "e_first.csv"), "w") do f
-        println(f, "bin_left_MeV,bin_right_MeV,count")
-        bw = h.E_max_MeV / h.E_n_bins
-        for i in 1:h.E_n_bins
-            println(f, "$((i-1)*bw),$(i*bw),$(h.E_first_counts[i])")
-        end
-    end
-    open(joinpath(dir, "e_cluster.csv"), "w") do f
-        println(f, "bin_left_MeV,bin_right_MeV,count")
-        bw = h.E_max_MeV / h.E_n_bins
-        for i in 1:h.E_n_bins
-            println(f, "$((i-1)*bw),$(i*bw),$(h.E_cluster_counts[i])")
-        end
-    end
-    open(joinpath(dir, "n_clusters.csv"), "w") do f
-        println(f, "n,count")
-        for i in 1:length(h.N_clusters_counts)
-            println(f, "$(i-1),$(h.N_clusters_counts[i])")
-        end
-    end
-    open(joinpath(dir, "n_extra_clusters.csv"), "w") do f
-        println(f, "n,count")
-        for i in 1:length(h.N_extra_counts)
-            println(f, "$(i-1),$(h.N_extra_counts[i])")
-        end
-    end
 end
 
 main()
