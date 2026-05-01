@@ -81,7 +81,8 @@ end
 # 4. Forced PHOTO + full deposit
 # ---------------------------------------------------------------------------
 
-@testset "4. row has interaction == INT_PHOTO and edep == epre == eff.E_MeV" begin
+@testset "4. row interaction is one of {PHOTO, COMPTON, PAIR}; edep/epre invariants" begin
+    # 11c: cross-section sampling — interaction is no longer forced PHOTO.
     rng   = MersenneTwister(0xCAFE)
     stack = PhotonStack()
     for _ in 1:300
@@ -89,10 +90,12 @@ end
         s = track_photon_stack(rng, det, eff_test, xcom, params, stack)
         if s === :completed
             r = stack.rows[1]
-            @test r.interaction === INT_PHOTO
-            @test r.edep ≈ eff_test.E_MeV
+            @test r.interaction in (INT_PHOTO, INT_COMPTON, INT_PAIR)
             @test r.epre ≈ eff_test.E_MeV
-            @test r.edep == r.epre
+            @test 0.0 < r.edep <= r.epre + 1e-9
+            if r.interaction === INT_PHOTO
+                @test r.edep ≈ r.epre
+            end
         end
     end
 end
@@ -222,4 +225,95 @@ end
     @test sum(rej.fv_E_counts)   == fv_E_total_before
 end
 
-println("\n  ── test_tracker3.jl: track_photon_stack 11b OK ──\n")
+# ---------------------------------------------------------------------------
+# 11. All three interaction types appear at N=1000; Compton dominates
+# ---------------------------------------------------------------------------
+
+@testset "11. PHOTO + COMPTON + PAIR all reachable; Compton dominates" begin
+    rng   = MersenneTwister(0x11CC)
+    stack = PhotonStack()
+    n_photo   = 0
+    n_compton = 0
+    n_pair    = 0
+    for _ in 1:1000
+        empty!(stack)
+        s = track_photon_stack(rng, det, eff_test, xcom, params, stack)
+        if s === :completed
+            it = stack.rows[1].interaction
+            it === INT_PHOTO   && (n_photo   += 1)
+            it === INT_COMPTON && (n_compton += 1)
+            it === INT_PAIR    && (n_pair    += 1)
+        end
+    end
+    @printf("\n     interaction-type counts (CB_Bi214, N=1000):\n")
+    @printf("       INT_PHOTO   = %d\n", n_photo)
+    @printf("       INT_COMPTON = %d\n", n_compton)
+    @printf("       INT_PAIR    = %d\n", n_pair)
+    @test n_photo   > 0
+    @test n_compton > 0
+    @test n_pair    > 0
+    @test n_compton > n_photo     # Compton dominates at 2.448 MeV in LXe
+end
+
+# ---------------------------------------------------------------------------
+# 12. Compton edep is strictly between 0 and epre (electron KE, not full)
+# ---------------------------------------------------------------------------
+
+@testset "12. Compton: 0 < edep < epre" begin
+    rng   = MersenneTwister(0x12CC)
+    stack = PhotonStack()
+    n_compton_seen = 0
+    for _ in 1:1000
+        empty!(stack)
+        s = track_photon_stack(rng, det, eff_test, xcom, params, stack)
+        if s === :completed && stack.rows[1].interaction === INT_COMPTON
+            r = stack.rows[1]
+            @test 0.0 < r.edep
+            @test r.edep < r.epre   # electron KE strictly less than incoming
+            n_compton_seen += 1
+        end
+    end
+    @test n_compton_seen > 0    # we should have hit some Compton events
+end
+
+# ---------------------------------------------------------------------------
+# 13. Pair edep ≈ epre − 2·m_e·c² (deterministic vertex deposit)
+# ---------------------------------------------------------------------------
+
+@testset "13. Pair: edep == epre - 2·ME_C2_MEV" begin
+    rng   = MersenneTwister(0x13CC)
+    stack = PhotonStack()
+    n_pair_seen = 0
+    for _ in 1:2000
+        empty!(stack)
+        s = track_photon_stack(rng, det, eff_test, xcom, params, stack)
+        if s === :completed && stack.rows[1].interaction === INT_PAIR
+            r = stack.rows[1]
+            @test r.edep ≈ r.epre - 2.0 * ME_C2_MEV
+            n_pair_seen += 1
+        end
+    end
+    @test n_pair_seen > 0
+end
+
+# ---------------------------------------------------------------------------
+# 14. No PAIR rows from sub-threshold sources (Tl-208 companion, 583 keV)
+# ---------------------------------------------------------------------------
+
+@testset "14. sub-threshold source produces no PAIR" begin
+    eff_comp = by_name["CB_Tl208c"]   # E_MeV = 0.583, well below 1.022
+    @test eff_comp.E_MeV < 2.0 * ME_C2_MEV
+    rng   = MersenneTwister(0x14CC)
+    stack = PhotonStack()
+    n_pair = 0
+    for _ in 1:2000
+        empty!(stack)
+        s = track_photon_stack(rng, det, eff_comp, xcom, params, stack)
+        if s === :completed && stack.rows[1].interaction === INT_PAIR
+            n_pair += 1
+        end
+    end
+    @test n_pair == 0
+end
+
+println("\n  ── test_tracker3.jl: track_photon_stack 11c OK ──\n")

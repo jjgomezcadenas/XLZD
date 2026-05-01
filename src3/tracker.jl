@@ -5,7 +5,8 @@
 #   - 11a: scaffold + stub                                            DONE
 #   - 11b: source sampling + transparent advance + first interaction  DONE
 #          (forced PHOTO; one row per event)
-#   - 11c: cross-section sampling (photo / Compton / pair)            TODO
+#   - 11c: cross-section sampling (photo / Compton / pair)            DONE
+#          (one row per event; no recursion or children)
 #   - 11d: Compton recursion (`_track_child_photon!`)                 TODO
 #   - 11e: pair production children (back-to-back 511 keV)            TODO
 #   - 11f: skin + FV early-reject; rej_hist filling                   TODO
@@ -30,12 +31,14 @@ using Random: AbstractRNG
 Stack-based per-photon tracker (work in progress; see file header for
 the step-by-step status).
 
-**Step 11b:** samples one γ from `eff`, walks through LXe regions
+**Step 11c:** samples one γ from `eff`, walks through LXe regions
 until either the photon exits (`:Outside`) or an interaction is
-sampled. Interactions are currently FORCED to `INT_PHOTO` (full
-deposit; cross-section sampling lands in 11c). The function pushes at
-most one row to `stack` and returns `:completed` (deposit happened) or
-`:escaped` (photon left LXe before interacting).
+sampled. Interaction type (`INT_PHOTO` / `INT_COMPTON` / `INT_PAIR`)
+is sampled from cross-section ratios at the photon's energy. For
+Compton, `edep` is the Klein-Nishina electron kinetic energy; for
+pair, `edep = epre − 2·m_e·c²`. The outgoing γ from Compton and the
+two 511 keV annihilation γ from pair are NOT tracked yet — that's
+11d/11e. The function pushes exactly one row per `:completed` event.
 
 The returned symbol is a member of `TRACK_STATUSES` and is consumed by
 `classify_event` to produce the per-event outcome.
@@ -94,7 +97,7 @@ function track_photon_stack(rng::AbstractRNG, det::LXeDetector,
             y += dy * (dnext + ε)
             z += dz * (dnext + ε)
         else
-            # Interaction. Forced PHOTO until 11c.
+            # Interaction at distance dint inside `region`.
             # Tag the row with `region` (the start region), not a
             # post-advance reclassification — dint was sampled from this
             # region's μ, so the interaction belongs to it. This also
@@ -103,10 +106,34 @@ function track_photon_stack(rng::AbstractRNG, det::LXeDetector,
             x += dx * dint
             y += dy * dint
             z += dz * dint
-            push_row!(stack; nm=0, parent_region=parent_region,
-                              region=region,
-                              interaction=INT_PHOTO,
-                              x=x, y=y, z=z, epre=e, edep=e)
+
+            # Sample interaction type from cross-section ratios.
+            sP = σ_photo(xcom, e)
+            sC = σ_Compton(xcom, e)
+            sX = σ_pair(xcom, e)        # 0 below 1.022 MeV
+            sT = sP + sC + sX
+            r  = rand(rng) * sT
+
+            if r < sP
+                # Photoelectric: full absorption.
+                push_row!(stack; nm=0, parent_region=parent_region,
+                                  region=region, interaction=INT_PHOTO,
+                                  x=x, y=y, z=z, epre=e, edep=e)
+            elseif r < sP + sC
+                # Compton: edep = electron kinetic energy = epre − E_scattered.
+                E_prime, _cosθ = sample_klein_nishina(rng, e)
+                edep_e = e - E_prime
+                push_row!(stack; nm=0, parent_region=parent_region,
+                                  region=region, interaction=INT_COMPTON,
+                                  x=x, y=y, z=z, epre=e, edep=edep_e)
+            else
+                # Pair: edep = e⁺e⁻ kinetic = epre − 2·m_e·c².
+                # Reachable only when sX > 0, i.e. e ≥ 1.022 MeV.
+                edep_pair = e - 2.0 * ME_C2_MEV
+                push_row!(stack; nm=0, parent_region=parent_region,
+                                  region=region, interaction=INT_PAIR,
+                                  x=x, y=y, z=z, epre=e, edep=edep_pair)
+            end
             return :completed
         end
     end
