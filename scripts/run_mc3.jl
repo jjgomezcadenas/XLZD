@@ -170,18 +170,22 @@ function main()
     @printf("  TOTAL background (cryostat sources) : %.4e events/yr\n", total_bg)
     println()
 
-    # Per-outcome breakdown
+    # Per-outcome breakdown — counts and % of n_total per source
     println("── Per-outcome breakdown ──")
-    @printf("  %-12s %10s %10s %10s %10s %10s %10s %10s\n",
+    @printf("  %-12s %12s %12s %12s %12s %12s %12s %12s\n",
             "source", "esc", "MS", "skin", "outFV",
             "outROI", "in_ROI", "comp_veto")
-    println("  ", "─"^96)
+    println("  ", "─"^114)
     for r in results
-        @printf("  %-12s %10d %10d %10d %10d %10d %10d %10d\n",
-                r.name, r.counts[:escaped], r.counts[:MS_rejected],
-                r.counts[:skin_vetoed], r.counts[:outside_FV],
-                r.counts[:SS_outside_ROI], r.counts[:SS_in_ROI],
-                r.counts[:companion_vetoed])
+        n  = r.n_total
+        pc = (k::Symbol) -> 100.0 * r.counts[k] / n
+        cell = (k::Symbol) -> @sprintf("%7d (%4.1f%%)", r.counts[k], pc(k))
+        @printf("  %-12s %12s %12s %12s %12s %12s %12s %12s\n",
+                r.name,
+                cell(:escaped),    cell(:MS_rejected),
+                cell(:skin_vetoed), cell(:outside_FV),
+                cell(:SS_outside_ROI), cell(:SS_in_ROI),
+                cell(:companion_vetoed))
     end
     println()
 
