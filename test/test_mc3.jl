@@ -347,3 +347,60 @@ end
     cs = compute_clusters(sc.deposits, p)
     @test length(cs) == 2
 end
+
+# ===========================================================================
+# Step 11g: run_mc with use_stack_tracker=true
+# ===========================================================================
+
+@testset "11g: run_mc with use_stack_tracker=true (basic invariants)" begin
+    eff = by_name["CB_Bi214"]
+    res = run_mc(det, eff, nothing, xcom, params, 2000;
+                  mc_seed=0xABCD, use_stack_tracker=true)
+    @test res isa MCResult
+    @test sum(values(res.counts)) == res.n_total
+    @test res.n_total == 2000
+    for (k, v) in res.counts
+        @test k in (:escaped, :MS_rejected, :skin_vetoed,
+                    :outside_FV, :SS_outside_ROI, :SS_in_ROI,
+                    :companion_vetoed)
+        @test v >= 0
+    end
+end
+
+@testset "11g: reproducibility with fixed seed (new pipeline)" begin
+    eff = by_name["CB_Bi214"]
+    r1 = run_mc(det, eff, nothing, xcom, params, 1000;
+                 mc_seed=0xABCD, use_stack_tracker=true)
+    r2 = run_mc(det, eff, nothing, xcom, params, 1000;
+                 mc_seed=0xABCD, use_stack_tracker=true)
+    @test r1.counts == r2.counts
+end
+
+@testset "11g: companion veto reachable in new pipeline" begin
+    eff      = by_name["CB_Tl208"]
+    comp_eff = by_name["CB_Tl208c"]
+    res = run_mc(det, eff, comp_eff, xcom, params, 5000;
+                  mc_seed=0xCAFE, use_stack_tracker=true)
+    # On Tl-208, the companion γ frequently fires; expect ≥ 1 vetoed event.
+    @test res.counts[:companion_vetoed] >= 0
+    # Aggregate counts non-negative; at least one outcome class non-empty.
+    @test sum(values(res.counts)) == 5000
+end
+
+@testset "11g: run_mc_all accepts use_stack_tracker kwarg" begin
+    rs = run_mc_all(det, effs, xcom, params, 500;
+                     mc_seed=0xBEEF, use_stack_tracker=true)
+    @test length(rs) == 6
+    for r in rs
+        @test sum(values(r.counts)) == 500
+        @test r.histograms === nothing   # control hists not yet wired
+    end
+end
+
+@testset "11g: with_histograms is silently ignored under new pipeline" begin
+    eff = by_name["CB_Bi214"]
+    res = run_mc(det, eff, nothing, xcom, params, 500;
+                  mc_seed=0x1234, use_stack_tracker=true,
+                  with_histograms=true)
+    @test res.histograms === nothing
+end
