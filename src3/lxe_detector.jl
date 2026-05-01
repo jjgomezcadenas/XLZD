@@ -1,22 +1,22 @@
-# src3/lxe_detector.jl — LXe detector geometry, region classifier, thresholds.
+# src3/lxe_detector.jl — LXe detector geometry, region classifier.
 #
 # Encapsulates the LXe-side of the detector model:
-#   active TPC LXe (visible, threshold E_visible)
-#   LXe skin       (PMT-readout veto, threshold E_skin_veto)
-#   inert LXe      (RFR + dome — invisible)
-#   FC region      (1.5 cm-thick PTFE+Ti annulus — treated as vacuum)
-#   gas            (above the liquid surface — no interactions)
-#   outside_lxe    (in the Ti vessel walls or beyond — out of scope here)
+#   :TPC      active TPC LXe (visible)
+#   :Skin     LXe skin (PMT-readout veto layer)
+#   :Inert    inert LXe (RFR + dome — invisible)
+#   :FC       field-cage annulus (1.5 cm PTFE+Ti — treated as vacuum)
+#   :Gas      gas (above the liquid surface — no interactions)
+#   :Outside  outside the LXe envelope
 #
-# `region_at(det, x, y, z)` returns one of these as a Symbol; callers (the
-# per-photon MC) never look at the geometry parameters directly.
+# `region_at(det, x, y, z)` returns one of these as a Symbol. The
+# visibility thresholds (E_visible_keV, E_skin_veto_keV) are physics
+# policy and live on MCParams, not here.
 
 """
     LXeDetector
 
-LZ LXe detector parameters: cylindrical / cap geometry, the LXe `Material`,
-and the two energy thresholds (`E_visible` for active-TPC clustering and
-`E_skin_veto` for the skin-PMT veto). Lengths in cm; thresholds in keV.
+LZ LXe detector geometry + the LXe `Material`. Lengths in cm. The
+visibility / veto thresholds live on `MCParams`.
 """
 struct LXeDetector
     # Geometry (cm)
@@ -30,9 +30,6 @@ struct LXeDetector
     z_ICV_top::Float64         # ICV top apex (upper gas bound)
     # Physics
     material::Material         # LXe; carries ρ and μ_lin(E)
-    # Thresholds (keV)
-    E_visible_keV::Float64
-    E_skin_veto_keV::Float64
 end
 
 # ---------------------------------------------------------------------------
@@ -44,6 +41,9 @@ end
 
 Read the single-row CSV at `csv_path` and combine with `mat_LXe` (the
 `Material` returned by `load_material("LXe", ρ, "data/nist_lxe.csv")`).
+The CSV's `E_visible_keV` and `E_skin_veto_keV` columns are ignored
+(thresholds now live on MCParams); the columns may remain in the file
+for historical reference.
 """
 function build_lxe_detector(csv_path::AbstractString,
                             mat_LXe::Material)::LXeDetector
@@ -61,8 +61,6 @@ function build_lxe_detector(csv_path::AbstractString,
         Float64(r["z_LXe_bottom_cm"]),
         Float64(r["z_ICV_top_cm"]),
         mat_LXe,
-        Float64(r["E_visible_keV"]),
-        Float64(r["E_skin_veto_keV"]),
     )
 end
 

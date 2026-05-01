@@ -23,8 +23,6 @@ det     = build_lxe_detector(lxe_csv, mat_LXe)
     @test det.z_RFR_bottom ≈ -13.75
     @test det.z_LXe_bottom ≈ -69.0
     @test det.z_ICV_top    ≈ 190.0
-    @test det.E_visible_keV   ≈ 10.0
-    @test det.E_skin_veto_keV ≈ 100.0
     @test det.material.name == "LXe"
 end
 

@@ -106,8 +106,8 @@ function handle_deposit!(state::PhotonState, det::LXeDetector,
                           E_dep::Float64,
                           scratch::Union{PhotonScratch, Nothing}=nothing)
     reg = region_at(det, x, y, z)
-    E_visible_MeV  = det.E_visible_keV   * 1.0e-3
-    E_skin_veto_MeV = det.E_skin_veto_keV * 1.0e-3
+    E_visible_MeV  = params.E_visible_keV   * 1.0e-3
+    E_skin_veto_MeV = params.E_skin_veto_keV * 1.0e-3
     Δz_thresh = Δz_threshold_cm(params)
 
     if reg === :TPC
@@ -411,8 +411,8 @@ end
 
 Track one companion γ from `comp_eff` (lumped at 583 keV) into the
 LXe and return `true` iff it produces a visible deposit anywhere —
-i.e. any single deposit ≥ `det.E_visible_keV` in `:TPC` LXe, OR the
-accumulated skin deposit ≥ `det.E_skin_veto_keV`. Pair production is
+i.e. any single deposit ≥ `params.E_visible_keV` in `:TPC` LXe, OR the
+accumulated skin deposit ≥ `params.E_skin_veto_keV`. Pair production is
 treated as visible (the two annihilation γ guarantee a visible deposit).
 
 This is a stripped-down version of `track_one_photon!`: no SS/MS
@@ -426,8 +426,8 @@ function companion_visible!(rng::AbstractRNG, det::LXeDetector,
                              params::MCParams)::Bool
     x, y, z, dx, dy, dz = sample_entry(rng, det, comp_eff)
     E = comp_eff.E_MeV
-    E_visible_MeV   = det.E_visible_keV   * 1.0e-3
-    E_skin_veto_MeV = det.E_skin_veto_keV * 1.0e-3
+    E_visible_MeV   = params.E_visible_keV   * 1.0e-3
+    E_skin_veto_MeV = params.E_skin_veto_keV * 1.0e-3
     E_cutoff = E_tracking_cutoff_MeV(params)
     ρ = det.material.density
     E_skin_total = 0.0
