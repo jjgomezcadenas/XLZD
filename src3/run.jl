@@ -77,7 +77,7 @@ function run_mc(det::LXeDetector, eff::EffectiveSource,
                 early_skin_reject::Bool=true,
                 early_fv_reject::Bool=true,
                 with_rejection_histograms::Bool=true,
-                use_stack_tracker::Bool=false)::MCResult
+                use_stack_tracker::Bool=true)::MCResult
     n_threads  = Threads.nthreads()
     base       = div(n_samples, n_threads)
     rem        = n_samples - base * n_threads
@@ -222,7 +222,7 @@ function run_mc_all(det::LXeDetector, effs::Vector{EffectiveSource},
                     early_skin_reject::Bool=true,
                     early_fv_reject::Bool=true,
                     with_rejection_histograms::Bool=true,
-                    use_stack_tracker::Bool=false)::Vector{MCResult}
+                    use_stack_tracker::Bool=true)::Vector{MCResult}
     by_name = Dict(e.name => e for e in effs)
     results = MCResult[]
     main_names = ["CB_Bi214", "CTH_Bi214", "CBH_Bi214",

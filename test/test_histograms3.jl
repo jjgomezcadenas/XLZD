@@ -139,8 +139,12 @@ end
     by_name = Dict(e.name => e for e in effs)
 
     eff = by_name["CB_Bi214"]
+    # Control HistogramSet is currently populated only by the legacy
+    # tracker (it consumes PhotonScratch.deposits). Pin use_stack_tracker
+    # =false until histograms are re-sourced from PhotonStack.
     res = run_mc(det, eff, nothing, xcom, params, 5000;
-                  mc_seed=0xABCD, with_histograms=true)
+                  mc_seed=0xABCD, with_histograms=true,
+                  use_stack_tracker=false)
     @test res.histograms !== nothing
     h = res.histograms
     # SS + MS + no_cluster sums to n_total
@@ -182,6 +186,7 @@ end
     by_name = Dict(e.name => e for e in effs)
 
     res = run_mc(det, by_name["CB_Bi214"], nothing, xcom, params, 1000;
-                  mc_seed=0xBEEF, with_histograms=false)
+                  mc_seed=0xBEEF, with_histograms=false,
+                  use_stack_tracker=false)
     @test res.histograms === nothing
 end
