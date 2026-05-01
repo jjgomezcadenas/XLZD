@@ -1,4 +1,5 @@
-# test/test_classify3.jl — classify_event(stack, params) → Vector{Cluster}.
+# test/test_build_clusters3.jl — build_clusters(stack, params) → Vector{Cluster}.
+#                                  Builds clusters; does NOT classify the event.
 #
 # Hand-built PhotonStack inputs, no MC, no tracking. Each testset
 # constructs a stack with push_row! and asserts the cluster-count,
@@ -25,7 +26,7 @@ end
 
 @testset "1. empty stack → 0 clusters" begin
     s = PhotonStack()
-    cs = classify_event(s, params)
+    cs = build_clusters(s, params)
     @test cs isa Vector{Cluster}
     @test isempty(cs)
 end
@@ -38,7 +39,7 @@ end
     s = PhotonStack()
     push!(s; region=:TPC, interaction=INT_PHOTO,
               x=1.0, y=2.0, z=50.0, epre=2.448, edep=2.448)
-    cs = classify_event(s, params)
+    cs = build_clusters(s, params)
     @test length(cs) == 1
     @test cs[1].ec ≈ 2.448
     @test cs[1].xc ≈ 1.0
@@ -57,7 +58,7 @@ end
               x=0.0, y=0.0, z=50.00, epre=2.0, edep=0.5)
     push!(s; region=:TPC, interaction=INT_PHOTO,
               x=2.0, y=4.0, z=50.10, epre=1.5, edep=0.3)
-    cs = classify_event(s, params)
+    cs = build_clusters(s, params)
     @test length(cs) == 1
     @test cs[1].ec ≈ 0.8
     # Energy-weighted: x = (0·0.5 + 2·0.3) / 0.8 = 0.75
@@ -76,7 +77,7 @@ end
     s = PhotonStack()
     push!(s; region=:TPC, x=0.0, y=0.0, z=50.0, edep=0.5)
     push!(s; region=:TPC, x=0.0, y=0.0, z=55.0, edep=0.7)   # Δz = 5 cm
-    cs = classify_event(s, params)
+    cs = build_clusters(s, params)
     @test length(cs) == 2
     @test cs[1].zc ≈ 50.0
     @test cs[1].ec ≈ 0.5
@@ -94,7 +95,7 @@ end
     push!(s; region=:Inert, x=0.0, y=0.0, z=20.0, edep=0.3)
     push!(s; region=:TPC,   x=0.0, y=0.0, z=50.0, edep=0.5)
     push!(s; region=:Gas,   x=0.0, y=0.0, z=80.0, edep=0.1)
-    cs = classify_event(s, params)
+    cs = build_clusters(s, params)
     @test length(cs) == 1
     @test cs[1].ec ≈ 0.5
     @test cs[1].zc ≈ 50.0
@@ -112,7 +113,7 @@ end
     # In :Inert: filtered out
     push!(s; region=:Inert, interaction=INT_BELOW_THRESH,
               x=0.0, y=0.0, z=51.0, epre=0.015, edep=0.015)
-    cs = classify_event(s, params)
+    cs = build_clusters(s, params)
     @test length(cs) == 1
     @test cs[1].ec ≈ 0.020
     @test cs[1].zc ≈ 50.0
@@ -135,7 +136,7 @@ end
     push_row!(s; nm=pair_ng, parent_region=:TPC, region=:TPC,
                 interaction=INT_PHOTO,
                 x=-0.05, y=0.0, z=50.10, epre=0.511, edep=0.511)
-    cs = classify_event(s, params)
+    cs = build_clusters(s, params)
     @test length(cs) == 1
     @test cs[1].ec ≈ 1.593 + 2*0.511   # = 2.615 MeV total visible
 end
@@ -149,7 +150,7 @@ end
     push!(s; region=:TPC, x=0.0, y=0.0, z=50.00, edep=0.4)
     push!(s; region=:TPC, x=0.0, y=0.0, z=50.10, edep=0.6)   # +1 mm → joins cluster 1
     push!(s; region=:TPC, x=0.0, y=0.0, z=55.10, edep=0.9)   # +5 cm → starts cluster 2
-    cs = classify_event(s, params)
+    cs = build_clusters(s, params)
     @test length(cs) == 2
     @test cs[1].ec ≈ 1.0     # 0.4 + 0.6
     @test cs[2].ec ≈ 0.9
@@ -158,4 +159,4 @@ end
     @test cs[2].zc ≈ 55.10
 end
 
-println("\n  ── test_classify3.jl: classify_event OK ──\n")
+println("\n  ── test_build_clusters3.jl: build_clusters OK ──\n")

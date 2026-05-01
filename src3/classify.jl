@@ -4,14 +4,16 @@
 #
 #   * `compute_clusters(deposits, params)` — operates on the legacy
 #     `Vector{LXeDeposit}` produced by the current src3 tracker
-#     (`PhotonScratch.deposits`). Used by the existing histogram pipeline.
+#     (`PhotonScratch.deposits`). Pre-refactor; will be deleted at cutover.
 #
-#   * `classify_event(stack, params)` — operates on the new `PhotonStack`
-#     produced by the upcoming stack-based tracker. Will be wired in once
-#     the new tracker replaces the deposit-list tracker. (Added in step 8b.)
+#   * `build_clusters(stack, params)` — operates on the new `PhotonStack`
+#     produced by the upcoming stack-based tracker.
 #
 # Both produce a `Vector{Cluster}` and use the same z-only adjacency rule
 # (`Δz < params.Δz_threshold_mm`) and energy-weighted centroid.
+#
+# Note: neither of these classifies the event. The event-outcome classifier
+# (`classify_event`, added later) decides the per-event outcome symbol.
 
 """
     Cluster
@@ -70,11 +72,12 @@ function compute_clusters(deposits::Vector{LXeDeposit},
 end
 
 """
-    classify_event(stack::PhotonStack, params::MCParams) -> Vector{Cluster}
+    build_clusters(stack::PhotonStack, params::MCParams) -> Vector{Cluster}
 
 Build z-clusters from the rows of `stack`. Same algorithm as
 `compute_clusters`, but the input is the new `PhotonStack` produced
-by the stack-based tracker.
+by the stack-based tracker. Once the stack tracker replaces the
+deposit-list tracker, `compute_clusters` will be deleted.
 
 Filter rule: `region === :TPC && edep > 0`. This includes
 `INT_BELOW_THRESH` rows in `:TPC` (whose `edep` is the residual energy
@@ -84,8 +87,13 @@ source-region rows.
 Grouping: sort filtered rows by z, group consecutive rows with
 `Δz < params.Δz_threshold_mm`. Centroid is energy-weighted; cluster
 energy is the sum of `edep`.
+
+Note on naming: this function only *builds* clusters; it does not
+classify the event. The event-outcome classifier is `classify_event`
+(added in a later step), which decides :SS_in_ROI / :MS_rejected /
+:skin_vetoed / etc. from clusters and rejection state.
 """
-function classify_event(stack::PhotonStack,
+function build_clusters(stack::PhotonStack,
                          params::MCParams)::Vector{Cluster}
     actives = [r for r in stack.rows if r.region === :TPC && r.edep > 0]
     n = length(actives)
