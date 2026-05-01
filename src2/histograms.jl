@@ -18,16 +18,30 @@
 # ---------------------------------------------------------------------------
 
 """
+    LXeDeposit
+
+One LXe deposit recorded by the MC. `region` is one of `:active`, `:skin`,
+`:inert`. `(x, y, z)` and `E_dep` are in cm and MeV respectively.
+"""
+struct LXeDeposit
+    x::Float64
+    y::Float64
+    z::Float64
+    E_dep::Float64
+    region::Symbol
+end
+
+"""
     PhotonScratch
 
-Per-thread scratch buffer that records (z, E_dep) for every visible
-:active deposit during one photon's tracking. Reset to empty before each
-photon by `track_one_photon!`. Pre-allocate once per thread.
+Per-thread scratch buffer that records every LXe deposit during one
+photon's tracking (active + skin only by default). Reset to empty
+before each photon by `track_one_photon!`. Pre-allocate once per thread.
 """
 mutable struct PhotonScratch
-    deposits::Vector{Tuple{Float64, Float64}}   # (z_cm, E_dep_MeV)
+    deposits::Vector{LXeDeposit}
 end
-PhotonScratch() = PhotonScratch(Tuple{Float64, Float64}[])
+PhotonScratch() = PhotonScratch(LXeDeposit[])
 
 # ---------------------------------------------------------------------------
 # HistogramSet
@@ -141,7 +155,10 @@ histograms in `h`.
 """
 function update_histograms!(h::HistogramSet, scratch::PhotonScratch,
                              params::MCParams)
-    n = length(scratch.deposits)
+    # Filter to :active deposits only (the histogram set describes the
+    # active-LXe cluster structure)
+    actives = [d for d in scratch.deposits if d.region === :active]
+    n = length(actives)
     if n == 0
         fill_ssms!(h, :no_cluster)
         fill_N_clusters!(h, 0)
@@ -150,27 +167,27 @@ function update_histograms!(h::HistogramSet, scratch::PhotonScratch,
     end
 
     # Items 2 and 3: use tracking order (first deposit chronologically)
-    z_first, E_first = scratch.deposits[1]
-    fill_E_first!(h, E_first)
+    d_first = actives[1]
+    fill_E_first!(h, d_first.E_dep)
     @inbounds for i in 2:n
-        Δz = abs(scratch.deposits[i][1] - z_first)
+        Δz = abs(actives[i].z - d_first.z)
         fill_Δz!(h, Δz)
     end
 
     # Items 4–6: sort by z and group into clusters by Δz < threshold
-    sorted = sort(scratch.deposits; by = x -> x[1])
+    sorted = sort(actives; by = d -> d.z)
     Δz_thresh = Δz_threshold_cm(params)
 
-    cluster_E  = sorted[1][2]
-    z_prev     = sorted[1][1]
+    cluster_E  = sorted[1].E_dep
+    z_prev     = sorted[1].z
     n_clusters = 1
     @inbounds for i in 2:n
-        z_i = sorted[i][1]
+        z_i = sorted[i].z
         if z_i - z_prev < Δz_thresh
-            cluster_E += sorted[i][2]
+            cluster_E += sorted[i].E_dep
         else
             fill_E_cluster!(h, cluster_E)
-            cluster_E = sorted[i][2]
+            cluster_E = sorted[i].E_dep
             n_clusters += 1
         end
         z_prev = z_i
@@ -202,5 +219,149 @@ function merge_histograms!(into::HistogramSet, src::HistogramSet)
     @. into.E_cluster_counts  += src.E_cluster_counts
     @. into.N_clusters_counts += src.N_clusters_counts
     @. into.N_extra_counts    += src.N_extra_counts
+    into
+end
+
+# ---------------------------------------------------------------------------
+# Cluster computation (post-tracking)
+# ---------------------------------------------------------------------------
+
+"""
+    Cluster
+
+A z-cluster of `:active` deposits: energy-weighted centroid (xc, yc, zc)
+and total energy `ec` (MeV).
+"""
+struct Cluster
+    xc::Float64
+    yc::Float64
+    zc::Float64
+    ec::Float64
+end
+
+"""
+    compute_clusters(deposits::Vector{LXeDeposit}, params::MCParams) -> Vector{Cluster}
+
+Group `:active` deposits in `deposits` (any region; non-`:active` ignored)
+into z-clusters: sort by z, group consecutive entries with Δz <
+`params.Δz_threshold_mm` after sorting, compute energy-weighted (x, y, z)
+and total E per cluster.
+"""
+function compute_clusters(deposits::Vector{LXeDeposit},
+                           params::MCParams)::Vector{Cluster}
+    actives = [d for d in deposits if d.region === :active]
+    n = length(actives)
+    n == 0 && return Cluster[]
+
+    sorted = sort(actives; by = d -> d.z)
+    Δz_thresh = Δz_threshold_cm(params)
+
+    out = Cluster[]
+    cum_E = sorted[1].E_dep
+    cum_xE = sorted[1].x * sorted[1].E_dep
+    cum_yE = sorted[1].y * sorted[1].E_dep
+    cum_zE = sorted[1].z * sorted[1].E_dep
+    z_prev = sorted[1].z
+    @inbounds for i in 2:n
+        z_i = sorted[i].z
+        if z_i - z_prev < Δz_thresh
+            cum_E  += sorted[i].E_dep
+            cum_xE += sorted[i].x * sorted[i].E_dep
+            cum_yE += sorted[i].y * sorted[i].E_dep
+            cum_zE += sorted[i].z * sorted[i].E_dep
+        else
+            push!(out, Cluster(cum_xE/cum_E, cum_yE/cum_E, cum_zE/cum_E, cum_E))
+            cum_E  = sorted[i].E_dep
+            cum_xE = sorted[i].x * sorted[i].E_dep
+            cum_yE = sorted[i].y * sorted[i].E_dep
+            cum_zE = sorted[i].z * sorted[i].E_dep
+        end
+        z_prev = z_i
+    end
+    push!(out, Cluster(cum_xE/cum_E, cum_yE/cum_E, cum_zE/cum_E, cum_E))
+    out
+end
+
+# ---------------------------------------------------------------------------
+# RejectionHistograms — diagnostic output for early-skin-reject and early-fv-reject
+# ---------------------------------------------------------------------------
+
+"""
+    RejectionHistograms
+
+Two pairs of histograms: one pair (2-D r²×z + 1-D E) for skin-rejection
+events and one pair for FV-rejection events. Each histogram counts the
+*triggering* deposit position / energy.
+
+Default binning:
+  r²:   60 bins on [0, R_ICV_inner²] — passed in at construction
+  z:   100 bins on [z_LXe_bottom, z_gate]
+  E:   270 bins on [0, 2.7] MeV
+"""
+struct RejectionHistograms
+    r2_n_bins::Int
+    r2_max_cm2::Float64
+    z_n_bins::Int
+    z_min_cm::Float64
+    z_max_cm::Float64
+    E_n_bins::Int
+    E_max_MeV::Float64
+    skin_r2z_counts::Matrix{Int}    # [r2, z]
+    skin_E_counts::Vector{Int}
+    fv_r2z_counts::Matrix{Int}
+    fv_E_counts::Vector{Int}
+end
+
+function RejectionHistograms(; r2_n_bins::Int=60, r2_max_cm2::Real=82.1^2,
+                              z_n_bins::Int=100, z_min_cm::Real=-69.0,
+                              z_max_cm::Real=145.6,
+                              E_n_bins::Int=270,
+                              E_max_MeV::Real=2.7)
+    RejectionHistograms(
+        r2_n_bins, Float64(r2_max_cm2),
+        z_n_bins,  Float64(z_min_cm), Float64(z_max_cm),
+        E_n_bins,  Float64(E_max_MeV),
+        zeros(Int, r2_n_bins, z_n_bins),
+        zeros(Int, E_n_bins),
+        zeros(Int, r2_n_bins, z_n_bins),
+        zeros(Int, E_n_bins),
+    )
+end
+
+@inline function _fill_r2z!(M::Matrix{Int}, x::Float64, y::Float64, z::Float64,
+                             rh::RejectionHistograms)
+    r2 = x*x + y*y
+    i = _bin_idx(r2, 0.0, rh.r2_max_cm2, rh.r2_n_bins)
+    j = _bin_idx(z,  rh.z_min_cm, rh.z_max_cm, rh.z_n_bins)
+    if i > 0 && j > 0
+        M[i, j] += 1
+    end
+    nothing
+end
+
+@inline function fill_rejected_skin!(rh::RejectionHistograms,
+                                      x::Float64, y::Float64, z::Float64,
+                                      E_dep::Float64)
+    _fill_r2z!(rh.skin_r2z_counts, x, y, z, rh)
+    iE = _bin_idx(E_dep, 0.0, rh.E_max_MeV, rh.E_n_bins)
+    iE > 0 && (rh.skin_E_counts[iE] += 1)
+    nothing
+end
+
+@inline function fill_rejected_fv!(rh::RejectionHistograms,
+                                    x::Float64, y::Float64, z::Float64,
+                                    E_dep::Float64)
+    _fill_r2z!(rh.fv_r2z_counts, x, y, z, rh)
+    iE = _bin_idx(E_dep, 0.0, rh.E_max_MeV, rh.E_n_bins)
+    iE > 0 && (rh.fv_E_counts[iE] += 1)
+    nothing
+end
+
+function merge_rejection_histograms!(into::RejectionHistograms,
+                                      src::RejectionHistograms)
+    @. into.skin_r2z_counts += src.skin_r2z_counts
+    @. into.skin_E_counts   += src.skin_E_counts
+    @. into.fv_r2z_counts   += src.fv_r2z_counts
+    @. into.fv_E_counts     += src.fv_E_counts
     into
 end

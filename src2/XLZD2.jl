@@ -92,9 +92,16 @@ export companion_visible!, companion_reach_prob
 export MCResult, run_mc, run_mc_all
 
 # Control histograms
-export HistogramSet, PhotonScratch
+export HistogramSet, PhotonScratch, LXeDeposit
 export update_histograms!, merge_histograms!
 export fill_Δz!, fill_E_first!, fill_E_cluster!
 export fill_N_clusters!, fill_N_extra!, fill_ssms!
+
+# Cluster computation
+export Cluster, compute_clusters
+
+# Rejection histograms
+export RejectionHistograms
+export fill_rejected_skin!, fill_rejected_fv!, merge_rejection_histograms!
 
 end # module XLZD2

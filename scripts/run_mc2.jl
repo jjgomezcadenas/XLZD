@@ -61,6 +61,15 @@ function parse_cli()
             arg_type = Float64
             default  = 39.0
             help     = "FV r maximum (cm). r² = (fv-r-max)² is what MCParams stores."
+        "--no-early-skin-reject"
+            action   = :store_true
+            help     = "Disable the early-skin-reject optimization."
+        "--no-early-fv-reject"
+            action   = :store_true
+            help     = "Disable the early-FV-reject optimization."
+        "--no-rejection-histograms"
+            action   = :store_true
+            help     = "Skip writing the rejected_skin / rejected_fv histograms."
     end
     parse_args(s)
 end
@@ -77,6 +86,9 @@ function main()
     fv_z_min  = args["fv-z-min"]
     fv_z_max  = args["fv-z-max"]
     fv_r_max  = args["fv-r-max"]
+    early_skin_reject = !args["no-early-skin-reject"]
+    early_fv_reject   = !args["no-early-fv-reject"]
+    do_rej_hist       = !args["no-rejection-histograms"]
 
     println("\n── src2/ MC driver — Cryostat backgrounds ──")
     @printf("  N samples per source : %d\n", N)
@@ -109,7 +121,10 @@ function main()
     if src_i == 0
         results = run_mc_all(det, effs, xcom, params, N;
                               mc_seed=seed, verbose=true,
-                              with_histograms=do_hist)
+                              with_histograms=do_hist,
+                              early_skin_reject=early_skin_reject,
+                              early_fv_reject=early_fv_reject,
+                              with_rejection_histograms=do_rej_hist)
     else
         1 <= src_i <= length(main_names) ||
             error("source-index must be 1..$(length(main_names))")
@@ -122,7 +137,10 @@ function main()
         @printf("\n── Running %s ──\n", eff.name)
         push!(results, run_mc(det, eff, comp_eff, xcom, params, N;
                                mc_seed=seed, verbose=true,
-                               with_histograms=do_hist))
+                               with_histograms=do_hist,
+                               early_skin_reject=early_skin_reject,
+                               early_fv_reject=early_fv_reject,
+                               with_rejection_histograms=do_rej_hist))
     end
 
     # Print summary
@@ -183,16 +201,53 @@ function main()
     println("  → wrote $csv_path")
 
     # ───────── Histogram CSVs (one folder per source) ─────────
-    if do_hist
+    if do_hist || do_rej_hist
         for r in results
-            r.histograms === nothing && continue
             h_dir = joinpath(out_dir, "hist_$(r.name)")
+            need_dir = (do_hist && r.histograms !== nothing) ||
+                        (do_rej_hist && r.rej_hist !== nothing)
+            need_dir || continue
             mkpath(h_dir)
-            _save_histogram_csvs(h_dir, r.histograms)
+            if do_hist && r.histograms !== nothing
+                _save_histogram_csvs(h_dir, r.histograms)
+            end
+            if do_rej_hist && r.rej_hist !== nothing
+                _save_rejection_csvs(h_dir, r.rej_hist)
+            end
             println("  → wrote $h_dir")
         end
     end
     println()
+end
+
+function _save_rejection_csvs(dir::String, rh::RejectionHistograms)
+    r2_bw = rh.r2_max_cm2 / rh.r2_n_bins
+    z_bw  = (rh.z_max_cm - rh.z_min_cm) / rh.z_n_bins
+    e_bw  = rh.E_max_MeV / rh.E_n_bins
+    function _write_r2z(path, M)
+        open(path, "w") do f
+            println(f, "bin_r2_left_cm2,bin_r2_right_cm2,bin_z_left_cm,bin_z_right_cm,count")
+            for i in 1:rh.r2_n_bins, j in 1:rh.z_n_bins
+                r2_l = (i-1) * r2_bw
+                r2_r = i      * r2_bw
+                z_l  = rh.z_min_cm + (j-1) * z_bw
+                z_r  = rh.z_min_cm + j     * z_bw
+                println(f, "$r2_l,$r2_r,$z_l,$z_r,$(M[i, j])")
+            end
+        end
+    end
+    function _write_E(path, V)
+        open(path, "w") do f
+            println(f, "bin_left_MeV,bin_right_MeV,count")
+            for i in 1:rh.E_n_bins
+                println(f, "$((i-1)*e_bw),$(i*e_bw),$(V[i])")
+            end
+        end
+    end
+    _write_r2z(joinpath(dir, "rejected_skin_r2z.csv"), rh.skin_r2z_counts)
+    _write_E(  joinpath(dir, "rejected_skin_E.csv"),   rh.skin_E_counts)
+    _write_r2z(joinpath(dir, "rejected_fv_r2z.csv"),   rh.fv_r2z_counts)
+    _write_E(  joinpath(dir, "rejected_fv_E.csv"),     rh.fv_E_counts)
 end
 
 function _save_histogram_csvs(dir::String, h::HistogramSet)

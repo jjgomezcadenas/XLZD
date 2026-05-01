@@ -27,6 +27,7 @@ struct MCResult
     bg_per_yr::Float64
     r_comp::Float64
     histograms::Union{HistogramSet, Nothing}
+    rej_hist::Union{RejectionHistograms, Nothing}
 end
 
 const _MC_OUTCOMES = (:escaped, :MS_rejected, :skin_vetoed,
@@ -52,7 +53,10 @@ function run_mc(det::LXeDetector, eff::EffectiveSource,
                 xcom::XCOMTable, params::MCParams,
                 n_samples::Integer; mc_seed::Integer=1234,
                 verbose::Bool=false,
-                with_histograms::Bool=false)::MCResult
+                with_histograms::Bool=false,
+                early_skin_reject::Bool=true,
+                early_fv_reject::Bool=true,
+                with_rejection_histograms::Bool=true)::MCResult
     n_threads  = Threads.nthreads()
     base       = div(n_samples, n_threads)
     rem        = n_samples - base * n_threads
@@ -62,12 +66,18 @@ function run_mc(det::LXeDetector, eff::EffectiveSource,
 
     thread_counts = [Dict{Symbol,Int}(o => 0 for o in _MC_OUTCOMES)
                      for _ in 1:n_threads]
+    # Scratch buffer is needed whenever histograms or rejection histograms
+    # or post-tracking classification want it. Always allocate (cheap).
     thread_hists  = with_histograms ?
                     [HistogramSet() for _ in 1:n_threads] :
                     Vector{HistogramSet}()
-    thread_scratch = with_histograms ?
-                     [PhotonScratch() for _ in 1:n_threads] :
-                     Vector{PhotonScratch}()
+    thread_scratch = [PhotonScratch() for _ in 1:n_threads]
+    thread_rej_hist = with_rejection_histograms ?
+                      [RejectionHistograms(r2_max_cm2 = det.R_ICV_inner^2,
+                                            z_min_cm   = det.z_LXe_bottom,
+                                            z_max_cm   = det.z_gate)
+                       for _ in 1:n_threads] :
+                      Vector{RejectionHistograms}()
 
     base_thread1 = base + (1 <= rem ? 1 : 0)
     report_every = max(1, base_thread1 ÷ 10)
@@ -76,12 +86,17 @@ function run_mc(det::LXeDetector, eff::EffectiveSource,
     Threads.@threads for tid in 1:n_threads
         n_local      = base + (tid <= rem ? 1 : 0)
         rng          = MersenneTwister(mc_seed + tid)
-        local_counts = thread_counts[tid]
+        local_counts  = thread_counts[tid]
         local_hist    = with_histograms ? thread_hists[tid] : nothing
-        local_scratch = with_histograms ? thread_scratch[tid] : nothing
+        local_scratch = thread_scratch[tid]
+        local_rej     = with_rejection_histograms ? thread_rej_hist[tid] : nothing
         for i in 1:n_local
             outcome = track_one_photon!(rng, det, eff, xcom, params;
-                                         hist=local_hist, scratch=local_scratch)
+                                         hist=local_hist,
+                                         scratch=local_scratch,
+                                         rej_hist=local_rej,
+                                         early_skin_reject=early_skin_reject,
+                                         early_fv_reject=early_fv_reject)
             if apply_veto && outcome === :SS_in_ROI
                 if rand(rng) < r_comp
                     if companion_visible!(rng, det, comp_eff, xcom, params)
@@ -123,8 +138,20 @@ function run_mc(det::LXeDetector, eff::EffectiveSource,
         nothing
     end
 
+    merged_rej = if with_rejection_histograms
+        rh = RejectionHistograms(r2_max_cm2 = det.R_ICV_inner^2,
+                                  z_min_cm   = det.z_LXe_bottom,
+                                  z_max_cm   = det.z_gate)
+        for tr in thread_rej_hist
+            merge_rejection_histograms!(rh, tr)
+        end
+        rh
+    else
+        nothing
+    end
+
     MCResult(eff.name, eff.isotope, counts, n_total, runtime,
-             eff.total_per_yr, f_ss_roi, bg, r_comp, merged_hist)
+             eff.total_per_yr, f_ss_roi, bg, r_comp, merged_hist, merged_rej)
 end
 
 """
@@ -140,7 +167,10 @@ function run_mc_all(det::LXeDetector, effs::Vector{EffectiveSource},
                     n_samples::Integer;
                     mc_seed::Integer=1234,
                     verbose::Bool=false,
-                    with_histograms::Bool=false)::Vector{MCResult}
+                    with_histograms::Bool=false,
+                    early_skin_reject::Bool=true,
+                    early_fv_reject::Bool=true,
+                    with_rejection_histograms::Bool=true)::Vector{MCResult}
     by_name = Dict(e.name => e for e in effs)
     results = MCResult[]
     main_names = ["CB_Bi214", "CTH_Bi214", "CBH_Bi214",
@@ -159,7 +189,10 @@ function run_mc_all(det::LXeDetector, effs::Vector{EffectiveSource},
                             mname, i, length(main_names))
         push!(results, run_mc(det, eff, comp_eff, xcom, params, n_samples;
                               mc_seed=seed, verbose=verbose,
-                              with_histograms=with_histograms))
+                              with_histograms=with_histograms,
+                              early_skin_reject=early_skin_reject,
+                              early_fv_reject=early_fv_reject,
+                              with_rejection_histograms=with_rejection_histograms))
     end
     results
 end

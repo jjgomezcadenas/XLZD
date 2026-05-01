@@ -77,14 +77,16 @@ mutable struct PhotonState
     x_cluster::Float64
     y_cluster::Float64
     z_cluster::Float64
-    E_cluster::Float64
+    E_cluster::Float64       # sum of deposits within Δz of first deposit
     E_skin_total::Float64
+    nskin::Int               # count of :skin interactions
+    skin_overflow::Bool      # E_skin_total ≥ veto threshold
     n_int::Int
     total_path::Float64
     outcome::Symbol
 end
 
-PhotonState() = PhotonState(false, NaN, NaN, NaN, 0.0, 0.0, 0, 0.0, :in_progress)
+PhotonState() = PhotonState(false, NaN, NaN, NaN, 0.0, 0.0, 0, false, 0, 0.0, :in_progress)
 
 # ---------------------------------------------------------------------------
 # Per-region deposit handling
@@ -110,8 +112,9 @@ function handle_deposit!(state::PhotonState, det::LXeDetector,
 
     if reg === :active
         E_dep < E_visible_MeV && return
-        # Record for control histograms (before MS-reject branching)
-        scratch !== nothing && push!(scratch.deposits, (z, E_dep))
+        # Record for control histograms / cluster computation
+        scratch !== nothing && push!(scratch.deposits,
+                                      LXeDeposit(x, y, z, E_dep, :active))
         if !state.cluster_started
             state.x_cluster = x
             state.y_cluster = y
@@ -119,16 +122,19 @@ function handle_deposit!(state::PhotonState, det::LXeDetector,
             state.E_cluster = E_dep
             state.cluster_started = true
         else
+            # Sum deposits within Δz of first; do NOT MS-reject during tracking.
+            # Multi-cluster classification is done post-tracking.
             if abs(z - state.z_cluster) < Δz_thresh
                 state.E_cluster += E_dep
-            else
-                state.outcome = :MS_rejected
             end
         end
     elseif reg === :skin
+        scratch !== nothing && push!(scratch.deposits,
+                                      LXeDeposit(x, y, z, E_dep, :skin))
         state.E_skin_total += E_dep
+        state.nskin        += 1
         if state.E_skin_total >= E_skin_veto_MeV
-            state.outcome = :skin_vetoed
+            state.skin_overflow = true
         end
     end
     # :inert / :gas / :fc_region / :outside_lxe → no signal
@@ -139,18 +145,55 @@ end
 # Finalisation: classify cluster -> SS_in_ROI / SS_outside_ROI / SS_outside_FV / escaped
 # ---------------------------------------------------------------------------
 
+"""
+    finalize_outcome!(state, rng, params, scratch=nothing) -> Symbol
+
+Post-tracking classification. Called once after `_track_photon_segment!`
+returns. Sets `state.outcome` based on:
+  - `state.skin_overflow` → :skin_vetoed
+  - no cluster started   → :escaped
+  - first :active deposit outside FV → :SS_outside_FV
+  - else: cluster grouping from `scratch.deposits`. ng > 1 → :MS_rejected;
+    ng = 1 → smear E and apply ROI cut.
+
+The cluster-grouping pass uses `compute_clusters` (defined in
+`histograms.jl`) so SC/MS classification is consistent with the control
+histograms.
+"""
 function finalize_outcome!(state::PhotonState, rng::AbstractRNG,
-                            params::MCParams)
+                            params::MCParams,
+                            scratch::Union{PhotonScratch, Nothing}=nothing)
     state.outcome === :in_progress || return
-    if state.cluster_started
-        if in_fv(state.x_cluster, state.y_cluster, state.z_cluster, params)
-            state.outcome = classify_ss_energy(rng, state.E_cluster, params)
-        else
-            state.outcome = :SS_outside_FV
-        end
-    else
-        state.outcome = :escaped
+
+    # Skin veto if not already early-rejected
+    if state.skin_overflow
+        state.outcome = :skin_vetoed
+        return
     end
+
+    if !state.cluster_started
+        state.outcome = :escaped
+        return
+    end
+
+    # First :active deposit outside FV?
+    if !in_fv(state.x_cluster, state.y_cluster, state.z_cluster, params)
+        state.outcome = :SS_outside_FV
+        return
+    end
+
+    # SS / MS classification from cluster grouping
+    clusters = scratch === nothing ?
+               Cluster[Cluster(state.x_cluster, state.y_cluster,
+                               state.z_cluster, state.E_cluster)] :
+               compute_clusters(scratch.deposits, params)
+    if length(clusters) > 1
+        state.outcome = :MS_rejected
+        return
+    end
+    # SS in FV — smear and apply ROI cut
+    ec = clusters[1].ec
+    state.outcome = classify_ss_energy(rng, ec, params)
     nothing
 end
 
@@ -175,6 +218,9 @@ function _track_photon_segment!(rng::AbstractRNG, det::LXeDetector,
                                  params::MCParams, xcom::XCOMTable,
                                  state::PhotonState,
                                  scratch::Union{PhotonScratch, Nothing},
+                                 rej_hist::Union{RejectionHistograms, Nothing},
+                                 early_skin_reject::Bool,
+                                 early_fv_reject::Bool,
                                  x::Float64, y::Float64, z::Float64,
                                  dx::Float64, dy::Float64, dz::Float64,
                                  E::Float64)
@@ -220,11 +266,44 @@ function _track_photon_segment!(rng::AbstractRNG, det::LXeDetector,
         sT = sP + sC + sX
         r_branch = rand(rng)
 
+        # Helper: post-deposit checks for early rejection (skin / FV).
+        # Captures the current (x, y, z, E_dep_at_this_call) at each call
+        # site by closure over `was_cluster_started_before` and the
+        # most-recent E_dep variable.
+        function _post_deposit_checks!(E_dep_here::Float64,
+                                       prev_cluster_started::Bool)
+            # Skin overflow → write rejection histogram + early-reject if requested
+            if state.skin_overflow && state.outcome === :in_progress
+                if early_skin_reject
+                    if rej_hist !== nothing
+                        fill_rejected_skin!(rej_hist, x, y, z, E_dep_here)
+                    end
+                    state.outcome = :skin_vetoed
+                end
+            end
+            # First :active deposit just happened? Check FV
+            if state.outcome === :in_progress &&
+               !prev_cluster_started && state.cluster_started
+                if !in_fv(state.x_cluster, state.y_cluster, state.z_cluster, params)
+                    if early_fv_reject
+                        if rej_hist !== nothing
+                            fill_rejected_fv!(rej_hist,
+                                              state.x_cluster, state.y_cluster,
+                                              state.z_cluster, state.E_cluster)
+                        end
+                        state.outcome = :SS_outside_FV
+                    end
+                end
+            end
+        end
+
         if r_branch < sX / sT
             # Pair production: e⁺e⁻ kinetic energy deposited at the vertex,
             # then two 511 keV annihilation γ's back-to-back.
             E_pair_kin = E - 2.0 * ME_C2_MEV
+            prev_cs = state.cluster_started
             handle_deposit!(state, det, params, x, y, z, E_pair_kin, scratch)
+            _post_deposit_checks!(E_pair_kin, prev_cs)
             state.outcome === :in_progress || return
 
             # Isotropic direction for the first; second is opposite.
@@ -236,22 +315,28 @@ function _track_photon_segment!(rng::AbstractRNG, det::LXeDetector,
             d1z = u_aux
 
             _track_photon_segment!(rng, det, params, xcom, state, scratch,
+                                    rej_hist, early_skin_reject, early_fv_reject,
                                     x, y, z,  d1x,  d1y,  d1z, ME_C2_MEV)
             state.outcome === :in_progress || return
             _track_photon_segment!(rng, det, params, xcom, state, scratch,
+                                    rej_hist, early_skin_reject, early_fv_reject,
                                     x, y, z, -d1x, -d1y, -d1z, ME_C2_MEV)
             return
 
         elseif r_branch < (sX + sP) / sT
             # Photoelectric absorption: full energy locally
+            prev_cs = state.cluster_started
             handle_deposit!(state, det, params, x, y, z, E, scratch)
+            _post_deposit_checks!(E, prev_cs)
             return
 
         else
             # Compton: KN scatter
             E_scatt, cos_θ = sample_klein_nishina(rng, E)
             E_dep = E - E_scatt
+            prev_cs = state.cluster_started
             handle_deposit!(state, det, params, x, y, z, E_dep, scratch)
+            _post_deposit_checks!(E_dep, prev_cs)
             state.outcome === :in_progress || return
 
             φ_az = 2π * rand(rng)
@@ -260,7 +345,9 @@ function _track_photon_segment!(rng::AbstractRNG, det::LXeDetector,
 
             # Energy cutoff: deposit remainder locally
             if E < E_cutoff
+                prev_cs = state.cluster_started
                 handle_deposit!(state, det, params, x, y, z, E, scratch)
+                _post_deposit_checks!(E, prev_cs)
                 return
             end
         end
@@ -291,16 +378,21 @@ function track_one_photon!(rng::AbstractRNG,
                             xcom::XCOMTable,
                             params::MCParams;
                             hist::Union{HistogramSet, Nothing}=nothing,
-                            scratch::Union{PhotonScratch, Nothing}=nothing)::Symbol
+                            scratch::Union{PhotonScratch, Nothing}=nothing,
+                            rej_hist::Union{RejectionHistograms, Nothing}=nothing,
+                            early_skin_reject::Bool=true,
+                            early_fv_reject::Bool=true)::Symbol
     scratch !== nothing && empty!(scratch.deposits)
 
     x, y, z, dx, dy, dz = sample_entry(rng, det, eff)
     state = PhotonState()
     _track_photon_segment!(rng, det, params, xcom, state, scratch,
+                            rej_hist, early_skin_reject, early_fv_reject,
                             x, y, z, dx, dy, dz, eff.E_MeV)
 
+    # Post-tracking classification (handles MS/SS, skin overflow, FV cut).
     if state.outcome === :in_progress
-        finalize_outcome!(state, rng, params)
+        finalize_outcome!(state, rng, params, scratch)
     end
 
     if hist !== nothing && scratch !== nothing

@@ -48,7 +48,7 @@ end
     h = HistogramSet()
     s = PhotonScratch()
     p = MCParams()
-    push!(s.deposits, (5.0, 0.5))    # z=5 cm, E=0.5 MeV
+    push!(s.deposits, LXeDeposit(0.0, 0.0, 5.0, 0.5, :active))
     update_histograms!(h, s, p)
 
     @test h.ssms_counts == [1, 0, 0]              # SS
@@ -66,8 +66,8 @@ end
     h = HistogramSet()
     s = PhotonScratch()
     p = MCParams()
-    push!(s.deposits, (5.00, 0.5))
-    push!(s.deposits, (5.10, 0.3))   # 1 mm away
+    push!(s.deposits, LXeDeposit(0.0, 0.0, 5.00, 0.5, :active))
+    push!(s.deposits, LXeDeposit(0.0, 0.0, 5.10, 0.3, :active))   # 1 mm away
     update_histograms!(h, s, p)
 
     @test h.ssms_counts == [1, 0, 0]              # SS
@@ -85,8 +85,8 @@ end
     h = HistogramSet()
     s = PhotonScratch()
     p = MCParams()
-    push!(s.deposits, (5.0, 0.5))
-    push!(s.deposits, (10.0, 0.7))   # 5 cm away
+    push!(s.deposits, LXeDeposit(0.0, 0.0,  5.0, 0.5, :active))
+    push!(s.deposits, LXeDeposit(0.0, 0.0, 10.0, 0.7, :active))   # 5 cm away
     update_histograms!(h, s, p)
 
     @test h.ssms_counts == [0, 1, 0]              # MS
@@ -106,9 +106,9 @@ end
     s  = PhotonScratch()
     p  = MCParams()
 
-    push!(s.deposits, (5.0, 0.5));  update_histograms!(h1, s, p)
+    push!(s.deposits, LXeDeposit(0.0, 0.0,  5.0, 0.5, :active));  update_histograms!(h1, s, p)
     empty!(s.deposits)
-    push!(s.deposits, (10.0, 0.7)); update_histograms!(h2, s, p)
+    push!(s.deposits, LXeDeposit(0.0, 0.0, 10.0, 0.7, :active)); update_histograms!(h2, s, p)
 
     merge_histograms!(h1, h2)
     @test h1.ssms_counts == [2, 0, 0]
