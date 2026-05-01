@@ -9,7 +9,7 @@
 #          (one row per event; no recursion or children)
 #   - 11d: Compton recursion (`_track_child_photon!`)                 DONE
 #          (Compton outgoing γ tracked; pair children still TODO)
-#   - 11e: pair production children (back-to-back 511 keV)            TODO
+#   - 11e: pair production children (back-to-back 511 keV)            DONE
 #   - 11f: skin + FV early-reject; rej_hist filling                   TODO
 #   - 11g: integrate into run_mc behind kwarg                         TODO
 #   - 11i: delete legacy tracker from src3/mc.jl                      TODO
@@ -45,11 +45,14 @@ const _TRACKER_BOUNDARY_NUDGE = 1.0e-7
 Stack-based per-photon tracker (work in progress; see file header for
 the step-by-step status).
 
-**Step 11d:** samples one γ from `eff` and delegates to
+**Step 11e:** samples one γ from `eff` and delegates to
 `_track_child_photon!` for transport + interactions. Compton-outgoing
-γ are tracked through the cascade (multiple rows per event possible,
-linked via the `nm` field). Pair-vertex rows are still terminal —
-the two 511 keV annihilation γ are not yet spawned (lands in 11e).
+γ are tracked through the cascade (tail-loop, no real recursion). At
+a pair vertex, two 511 keV annihilation γ are spawned at the vertex
+position with back-to-back random axis; each is tracked by its own
+`_track_child_photon!` call (one level of real recursion). Pair γ's
+cannot pair-produce again (511 keV << 1.022 MeV threshold), so any
+mother-chain walk contains at most one INT_PAIR row.
 
 The status return is derived from whether any row was pushed:
   `length(stack) == 0` -> :escaped (source photon left LXe before any
@@ -173,12 +176,36 @@ function _track_child_photon!(stack::PhotonStack,
             parent_ng     = ng_self
             continue
         else
-            # Pair: vertex row only in 11d. The two 511 keV annihilation γ
-            # are tracked as children in 11e.
+            # Pair: push the vertex row, then spawn two 511 keV
+            # annihilation γ at the vertex with back-to-back direction.
+            # Each child is tracked by its own _track_child_photon! call.
             edep_pair = e - 2.0 * ME_C2_MEV
-            push_row!(stack; nm=parent_ng, parent_region=parent_region,
-                              region=region, interaction=INT_PAIR,
-                              x=x, y=y, z=z, epre=e, edep=edep_pair)
+            ng_self   = push_row!(stack; nm=parent_ng,
+                                          parent_region=parent_region,
+                                          region=region,
+                                          interaction=INT_PAIR,
+                                          x=x, y=y, z=z,
+                                          epre=e, edep=edep_pair)
+
+            # Sample one isotropic direction in the lab frame; the second
+            # γ is the antipode. Standard approximation — positron is
+            # assumed to thermalize in negligible distance/time, so the
+            # CM frame is approximately at rest in the lab.
+            cos_θ_iso = 2.0 * rand(rng) - 1.0
+            sin_θ_iso = sqrt(max(0.0, 1.0 - cos_θ_iso * cos_θ_iso))
+            φ_iso     = 2.0π * rand(rng)
+            g1x = sin_θ_iso * cos(φ_iso)
+            g1y = sin_θ_iso * sin(φ_iso)
+            g1z = cos_θ_iso
+
+            # Track first 511 keV γ.
+            _track_child_photon!(stack, rng, det, xcom, params,
+                                  x, y, z,  g1x,  g1y,  g1z,
+                                  ME_C2_MEV, region, ng_self)
+            # Track second 511 keV γ (antipodal direction).
+            _track_child_photon!(stack, rng, det, xcom, params,
+                                  x, y, z, -g1x, -g1y, -g1z,
+                                  ME_C2_MEV, region, ng_self)
             return
         end
     end

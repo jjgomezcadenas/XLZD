@@ -363,10 +363,12 @@ end
                 @test 1 <= cur <= length(stack)
                 row = stack.rows[cur]
                 # Every intermediate row (i.e. every non-leaf in the chain)
-                # must be a Compton vertex; only the last row may be PHOTO,
-                # PAIR, or BELOW_THRESH.
+                # must be either INT_COMPTON or INT_PAIR. INT_PAIR appears
+                # at the boundary between a pair-child's chain and the
+                # source γ's pre-pair chain. PHOTO / BELOW_THRESH terminate
+                # photons and cannot have children → never intermediate.
                 if cur != stack.rows[end].ng
-                    @test row.interaction === INT_COMPTON
+                    @test row.interaction in (INT_COMPTON, INT_PAIR)
                 end
                 cur = row.nm
                 length(seen) > length(stack) && error("mother chain loops")
@@ -457,4 +459,121 @@ end
     @test n_below > 0
 end
 
-println("\n  ── test_tracker3.jl: track_photon_stack 11d OK ──\n")
+# ---------------------------------------------------------------------------
+# 20. Pair vertices spawn 511 keV children (rows with nm == pair.ng)
+# ---------------------------------------------------------------------------
+
+@testset "20. pair vertex spawns up to two 511 keV children" begin
+    # Use a Tl-208 source: more pair production probability at 2.615 MeV.
+    eff_tl = by_name["CTH_Tl208"]
+    rng    = MersenneTwister(0x20EE)
+    stack  = PhotonStack()
+    n_pair_events = 0
+    n_direct_children_total = 0
+    for _ in 1:5000
+        empty!(stack)
+        s = track_photon_stack(rng, det, eff_tl, xcom, params, stack)
+        s === :completed || continue
+        # Per pair vertex: count rows whose nm points to it.
+        for r_pair in stack.rows
+            r_pair.interaction === INT_PAIR || continue
+            n_pair_events += 1
+            n_children = count(r -> r.nm == r_pair.ng, stack.rows)
+            # 0 (both children escaped without interacting), 1, or 2.
+            @test 0 <= n_children <= 2
+            n_direct_children_total += n_children
+        end
+    end
+    @test n_pair_events > 0
+    avg = n_direct_children_total / n_pair_events
+    @printf("\n     pair events: %d;  avg direct-child rows: %.3f (max 2.0)\n",
+            n_pair_events, avg)
+    # 511 keV mfp in LXe is ~3 cm, detector ~80 cm; both children almost
+    # always interact. Mean per pair vertex should be > 1.5.
+    @test avg > 1.5
+end
+
+# ---------------------------------------------------------------------------
+# 21. Pair-children's epre is exactly 511 keV
+# ---------------------------------------------------------------------------
+
+@testset "21. pair children have epre ≈ 0.511 MeV" begin
+    eff_tl = by_name["CTH_Tl208"]
+    rng    = MersenneTwister(0x21EE)
+    stack  = PhotonStack()
+    n_children_checked = 0
+    for _ in 1:3000
+        empty!(stack)
+        s = track_photon_stack(rng, det, eff_tl, xcom, params, stack)
+        s === :completed || continue
+        for r in stack.rows
+            r.nm > 0 || continue
+            parent = stack.rows[r.nm]
+            if parent.interaction === INT_PAIR
+                @test r.epre ≈ ME_C2_MEV  atol=1e-9
+                n_children_checked += 1
+            end
+        end
+    end
+    @test n_children_checked > 0
+end
+
+# ---------------------------------------------------------------------------
+# 22. Pair-children's parent_region matches the pair vertex's region
+# ---------------------------------------------------------------------------
+
+@testset "22. pair children's parent_region == pair_vertex.region" begin
+    eff_tl = by_name["CTH_Tl208"]
+    rng    = MersenneTwister(0x22EE)
+    stack  = PhotonStack()
+    n_children_checked = 0
+    for _ in 1:2000
+        empty!(stack)
+        s = track_photon_stack(rng, det, eff_tl, xcom, params, stack)
+        s === :completed || continue
+        for r in stack.rows
+            r.nm > 0 || continue
+            parent = stack.rows[r.nm]
+            if parent.interaction === INT_PAIR
+                @test r.parent_region === parent.region
+                n_children_checked += 1
+            end
+        end
+    end
+    @test n_children_checked > 0
+end
+
+# ---------------------------------------------------------------------------
+# 23. PAIR appears at most once along any single nm-walk (no pair cascade)
+# ---------------------------------------------------------------------------
+
+@testset "23. at most one INT_PAIR per mother-chain walk" begin
+    # Pair production needs e >= 1.022 MeV; the 511 keV annihilation γ
+    # are below threshold and can only photo-absorb or Compton-scatter.
+    # Verify by walking nm up from every row and counting INT_PAIR seen.
+    eff_tl = by_name["CTH_Tl208"]
+    rng    = MersenneTwister(0x23EE)
+    stack  = PhotonStack()
+    n_walks_checked = 0
+    for _ in 1:2000
+        empty!(stack)
+        s = track_photon_stack(rng, det, eff_tl, xcom, params, stack)
+        s === :completed || continue
+        for r0 in stack.rows
+            n_pair_seen = 0
+            cur = r0.ng
+            while cur != 0
+                row = stack.rows[cur]
+                if row.interaction === INT_PAIR
+                    n_pair_seen += 1
+                end
+                cur = row.nm
+            end
+            @test n_pair_seen <= 1
+            n_walks_checked += 1
+        end
+    end
+    @test n_walks_checked > 0
+end
+
+println("\n  ── test_tracker3.jl: track_photon_stack 11e OK ──\n")
