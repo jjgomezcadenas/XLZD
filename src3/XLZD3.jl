@@ -17,6 +17,7 @@ include("lxe_detector.jl")
 include("physics.jl")
 include("sampling.jl")
 include("mc_params.jl")
+include("stack.jl")
 include("histograms.jl")
 include("mc.jl")
 include("run.jl")
@@ -103,5 +104,9 @@ export Cluster, compute_clusters
 # Rejection histograms
 export RejectionHistograms
 export fill_rejected_skin!, fill_rejected_fv!, merge_rejection_histograms!
+
+# Stack tracker (Phase 1 of src3 refactor)
+export StackRow, PhotonStack, push_row!
+export INT_PHOTO, INT_COMPTON, INT_PAIR, INT_BELOW_THRESH
 
 end # module XLZD3

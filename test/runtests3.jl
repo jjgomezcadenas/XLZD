@@ -20,6 +20,7 @@ const TEST_FILES = [
     "test_effective_sources3.jl",
     "test_lxe_detector3.jl",
     "test_sampling3.jl",
+    "test_stack3.jl",
     "test_histograms3.jl",
     "test_mc3.jl",
 ]
