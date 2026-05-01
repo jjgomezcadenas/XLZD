@@ -115,78 +115,9 @@ end
     @test sum(h1.N_clusters_counts) == 2
 end
 
-# ---------------------------------------------------------------------------
-# Integration: run a small MC and verify histogram bookkeeping
-# ---------------------------------------------------------------------------
-
-@testset "run_mc with_histograms=true populates the histograms" begin
-    lxe_csv      = joinpath(@__DIR__, "..", "data", "lxe_detector.csv")
-    lxe_nist     = joinpath(@__DIR__, "..", "data", "nist_lxe.csv")
-    ti_path      = joinpath(@__DIR__, "..", "data", "nist_ti.csv")
-    geom_csv     = joinpath(@__DIR__, "..", "data", "lz_cryo_geometry.csv")
-    extras_csv   = joinpath(@__DIR__, "..", "data", "lz_cryo_extras.csv")
-    surfaces_csv = joinpath(@__DIR__, "..", "data", "lz_cryo_surface_sources.csv")
-    xcom_path    = joinpath(@__DIR__, "..", "data", "nist.csv")
-
-    mat_LXe = load_material("LXe", 2.953, lxe_nist)
-    mat_Ti  = load_material("Ti",  4.510, ti_path)
-    det     = build_lxe_detector(lxe_csv, mat_LXe)
-    cryo    = build_cryostat(geom_csv, extras_csv, surfaces_csv)
-    indiv   = build_individual_sources(cryo, mat_Ti)
-    effs    = build_effective_sources(indiv, cryo, mat_Ti)
-    xcom    = load_xcom(xcom_path)
-    params  = MCParams()
-    by_name = Dict(e.name => e for e in effs)
-
-    eff = by_name["CB_Bi214"]
-    # Control HistogramSet is currently populated only by the legacy
-    # tracker (it consumes PhotonScratch.deposits). Pin use_stack_tracker
-    # =false until histograms are re-sourced from PhotonStack.
-    res = run_mc(det, eff, nothing, xcom, params, 5000;
-                  mc_seed=0xABCD, with_histograms=true,
-                  use_stack_tracker=false)
-    @test res.histograms !== nothing
-    h = res.histograms
-    # SS + MS + no_cluster sums to n_total
-    @test sum(h.ssms_counts) == res.n_total
-    # N_clusters histogram sums to n_total
-    @test sum(h.N_clusters_counts) == res.n_total
-    @test sum(h.N_extra_counts)    == res.n_total
-    # Some events have visible deposits → E_first non-empty
-    @test sum(h.E_first_counts) > 0
-    # E_cluster has at least as many entries as SS+MS events
-    @test sum(h.E_cluster_counts) >= h.ssms_counts[1] + h.ssms_counts[2]
-
-    println()
-    @printf("  CB_Bi214, 5000 photons:\n")
-    @printf("    SS=%d  MS=%d  no_cluster=%d\n",
-            h.ssms_counts[1], h.ssms_counts[2], h.ssms_counts[3])
-    @printf("    Σ E_first = %d   Σ E_cluster = %d\n",
-            sum(h.E_first_counts), sum(h.E_cluster_counts))
-    println()
-end
-
-@testset "run_mc with_histograms=false keeps histograms = nothing" begin
-    lxe_csv      = joinpath(@__DIR__, "..", "data", "lxe_detector.csv")
-    lxe_nist     = joinpath(@__DIR__, "..", "data", "nist_lxe.csv")
-    ti_path      = joinpath(@__DIR__, "..", "data", "nist_ti.csv")
-    geom_csv     = joinpath(@__DIR__, "..", "data", "lz_cryo_geometry.csv")
-    extras_csv   = joinpath(@__DIR__, "..", "data", "lz_cryo_extras.csv")
-    surfaces_csv = joinpath(@__DIR__, "..", "data", "lz_cryo_surface_sources.csv")
-    xcom_path    = joinpath(@__DIR__, "..", "data", "nist.csv")
-
-    mat_LXe = load_material("LXe", 2.953, lxe_nist)
-    mat_Ti  = load_material("Ti",  4.510, ti_path)
-    det     = build_lxe_detector(lxe_csv, mat_LXe)
-    cryo    = build_cryostat(geom_csv, extras_csv, surfaces_csv)
-    indiv   = build_individual_sources(cryo, mat_Ti)
-    effs    = build_effective_sources(indiv, cryo, mat_Ti)
-    xcom    = load_xcom(xcom_path)
-    params  = MCParams()
-    by_name = Dict(e.name => e for e in effs)
-
-    res = run_mc(det, by_name["CB_Bi214"], nothing, xcom, params, 1000;
-                  mc_seed=0xBEEF, with_histograms=false,
-                  use_stack_tracker=false)
-    @test res.histograms === nothing
-end
+# Note: integration tests of run_mc + control HistogramSet were removed
+# in step 11i. The legacy tracker — the only consumer that populated
+# PhotonScratch.deposits — was deleted; control histograms will be
+# re-sourced from the PhotonStack in a later step. The unit tests above
+# (on hand-built PhotonScratch buffers) still exercise the histogram
+# accumulation logic itself.

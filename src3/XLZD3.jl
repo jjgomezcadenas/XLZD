@@ -86,12 +86,10 @@ export sample_barrel_entry, sample_endcap_entry, sample_entry
 export icv_top_inner_disk, icv_bot_inner_disk
 export ICV_TOP_ASPECT, ICV_BOT_ASPECT
 
-# MC params and tracker
+# MC params and helper functions
 export MCParams, in_fv, classify_ss_energy
 export E_tracking_cutoff_MeV, Δz_threshold_cm
-export PhotonState, track_one_photon!, path_to_next_region
-export handle_deposit!, finalize_outcome!
-export companion_visible!, companion_reach_prob
+export path_to_next_region, companion_visible!, companion_reach_prob
 
 # Run driver
 export MCResult, run_mc, run_mc_all

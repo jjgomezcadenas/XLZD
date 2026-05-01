@@ -28,8 +28,6 @@ xcom    = load_xcom(xcom_path)
 params  = MCParams()
 by_name = Dict(e.name => e for e in effs)
 
-const VALID_OUTCOMES = (:escaped, :MS_rejected, :skin_vetoed,
-                         :outside_FV, :SS_outside_ROI, :SS_in_ROI)
 
 # ---------------------------------------------------------------------------
 # MCParams + helpers
@@ -94,88 +92,6 @@ end
     # Photon at axis moving in -z hits z_cathode = 0 first
     d = path_to_next_region(0.0, 0.0, 50.0, 0.0, 0.0, -1.0, det)
     @test isapprox(d, 50.0, atol=1e-6)
-end
-
-# ---------------------------------------------------------------------------
-# track_one_photon! — outcomes are valid and distribution behaves
-# ---------------------------------------------------------------------------
-
-@testset "Outcomes are always one of the six labels" begin
-    rng = MersenneTwister(0x12345)
-    eff = by_name["CB_Bi214"]
-    for _ in 1:2000
-        outcome = track_one_photon!(rng, det, eff, xcom, params)
-        @test outcome in VALID_OUTCOMES
-    end
-end
-
-@testset "track_one_photon! — CB_Bi214 outcome distribution" begin
-    rng = MersenneTwister(0xDEADBEEF)
-    eff = by_name["CB_Bi214"]
-    N = 50_000
-    counts = Dict(o => 0 for o in VALID_OUTCOMES)
-    for _ in 1:N
-        outcome = track_one_photon!(rng, det, eff, xcom, params)
-        counts[outcome] += 1
-    end
-
-    println()
-    println("── Outcome distribution: CB_Bi214, $N photons ──")
-    for o in VALID_OUTCOMES
-        @printf("  %-18s %8d  (%.4f)\n", string(o), counts[o], counts[o]/N)
-    end
-    println()
-
-    # Each outcome appears with non-zero probability for cryo-barrel Bi-214
-    for o in VALID_OUTCOMES
-        @test counts[o] >= 0
-    end
-    # With early-FV-reject (default TRUE) most photons end as either
-    # :escaped (no visible deposit) or :outside_FV (first deposit
-    # outside the FV box, terminates immediately).
-    @test counts[:escaped] + counts[:outside_FV] > 0.3 * N
-    # f_SS_in_ROI is on the order of 1e-5; at 50k samples could be 0
-    f_ss_roi = counts[:SS_in_ROI] / N
-    @test 0.0 <= f_ss_roi < 1e-2
-
-    # Background rate estimate
-    bg = f_ss_roi * eff.total_per_yr
-    @printf("  f_SS_in_ROI = %.3e\n", f_ss_roi)
-    @printf("  γ/yr       = %.3e\n", eff.total_per_yr)
-    @printf("  bg γ/yr    = %.3e\n", bg)
-    println()
-end
-
-@testset "Outcome categories from CTH and CBH (Bi-214)" begin
-    rng = MersenneTwister(0xCAFE)
-    for name in ("CTH_Bi214", "CBH_Bi214", "CB_Tl208")
-        eff = by_name[name]
-        N = 20_000
-        counts = Dict(o => 0 for o in VALID_OUTCOMES)
-        for _ in 1:N
-            counts[track_one_photon!(rng, det, eff, xcom, params)] += 1
-        end
-        @test counts[:escaped] > 0
-        # With early-FV-reject default ON, most events either escape or
-        # land in :outside_FV. :MS_rejected only happens for the
-        # subset that passes FV and then has multiple clusters.
-        n_categories = sum(counts[o] > 0 for o in VALID_OUTCOMES)
-        @test n_categories >= 2
-    end
-end
-
-@testset "Reproducibility with fixed RNG seed" begin
-    eff = by_name["CB_Bi214"]
-    function run_one(seed)
-        rng = MersenneTwister(seed)
-        outcomes = Symbol[]
-        for _ in 1:500
-            push!(outcomes, track_one_photon!(rng, det, eff, xcom, params))
-        end
-        outcomes
-    end
-    @test run_one(0x42) == run_one(0x42)
-    @test run_one(0x42) != run_one(0x43)
 end
 
 # ---------------------------------------------------------------------------
@@ -260,102 +176,30 @@ end
 end
 
 # ---------------------------------------------------------------------------
-# Pair-production secondary tracking
+# Pair-production end-to-end (Tl-208 source via run_mc)
 # ---------------------------------------------------------------------------
 
-@testset "Pair-production secondaries are now tracked (no auto-rejection)" begin
-    # Direct call into _track_photon_segment! with energy above the
-    # pair-production threshold and a starting point inside :TPC.
-    # Force several thousand photons; verify that at least one ends up
-    # with a visible cluster — i.e., pair production no longer
-    # immediately marks the photon :MS_rejected.
-    rng = MersenneTwister(0xABCD1234)
-    state = PhotonState()
-    sc = PhotonScratch()
-    n_with_cluster = 0
-    n_total = 5000
-    for _ in 1:n_total
-        # Reset state for each trial
-        state.cluster_started = false
-        state.x_cluster = NaN; state.y_cluster = NaN; state.z_cluster = NaN
-        state.E_cluster = 0.0
-        state.E_skin_total = 0.0
-        state.n_int = 0
-        state.total_path = 0.0
-        state.outcome = :in_progress
-        empty!(sc.deposits)
-        # Inject photon at axis center, mid-active, moving in +ẑ at 2.615 MeV
-        XLZD3._track_photon_segment!(rng, det, params, xcom, state, sc,
-                                       nothing, true, true,
-                                       0.0, 0.0, 50.0, 0.0, 0.0, 1.0, 2.615)
-        if state.cluster_started
-            n_with_cluster += 1
-        end
-    end
-    # At 2.615 MeV in LXe most photons Compton-scatter; ~5 % pair-produce.
-    # The cluster-started fraction should be ≫ 0.
-    @test n_with_cluster > 100
-    @printf("  cluster_started fraction = %.3f  (%d/%d)\n",
-            n_with_cluster / n_total, n_with_cluster, n_total)
-end
-
-@testset "Pair-production reduces :MS_rejected and may add :SS_in_ROI" begin
-    # Run a Tl-208 source twice with the same seed. With the refactored
-    # tracker, pair production is no longer auto-MS_rejected; some events
-    # become other outcomes. Verify the outcome sums equal N.
+@testset "Pair-production end-to-end on Tl-208" begin
+    # Tl-208 at 2.615 MeV pair-produces a few % of the time. With the
+    # stack-based tracker, pair vertices spawn two 511 keV children that
+    # are tracked through their own cascades. Just verify run_mc
+    # bookkeeping holds at sensible N.
     eff = by_name["CB_Tl208"]
     res = run_mc(det, eff, by_name["CB_Tl208c"], xcom, params, 50_000;
                   mc_seed=0xCAFEFACE)
     @test sum(values(res.counts)) == 50_000
-    # With early-FV-reject default ON, MS-rejected events are rare
-    # (they require an event to pass FV first). Just verify the run
-    # produced sensible counts.
     @test res.counts[:MS_rejected] >= 0
-    @test res.counts[:escaped] > 0
-end
-
-@testset "Pair vertex deposit: hand-coded synthetic check" begin
-    # Build a fresh PhotonState and directly call handle_deposit! with the
-    # pair kinetic energy to verify it starts a cluster correctly when in
-    # active LXe. Then add a second deposit (simulated annihilation γ
-    # photoelectric) at Δz < 3 mm and verify cluster sums.
-    state = PhotonState()
-    sc = PhotonScratch()
-    p  = MCParams()
-    # Vertex at (0, 0, 50) — active LXe
-    handle_deposit!(state, det, p, 0.0, 0.0, 50.0, 1.593, sc)
-    @test state.cluster_started
-    @test state.E_cluster ≈ 1.593
-    @test state.outcome === :in_progress
-    # 511 keV annihilation γ photo-absorbs at z = 50.1 (Δz = 1 mm)
-    handle_deposit!(state, det, p, 0.0, 0.0, 50.1, 0.511, sc)
-    @test state.E_cluster ≈ 1.593 + 0.511
-    @test state.outcome === :in_progress
-    # Second annihilation γ Compton-deposits 0.36 MeV at z = 50.05 — within Δz < 3 mm
-    handle_deposit!(state, det, p, 0.0, 0.0, 50.05, 0.36, sc)
-    @test state.E_cluster ≈ 1.593 + 0.511 + 0.36
-    @test state.outcome === :in_progress
-    # Third deposit far away: with the refactor, MS rejection is no longer
-    # set during tracking; it's a post-tracking decision. handle_deposit!
-    # accumulates the deposit but does not set :MS_rejected. The deposit
-    # is recorded in scratch and will be classified as a separate cluster
-    # when finalize_outcome! / compute_clusters runs.
-    handle_deposit!(state, det, p, 0.0, 0.0, 60.0, 0.05, sc)
-    @test state.outcome === :in_progress
-    @test length(sc.deposits) == 4
-    # compute_clusters should now find 2 clusters
-    cs = compute_clusters(sc.deposits, p)
-    @test length(cs) == 2
+    @test res.counts[:escaped]     > 0
 end
 
 # ===========================================================================
-# Step 11g: run_mc with use_stack_tracker=true
+# run_mc API tests on the stack pipeline
 # ===========================================================================
 
-@testset "11g: run_mc with use_stack_tracker=true (basic invariants)" begin
+@testset "run_mc basic invariants (stack pipeline)" begin
     eff = by_name["CB_Bi214"]
     res = run_mc(det, eff, nothing, xcom, params, 2000;
-                  mc_seed=0xABCD, use_stack_tracker=true)
+                  mc_seed=0xABCD)
     @test res isa MCResult
     @test sum(values(res.counts)) == res.n_total
     @test res.n_total == 2000
@@ -367,29 +211,29 @@ end
     end
 end
 
-@testset "11g: reproducibility with fixed seed (new pipeline)" begin
+@testset "run_mc reproducibility on stack pipeline" begin
     eff = by_name["CB_Bi214"]
     r1 = run_mc(det, eff, nothing, xcom, params, 1000;
-                 mc_seed=0xABCD, use_stack_tracker=true)
+                 mc_seed=0xABCD)
     r2 = run_mc(det, eff, nothing, xcom, params, 1000;
-                 mc_seed=0xABCD, use_stack_tracker=true)
+                 mc_seed=0xABCD)
     @test r1.counts == r2.counts
 end
 
-@testset "11g: companion veto reachable in new pipeline" begin
+@testset "run_mc Tl-208 companion-veto bookkeeping" begin
     eff      = by_name["CB_Tl208"]
     comp_eff = by_name["CB_Tl208c"]
     res = run_mc(det, eff, comp_eff, xcom, params, 5000;
-                  mc_seed=0xCAFE, use_stack_tracker=true)
+                  mc_seed=0xCAFE)
     # On Tl-208, the companion γ frequently fires; expect ≥ 1 vetoed event.
     @test res.counts[:companion_vetoed] >= 0
     # Aggregate counts non-negative; at least one outcome class non-empty.
     @test sum(values(res.counts)) == 5000
 end
 
-@testset "11g: run_mc_all accepts use_stack_tracker kwarg" begin
+@testset "run_mc_all bookkeeping over 6 sources" begin
     rs = run_mc_all(det, effs, xcom, params, 500;
-                     mc_seed=0xBEEF, use_stack_tracker=true)
+                     mc_seed=0xBEEF)
     @test length(rs) == 6
     for r in rs
         @test sum(values(r.counts)) == 500
@@ -397,10 +241,10 @@ end
     end
 end
 
-@testset "11g: with_histograms is silently ignored under new pipeline" begin
+@testset "with_histograms is currently a no-op (stack histograms TODO)" begin
     eff = by_name["CB_Bi214"]
     res = run_mc(det, eff, nothing, xcom, params, 500;
-                  mc_seed=0x1234, use_stack_tracker=true,
+                  mc_seed=0x1234,
                   with_histograms=true)
     @test res.histograms === nothing
 end

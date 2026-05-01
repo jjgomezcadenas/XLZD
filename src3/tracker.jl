@@ -1,20 +1,21 @@
-# src3/tracker.jl — Stack-based per-photon tracker (NEW; replaces the
-# legacy `track_one_photon!` in src3/mc.jl at cutover, step 11i).
+# src3/tracker.jl — Stack-based per-photon tracker.
 #
-# Status:
-#   - 11a: scaffold + stub                                            DONE
-#   - 11b: source sampling + transparent advance + first interaction  DONE
-#          (forced PHOTO; one row per event)
-#   - 11c: cross-section sampling (photo / Compton / pair)            DONE
-#          (one row per event; no recursion or children)
-#   - 11d: Compton recursion (`_track_child_photon!`)                 DONE
-#          (Compton outgoing γ tracked; pair children still TODO)
-#   - 11e: pair production children (back-to-back 511 keV)            DONE
-#   - 11f: fast_veto + slow checks in classify_event                  DONE
-#          (fast_veto here; select_skin / select_FV in select.jl;
-#           classify_event composes them; not yet called from run_mc)
-#   - 11g: integrate fast_veto + track_photon_stack into run_mc       TODO
-#          via per-thread RNG snapshot/restore
+# Replaced the legacy `track_one_photon!` in step 11i (deleted from
+# src3/mc.jl). The remaining contents of mc.jl are three helpers:
+# `path_to_next_region`, `companion_visible!`, `companion_reach_prob`.
+#
+# Public functions:
+#   * `track_photon_stack(rng, det, eff, xcom, params, stack; rej_hist=nothing)`
+#       Tracks one γ from `eff` through the LXe; pushes one row per
+#       interaction onto `stack`. Compton outgoing γ recurse via tail
+#       loop; pair vertices spawn two 511 keV children with back-to-back
+#       random axis (one level of real recursion). Returns one of
+#       `:completed` (stack populated) / `:escaped` (no row pushed).
+#   * `fast_veto(rng, det, eff, xcom, params; rej_hist=nothing)`
+#       Single-deposit pre-screen on the first interaction. Returns
+#       `:vetoed_skin`, `:rejected_fv`, or `:pass`. Caller (run_mc)
+#       wraps with copy!(snapshot, rng) / copy!(rng, snapshot) so
+#       `track_photon_stack` re-samples the same first interaction.
 #   - 11i: delete legacy tracker from src3/mc.jl                      TODO
 #
 # Region-class semantics:
@@ -30,10 +31,6 @@
 #   - Updated tail-loop-style inside `_track_child_photon!` so a single
 #     call frame handles arbitrarily long Compton chains (no actual
 #     recursion -> no risk of stack overflow).
-#
-# At cutover (step 11i) the legacy tracker is deleted from src3/mc.jl
-# and `path_to_next_region`, `companion_visible!`, `companion_reach_prob`
-# remain there as the only contents.
 
 using Random: AbstractRNG
 

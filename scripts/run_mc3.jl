@@ -61,12 +61,6 @@ function parse_cli()
             arg_type = Float64
             default  = 39.0
             help     = "FV r maximum (cm). r² = (fv-r-max)² is what MCParams stores."
-        "--no-early-skin-reject"
-            action   = :store_true
-            help     = "Disable the early-skin-reject optimization."
-        "--no-early-fv-reject"
-            action   = :store_true
-            help     = "Disable the early-FV-reject optimization."
         "--no-rejection-histograms"
             action   = :store_true
             help     = "Skip writing the rejected_skin / rejected_fv histograms."
@@ -86,8 +80,6 @@ function main()
     fv_z_min  = args["fv-z-min"]
     fv_z_max  = args["fv-z-max"]
     fv_r_max  = args["fv-r-max"]
-    early_skin_reject = !args["no-early-skin-reject"]
-    early_fv_reject   = !args["no-early-fv-reject"]
     do_rej_hist       = !args["no-rejection-histograms"]
 
     println("\n── src3/ MC driver — Cryostat backgrounds ──")
@@ -122,8 +114,6 @@ function main()
         results = run_mc_all(det, effs, xcom, params, N;
                               mc_seed=seed, verbose=true,
                               with_histograms=do_hist,
-                              early_skin_reject=early_skin_reject,
-                              early_fv_reject=early_fv_reject,
                               with_rejection_histograms=do_rej_hist)
     else
         1 <= src_i <= length(main_names) ||
@@ -138,8 +128,6 @@ function main()
         push!(results, run_mc(det, eff, comp_eff, xcom, params, N;
                                mc_seed=seed, verbose=true,
                                with_histograms=do_hist,
-                               early_skin_reject=early_skin_reject,
-                               early_fv_reject=early_fv_reject,
                                with_rejection_histograms=do_rej_hist))
     end
 

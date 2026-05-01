@@ -15,6 +15,9 @@ Fields:
   * `f_SS_in_ROI`    — `counts[:SS_in_ROI] / n_total`
   * `bg_per_yr`      — `γ_per_yr_total × f_SS_in_ROI` (events/yr in ROI)
   * `r_comp`         — companion-reach probability used (0 for non-Tl208)
+  * `histograms`     — currently always `nothing`. Stack-based control
+                       histograms come in a later step.
+  * `rej_hist`       — RejectionHistograms (skin/FV early-reject diagnostics).
 """
 struct MCResult
     name::String
@@ -36,11 +39,24 @@ const _MC_OUTCOMES = (:escaped, :MS_rejected, :skin_vetoed,
 
 """
     run_mc(det, eff, comp_eff, xcom, params, n_samples; mc_seed=1234,
-            use_stack_tracker=false, ...) -> MCResult
+            with_rejection_histograms=true, verbose=false) -> MCResult
 
 Run the per-photon MC with `n_samples` photons sampled from `eff`,
 parallelised across `Threads.nthreads()` threads. Each thread is seeded
 with `mc_seed + thread_id` for reproducibility.
+
+Per-event pipeline (see `src3/tracker.jl` for the algorithm):
+
+    copy!(snapshot, rng)
+    fv = fast_veto(rng, det, eff, xcom, params; rej_hist)
+    if fv === :pass
+        copy!(rng, snapshot)                    # restore for the same event
+        empty!(stack)
+        status = track_photon_stack(rng, det, eff, xcom, params, stack)
+        clusters = build_clusters(rng, stack, params)
+        outcome = classify_event(status, stack, clusters, params)
+    elseif fv === :vetoed_skin: outcome = :skin_vetoed
+    else (:rejected_fv):       outcome = :outside_FV
 
 If `eff.isotope === :Tl208` and `comp_eff` is provided, the companion
 veto is applied: each `:SS_in_ROI` candidate is converted to
@@ -49,24 +65,8 @@ veto is applied: each `:SS_in_ROI` candidate is converted to
 `r_comp = companion_reach_prob(comp_eff)`. For Bi-214 sources, pass
 `comp_eff = nothing`.
 
-Tracker selection (kwarg `use_stack_tracker`):
-  * `false` (default): legacy `track_one_photon!` path. `with_histograms`
-    fills the control `HistogramSet`; `early_skin_reject` and
-    `early_fv_reject` toggle the legacy in-tracking reject paths.
-  * `true`: new pipeline. Per event:
-      copy!(snapshot, rng);  fv = fast_veto(...; rej_hist)
-      if fv === :pass
-          copy!(rng, snapshot)
-          status = track_photon_stack(rng, ..., stack)
-          clusters = build_clusters(rng, stack, params)
-          outcome  = classify_event(status, stack, clusters, params)
-      else
-          outcome = (fv === :vetoed_skin) ? :skin_vetoed : :outside_FV
-      end
-    `with_histograms` is silently ignored under this path —
-    control-histogram re-sourcing from the stack is a later step.
-    `early_skin_reject` / `early_fv_reject` are also ignored (the new
-    pipeline's veto/reject is in `fast_veto` + `classify_event`).
+The kwarg `with_histograms` is reserved for stack-based control
+histograms (currently a no-op; `MCResult.histograms` is always `nothing`).
 """
 function run_mc(det::LXeDetector, eff::EffectiveSource,
                 comp_eff::Union{EffectiveSource, Nothing},
@@ -74,10 +74,7 @@ function run_mc(det::LXeDetector, eff::EffectiveSource,
                 n_samples::Integer; mc_seed::Integer=1234,
                 verbose::Bool=false,
                 with_histograms::Bool=false,
-                early_skin_reject::Bool=true,
-                early_fv_reject::Bool=true,
-                with_rejection_histograms::Bool=true,
-                use_stack_tracker::Bool=true)::MCResult
+                with_rejection_histograms::Bool=true)::MCResult
     n_threads  = Threads.nthreads()
     base       = div(n_samples, n_threads)
     rem        = n_samples - base * n_threads
@@ -85,28 +82,16 @@ function run_mc(det::LXeDetector, eff::EffectiveSource,
     apply_veto = comp_eff !== nothing && eff.isotope === :Tl208
     r_comp     = apply_veto ? companion_reach_prob(comp_eff) : 0.0
 
-    # Histograms are not yet wired to the new tracker; force off if requested.
-    fill_hists = with_histograms && !use_stack_tracker
-
     thread_counts = [Dict{Symbol,Int}(o => 0 for o in _MC_OUTCOMES)
                      for _ in 1:n_threads]
-    thread_hists  = fill_hists ?
-                    [HistogramSet() for _ in 1:n_threads] :
-                    Vector{HistogramSet}()
-    thread_scratch = [PhotonScratch() for _ in 1:n_threads]
     thread_rej_hist = with_rejection_histograms ?
                       [RejectionHistograms(r2_max_cm2 = det.R_ICV_inner^2,
                                             z_min_cm   = det.z_LXe_bottom,
                                             z_max_cm   = det.z_gate)
                        for _ in 1:n_threads] :
                       Vector{RejectionHistograms}()
-    # New-tracker per-thread state (allocated only when needed).
-    thread_stack     = use_stack_tracker ?
-                       [PhotonStack() for _ in 1:n_threads] :
-                       Vector{PhotonStack}()
-    thread_snapshot  = use_stack_tracker ?
-                       [MersenneTwister(0) for _ in 1:n_threads] :
-                       Vector{MersenneTwister}()
+    thread_stack    = [PhotonStack()         for _ in 1:n_threads]
+    thread_snapshot = [MersenneTwister(0)    for _ in 1:n_threads]
 
     base_thread1 = base + (1 <= rem ? 1 : 0)
     report_every = max(1, base_thread1 ÷ 10)
@@ -115,38 +100,25 @@ function run_mc(det::LXeDetector, eff::EffectiveSource,
     Threads.@threads for tid in 1:n_threads
         n_local      = base + (tid <= rem ? 1 : 0)
         rng          = MersenneTwister(mc_seed + tid)
-        local_counts  = thread_counts[tid]
-        local_hist    = fill_hists ? thread_hists[tid] : nothing
-        local_scratch = thread_scratch[tid]
-        local_rej     = with_rejection_histograms ? thread_rej_hist[tid] : nothing
-        local_stack   = use_stack_tracker ? thread_stack[tid]    : PhotonStack()
-        local_snap    = use_stack_tracker ? thread_snapshot[tid] : MersenneTwister(0)
+        local_counts = thread_counts[tid]
+        local_rej    = with_rejection_histograms ? thread_rej_hist[tid] : nothing
+        local_stack  = thread_stack[tid]
+        local_snap   = thread_snapshot[tid]
         for i in 1:n_local
-            if use_stack_tracker
-                # New pipeline: fast_veto → (track + classify) on pass.
-                copy!(local_snap, rng)
-                fv = fast_veto(rng, det, eff, xcom, params; rej_hist=local_rej)
-                if fv === :pass
-                    copy!(rng, local_snap)
-                    empty!(local_stack)
-                    status   = track_photon_stack(rng, det, eff, xcom,
-                                                  params, local_stack)
-                    clusters = build_clusters(rng, local_stack, params)
-                    outcome  = classify_event(status, local_stack,
-                                              clusters, params)
-                elseif fv === :vetoed_skin
-                    outcome = :skin_vetoed
-                else  # :rejected_fv
-                    outcome = :outside_FV
-                end
-            else
-                # Legacy pipeline.
-                outcome = track_one_photon!(rng, det, eff, xcom, params;
-                                             hist=local_hist,
-                                             scratch=local_scratch,
-                                             rej_hist=local_rej,
-                                             early_skin_reject=early_skin_reject,
-                                             early_fv_reject=early_fv_reject)
+            copy!(local_snap, rng)
+            fv = fast_veto(rng, det, eff, xcom, params; rej_hist=local_rej)
+            if fv === :pass
+                copy!(rng, local_snap)
+                empty!(local_stack)
+                status   = track_photon_stack(rng, det, eff, xcom,
+                                              params, local_stack)
+                clusters = build_clusters(rng, local_stack, params)
+                outcome  = classify_event(status, local_stack,
+                                          clusters, params)
+            elseif fv === :vetoed_skin
+                outcome = :skin_vetoed
+            else  # :rejected_fv
+                outcome = :outside_FV
             end
             if apply_veto && outcome === :SS_in_ROI
                 if rand(rng) < r_comp
@@ -179,16 +151,6 @@ function run_mc(det::LXeDetector, eff::EffectiveSource,
     f_ss_roi = counts[:SS_in_ROI] / n_total
     bg       = f_ss_roi * eff.total_per_yr
 
-    merged_hist = if fill_hists
-        h = HistogramSet()
-        for th in thread_hists
-            merge_histograms!(h, th)
-        end
-        h
-    else
-        nothing
-    end
-
     merged_rej = if with_rejection_histograms
         rh = RejectionHistograms(r2_max_cm2 = det.R_ICV_inner^2,
                                   z_min_cm   = det.z_LXe_bottom,
@@ -202,16 +164,15 @@ function run_mc(det::LXeDetector, eff::EffectiveSource,
     end
 
     MCResult(eff.name, eff.isotope, counts, n_total, runtime,
-             eff.total_per_yr, f_ss_roi, bg, r_comp, merged_hist, merged_rej)
+             eff.total_per_yr, f_ss_roi, bg, r_comp, nothing, merged_rej)
 end
 
 """
     run_mc_all(det, effs, xcom, params, n_samples; mc_seed=1234) -> Vector{MCResult}
 
 Run the MC for the 6 *main* effective sources (Bi-214 and Tl-208 main,
-in regions CB / CTH / CBH) and skip the Tl-208 companion sources
-(those are paired automatically with their main partner via the name
-suffix). Returns one `MCResult` per main source.
+in regions CB / CTH / CBH). Tl-208 sources are automatically paired with
+their `*_Tl208c` companion source for the cascade-companion veto.
 """
 function run_mc_all(det::LXeDetector, effs::Vector{EffectiveSource},
                     xcom::XCOMTable, params::MCParams,
@@ -219,10 +180,7 @@ function run_mc_all(det::LXeDetector, effs::Vector{EffectiveSource},
                     mc_seed::Integer=1234,
                     verbose::Bool=false,
                     with_histograms::Bool=false,
-                    early_skin_reject::Bool=true,
-                    early_fv_reject::Bool=true,
-                    with_rejection_histograms::Bool=true,
-                    use_stack_tracker::Bool=true)::Vector{MCResult}
+                    with_rejection_histograms::Bool=true)::Vector{MCResult}
     by_name = Dict(e.name => e for e in effs)
     results = MCResult[]
     main_names = ["CB_Bi214", "CTH_Bi214", "CBH_Bi214",
@@ -242,10 +200,7 @@ function run_mc_all(det::LXeDetector, effs::Vector{EffectiveSource},
         push!(results, run_mc(det, eff, comp_eff, xcom, params, n_samples;
                               mc_seed=seed, verbose=verbose,
                               with_histograms=with_histograms,
-                              early_skin_reject=early_skin_reject,
-                              early_fv_reject=early_fv_reject,
-                              with_rejection_histograms=with_rejection_histograms,
-                              use_stack_tracker=use_stack_tracker))
+                              with_rejection_histograms=with_rejection_histograms))
     end
     results
 end
