@@ -22,6 +22,7 @@ include("histograms.jl")
 include("clusters.jl")
 include("select.jl")
 include("classify.jl")
+include("tracker.jl")
 include("mc.jl")
 include("run.jl")
 
@@ -109,6 +110,9 @@ export select_SC, select_ROI
 
 # Event-outcome classifier
 export classify_event, CLASSIFY_EVENT_OUTCOMES, TRACK_STATUSES
+
+# Stack tracker (Phase 2; src3/tracker.jl)
+export track_photon_stack
 
 # Rejection histograms
 export RejectionHistograms
