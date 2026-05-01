@@ -100,7 +100,7 @@ export fill_Δz!, fill_E_first!, fill_E_cluster!
 export fill_N_clusters!, fill_N_extra!, fill_ssms!
 
 # Cluster computation
-export Cluster, compute_clusters
+export Cluster, compute_clusters, classify_event
 
 # Rejection histograms
 export RejectionHistograms

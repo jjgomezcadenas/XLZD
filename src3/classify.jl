@@ -68,3 +68,54 @@ function compute_clusters(deposits::Vector{LXeDeposit},
     push!(out, Cluster(cum_xE/cum_E, cum_yE/cum_E, cum_zE/cum_E, cum_E))
     out
 end
+
+"""
+    classify_event(stack::PhotonStack, params::MCParams) -> Vector{Cluster}
+
+Build z-clusters from the rows of `stack`. Same algorithm as
+`compute_clusters`, but the input is the new `PhotonStack` produced
+by the stack-based tracker.
+
+Filter rule: `region === :TPC && edep > 0`. This includes
+`INT_BELOW_THRESH` rows in `:TPC` (whose `edep` is the residual energy
+dumped at threshold) and excludes `:Skin`, `:Inert`, `:Gas`, and any
+source-region rows.
+
+Grouping: sort filtered rows by z, group consecutive rows with
+`Δz < params.Δz_threshold_mm`. Centroid is energy-weighted; cluster
+energy is the sum of `edep`.
+"""
+function classify_event(stack::PhotonStack,
+                         params::MCParams)::Vector{Cluster}
+    actives = [r for r in stack.rows if r.region === :TPC && r.edep > 0]
+    n = length(actives)
+    n == 0 && return Cluster[]
+
+    sorted = sort(actives; by = r -> r.z)
+    Δz_thresh = Δz_threshold_cm(params)
+
+    out = Cluster[]
+    cum_E  = sorted[1].edep
+    cum_xE = sorted[1].x * sorted[1].edep
+    cum_yE = sorted[1].y * sorted[1].edep
+    cum_zE = sorted[1].z * sorted[1].edep
+    z_prev = sorted[1].z
+    @inbounds for i in 2:n
+        z_i = sorted[i].z
+        if z_i - z_prev < Δz_thresh
+            cum_E  += sorted[i].edep
+            cum_xE += sorted[i].x * sorted[i].edep
+            cum_yE += sorted[i].y * sorted[i].edep
+            cum_zE += sorted[i].z * sorted[i].edep
+        else
+            push!(out, Cluster(cum_xE/cum_E, cum_yE/cum_E, cum_zE/cum_E, cum_E))
+            cum_E  = sorted[i].edep
+            cum_xE = sorted[i].x * sorted[i].edep
+            cum_yE = sorted[i].y * sorted[i].edep
+            cum_zE = sorted[i].z * sorted[i].edep
+        end
+        z_prev = z_i
+    end
+    push!(out, Cluster(cum_xE/cum_E, cum_yE/cum_E, cum_zE/cum_E, cum_E))
+    out
+end
