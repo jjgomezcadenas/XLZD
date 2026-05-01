@@ -61,6 +61,12 @@ function parse_cli()
         "--no-rejection-histograms"
             action   = :store_true
             help     = "Skip writing the rejected_skin / rejected_fv histograms."
+        "--no-stack-histos"
+            action   = :store_true
+            help     = "Skip accumulating + writing StackHistogramSet CSVs."
+        "--no-cluster-histos"
+            action   = :store_true
+            help     = "Skip accumulating + writing ClusterHistogramSet CSVs."
     end
     parse_args(s)
 end
@@ -77,6 +83,8 @@ function main()
     fv_z_max  = args["fv-z-max"]
     fv_r_max  = args["fv-r-max"]
     do_rej_hist       = !args["no-rejection-histograms"]
+    do_stack_hist     = !args["no-stack-histos"]
+    do_cluster_hist   = !args["no-cluster-histos"]
 
     println("\n── src3/ MC driver — Cryostat backgrounds ──")
     @printf("  N samples per source : %d\n", N)
@@ -109,6 +117,8 @@ function main()
     if src_i == 0
         results = run_mc_all(det, effs, xcom, params, N;
                               mc_seed=seed, verbose=true,
+                              with_stack_histograms=do_stack_hist,
+                              with_cluster_histograms=do_cluster_hist,
                               with_rejection_histograms=do_rej_hist)
     else
         1 <= src_i <= length(main_names) ||
@@ -122,6 +132,8 @@ function main()
         @printf("\n── Running %s ──\n", eff.name)
         push!(results, run_mc(det, eff, comp_eff, xcom, params, N;
                                mc_seed=seed, verbose=true,
+                               with_stack_histograms=do_stack_hist,
+                               with_cluster_histograms=do_cluster_hist,
                                with_rejection_histograms=do_rej_hist))
     end
 
@@ -182,20 +194,163 @@ function main()
     end
     println("  → wrote $csv_path")
 
-    # ───────── Rejection histogram CSVs (one folder per source) ─────────
-    # Stack/cluster histogram CSV writers come in a follow-up commit; for
-    # now run_mc populates MCResult.{stack_hists, cluster_hists} but the
-    # script does not yet write them to disk.
-    if do_rej_hist
+    # ───────── Histogram CSVs (one folder per source) ─────────
+    if do_rej_hist || do_stack_hist || do_cluster_hist
         for r in results
-            r.rej_hist === nothing && continue
             h_dir = joinpath(out_dir, "hist_$(r.name)")
-            mkpath(h_dir)
-            _save_rejection_csvs(h_dir, r.rej_hist)
-            println("  → wrote $h_dir")
+            wrote = false
+            if do_rej_hist && r.rej_hist !== nothing
+                mkpath(h_dir); _save_rejection_csvs(h_dir, r.rej_hist); wrote = true
+            end
+            if do_stack_hist && r.stack_hists !== nothing
+                mkpath(h_dir); _save_stack_csvs(h_dir, r.stack_hists); wrote = true
+            end
+            if do_cluster_hist && r.cluster_hists !== nothing
+                mkpath(h_dir); _save_cluster_csvs(h_dir, r.cluster_hists); wrote = true
+            end
+            wrote && println("  → wrote $h_dir")
         end
     end
     println()
+end
+
+# ---------------------------------------------------------------------------
+# Generic CSV writers (shared by stack and cluster sets)
+# ---------------------------------------------------------------------------
+
+"Write integer-bucket histogram (bins 0..length(V)-1) to a 2-column CSV."
+function _write_int_bins(path::String, V::Vector{Int}; label::String="n")
+    open(path, "w") do f
+        println(f, "$label,count")
+        for i in 1:length(V)
+            println(f, "$(i-1),$(V[i])")
+        end
+    end
+end
+
+"Write a uniform 1-D histogram to a 3-column CSV with bin edges + count."
+function _write_1d(path::String, V::Vector{Int};
+                    lo::Float64, hi::Float64,
+                    left_label::String, right_label::String)
+    n = length(V)
+    bw = (hi - lo) / n
+    open(path, "w") do f
+        println(f, "$left_label,$right_label,count")
+        for i in 1:n
+            println(f, "$(lo + (i-1)*bw),$(lo + i*bw),$(V[i])")
+        end
+    end
+end
+
+"Write a uniform 2-D histogram (i along x, j along y) to a 5-column CSV."
+function _write_2d(path::String, M::Matrix{Int};
+                    x_lo::Float64, x_hi::Float64, x_n::Int, x_left::String, x_right::String,
+                    y_lo::Float64, y_hi::Float64, y_n::Int, y_left::String, y_right::String)
+    x_bw = (x_hi - x_lo) / x_n
+    y_bw = (y_hi - y_lo) / y_n
+    open(path, "w") do f
+        println(f, "$x_left,$x_right,$y_left,$y_right,count")
+        for i in 1:x_n, j in 1:y_n
+            xl = x_lo + (i-1)*x_bw; xr = x_lo + i*x_bw
+            yl = y_lo + (j-1)*y_bw; yr = y_lo + j*y_bw
+            println(f, "$xl,$xr,$yl,$yr,$(M[i, j])")
+        end
+    end
+end
+
+# ---------------------------------------------------------------------------
+# StackHistogramSet → CSVs
+# ---------------------------------------------------------------------------
+
+const _INTERACTION_LABELS = ("PHOTO", "COMPTON", "PAIR", "BELOW_THRESH")
+const _STACK_REGION_LABELS = ("TPC", "Skin", "Inert")
+
+function _save_stack_csvs(dir::String, sh::StackHistogramSet)
+    _write_int_bins(joinpath(dir, "stack_ng_max.csv"),
+                    sh.ng_max_counts; label="ng_max")
+    _write_int_bins(joinpath(dir, "stack_n_photo.csv"),
+                    sh.n_photo_counts; label="n_photo")
+    _write_int_bins(joinpath(dir, "stack_n_compton.csv"),
+                    sh.n_compton_counts; label="n_compton")
+    _write_int_bins(joinpath(dir, "stack_n_pair.csv"),
+                    sh.n_pair_counts; label="n_pair")
+    _write_int_bins(joinpath(dir, "stack_n_below_thresh.csv"),
+                    sh.n_below_thresh_counts; label="n_below_thresh")
+
+    # First-interaction type (4 bins, labelled rather than indexed)
+    open(joinpath(dir, "stack_first_interaction.csv"), "w") do f
+        println(f, "interaction,count")
+        for i in 1:4
+            println(f, "$(_INTERACTION_LABELS[i]),$(sh.first_interaction_counts[i])")
+        end
+    end
+
+    _write_1d(joinpath(dir, "stack_inclusive_edep.csv"),
+              sh.inclusive_edep_counts;
+              lo=0.0, hi=sh.E_max_MeV,
+              left_label="bin_left_MeV", right_label="bin_right_MeV")
+    _write_1d(joinpath(dir, "stack_E_first.csv"),
+              sh.E_first_counts;
+              lo=0.0, hi=sh.E_max_MeV,
+              left_label="bin_left_MeV", right_label="bin_right_MeV")
+    _write_1d(joinpath(dir, "stack_delta_z.csv"),
+              sh.Δz_counts;
+              lo=0.0, hi=sh.Δz_max_cm,
+              left_label="bin_left_cm", right_label="bin_right_cm")
+
+    # Region × interaction (3×4 matrix)
+    open(joinpath(dir, "stack_region_interaction.csv"), "w") do f
+        println(f, "region,interaction,count")
+        for ri in 1:3, ci in 1:4
+            println(f, "$(_STACK_REGION_LABELS[ri]),$(_INTERACTION_LABELS[ci]),$(sh.region_interaction_counts[ri, ci])")
+        end
+    end
+end
+
+# ---------------------------------------------------------------------------
+# ClusterHistogramSet → CSVs
+# ---------------------------------------------------------------------------
+
+function _save_cluster_csvs(dir::String, ch::ClusterHistogramSet)
+    # 1D energies
+    for (name, V) in (("cluster_Ec.csv",  ch.Ec_counts),
+                       ("cluster_Emax.csv", ch.Emax_counts),
+                       ("cluster_Emin.csv", ch.Emin_counts),
+                       ("cluster_Einc.csv", ch.Einc_counts))
+        _write_1d(joinpath(dir, name), V;
+                  lo=0.0, hi=ch.E_max_MeV,
+                  left_label="bin_left_MeV", right_label="bin_right_MeV")
+    end
+
+    # 1D pair distances
+    _write_1d(joinpath(dir, "cluster_closest_D3.csv"),  ch.closest_D3_counts;
+              lo=0.0, hi=ch.D3_max_cm,
+              left_label="bin_left_cm", right_label="bin_right_cm")
+    _write_1d(joinpath(dir, "cluster_furthest_D3.csv"), ch.furthest_D3_counts;
+              lo=0.0, hi=ch.D3_max_cm,
+              left_label="bin_left_cm", right_label="bin_right_cm")
+    _write_1d(joinpath(dir, "cluster_closest_dz.csv"),  ch.closest_dz_counts;
+              lo=0.0, hi=ch.dz_max_cm,
+              left_label="bin_left_cm", right_label="bin_right_cm")
+    _write_1d(joinpath(dir, "cluster_furthest_dz.csv"), ch.furthest_dz_counts;
+              lo=0.0, hi=ch.dz_max_cm,
+              left_label="bin_left_cm", right_label="bin_right_cm")
+
+    # Cluster multiplicity (integer bucket)
+    _write_int_bins(joinpath(dir, "cluster_N_clusters.csv"),
+                    ch.N_clusters_counts; label="n_clusters")
+
+    # 2D heatmaps
+    _write_2d(joinpath(dir, "cluster_r2_vs_z.csv"), ch.r2_vs_z_2d_counts;
+              x_lo=0.0,           x_hi=ch.r2_max_cm2, x_n=ch.r2_n_bins,
+              x_left="bin_r2_left_cm2",  x_right="bin_r2_right_cm2",
+              y_lo=ch.z_min_cm,   y_hi=ch.z_max_cm,   y_n=ch.z_n_bins,
+              y_left="bin_z_left_cm",    y_right="bin_z_right_cm")
+    _write_2d(joinpath(dir, "cluster_D_vs_z.csv"), ch.D_vs_z_2d_counts;
+              x_lo=0.0,           x_hi=ch.D_max_cm,   x_n=ch.D_n_bins,
+              x_left="bin_D_left_cm",    x_right="bin_D_right_cm",
+              y_lo=ch.z_min_cm,   y_hi=ch.z_max_cm,   y_n=ch.z_n_bins,
+              y_left="bin_z_left_cm",    y_right="bin_z_right_cm")
 end
 
 function _save_rejection_csvs(dir::String, rh::RejectionHistograms)
