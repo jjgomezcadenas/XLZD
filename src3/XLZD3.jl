@@ -21,6 +21,7 @@ include("stack.jl")
 include("histograms.jl")
 include("clusters.jl")
 include("select.jl")
+include("classify.jl")
 include("mc.jl")
 include("run.jl")
 
@@ -105,6 +106,9 @@ export Cluster, compute_clusters, build_clusters
 
 # Cluster selection predicates
 export select_SC, select_ROI
+
+# Event-outcome classifier
+export classify_event, CLASSIFY_EVENT_OUTCOMES, CLASSIFY_EVENT_REASONS
 
 # Rejection histograms
 export RejectionHistograms
