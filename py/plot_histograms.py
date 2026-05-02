@@ -133,7 +133,9 @@ def _present(input_dir: Path, names: tuple[str, ...]) -> bool:
 # ---------------------------------------------------------------------------
 # Generic plot primitives
 # ---------------------------------------------------------------------------
-def _plot_int_bar(ax: plt.Axes, df: pd.DataFrame, *, title: str, xlabel: str) -> None:
+def _plot_int_bar(
+    ax: plt.Axes, df: pd.DataFrame, *, title: str, xlabel: str, log_y: bool = False
+) -> None:
     ax.bar(df.iloc[:, 0], df["count"], color="#684", edgecolor="none")
     ax.set_xlabel(xlabel)
     ax.set_ylabel("events")
@@ -142,10 +144,13 @@ def _plot_int_bar(ax: plt.Axes, df: pd.DataFrame, *, title: str, xlabel: str) ->
     if not nonzero.empty and len(nonzero) <= 12:
         for x, y in zip(nonzero.iloc[:, 0], nonzero["count"]):
             ax.text(x, y, f"{y}", ha="center", va="bottom", fontsize=7)
+    if log_y and df["count"].max() > 0:
+        ax.set_yscale("log")
+        ax.set_ylim(bottom=0.5)
 
 
 def _plot_categorical_bar(
-    ax: plt.Axes, df: pd.DataFrame, *, title: str, xlabel: str
+    ax: plt.Axes, df: pd.DataFrame, *, title: str, xlabel: str, log_y: bool = False
 ) -> None:
     cats = df.iloc[:, 0].astype(str).tolist()
     ax.bar(cats, df["count"], color=["#3b6", "#46a", "#a64", "#888"])
@@ -155,6 +160,9 @@ def _plot_categorical_bar(
     for i, y in enumerate(df["count"]):
         ax.text(i, y, f"{y:,}", ha="center", va="bottom", fontsize=7)
     plt.setp(ax.get_xticklabels(), rotation=20, ha="right")
+    if log_y and df["count"].max() > 0:
+        ax.set_yscale("log")
+        ax.set_ylim(bottom=0.5)
 
 
 def _plot_1d(
@@ -217,7 +225,8 @@ def _plot_2d_heatmap(
 
 
 def _plot_region_interaction_table(ax: plt.Axes, df: pd.DataFrame) -> None:
-    """3×4 region × interaction-type counts — render as a heatmap with text."""
+    """3×4 region × interaction-type counts — render as a heatmap of
+    fractions of total deposits with the value as text in each cell."""
     pivot = df.pivot(index="region", columns="interaction", values="count")
     # Force ordering.
     region_order = [r for r in ("TPC", "Skin", "Inert") if r in pivot.index]
@@ -226,16 +235,19 @@ def _plot_region_interaction_table(ax: plt.Axes, df: pd.DataFrame) -> None:
     ]
     pivot = pivot.loc[region_order, inter_order]
     M = pivot.values.astype(float)
-    im = ax.imshow(M, cmap="Blues", aspect="auto")
+    total = M.sum()
+    F = M / total if total > 0 else M
+    im = ax.imshow(F, cmap="Blues", aspect="auto")
     ax.set_xticks(range(len(inter_order)), inter_order, rotation=20, ha="right")
     ax.set_yticks(range(len(region_order)), region_order)
-    ax.set_title("region × interaction (deposit counts)")
-    for i in range(M.shape[0]):
-        for j in range(M.shape[1]):
-            ax.text(j, i, f"{int(M[i, j]):,}", ha="center", va="center",
-                    color="white" if M[i, j] > 0.5 * M.max() else "black",
+    ax.set_title("region × interaction (fraction of all deposits)")
+    fmax = F.max() if F.size else 0.0
+    for i in range(F.shape[0]):
+        for j in range(F.shape[1]):
+            ax.text(j, i, f"{F[i, j]:.2e}", ha="center", va="center",
+                    color="white" if F[i, j] > 0.5 * fmax else "black",
                     fontsize=8)
-    plt.colorbar(im, ax=ax, label="count")
+    plt.colorbar(im, ax=ax, label="fraction")
 
 
 # ---------------------------------------------------------------------------
@@ -247,36 +259,36 @@ def render_stack_panel(input_dir: Path, title: str, log_y: bool) -> plt.Figure:
     flat = axes.flatten()
 
     df = _read(input_dir, "stack_ng_max.csv")
-    _plot_int_bar(flat[0], df, title="ng_max (chain depth)", xlabel="ng_max")
+    _plot_int_bar(flat[0], df, title="ng_max (chain depth)", xlabel="ng_max", log_y=True)
 
     df = _read(input_dir, "stack_first_interaction.csv")
     _plot_categorical_bar(flat[1], df,
                           title="first interaction type",
-                          xlabel="interaction")
+                          xlabel="interaction", log_y=True)
 
     df = _read(input_dir, "stack_n_photo.csv")
-    _plot_int_bar(flat[2], df, title="n_photo per event", xlabel="n")
+    _plot_int_bar(flat[2], df, title="n_photo per event", xlabel="n", log_y=True)
 
     df = _read(input_dir, "stack_n_compton.csv")
-    _plot_int_bar(flat[3], df, title="n_compton per event", xlabel="n")
+    _plot_int_bar(flat[3], df, title="n_compton per event", xlabel="n", log_y=True)
 
     df = _read(input_dir, "stack_n_pair.csv")
-    _plot_int_bar(flat[4], df, title="n_pair per event", xlabel="n")
+    _plot_int_bar(flat[4], df, title="n_pair per event", xlabel="n", log_y=True)
 
     df = _read(input_dir, "stack_n_below_thresh.csv")
-    _plot_int_bar(flat[5], df, title="n_below_thresh per event", xlabel="n")
+    _plot_int_bar(flat[5], df, title="n_below_thresh per event", xlabel="n", log_y=True)
 
     df = _read(input_dir, "stack_inclusive_edep.csv")
     _plot_1d(flat[6], df, title="inclusive Σ edep",
-             xlabel="E (MeV)", log_y=log_y, color="#a64")
+             xlabel="E (MeV)", log_y=True, color="#a64")
 
     df = _read(input_dir, "stack_E_first.csv")
     _plot_1d(flat[7], df, title="E of first :TPC deposit",
-             xlabel="E (MeV)", log_y=log_y, color="#a64")
+             xlabel="E (MeV)", log_y=True, color="#a64")
 
     df = _read(input_dir, "stack_delta_z.csv")
     _plot_1d(flat[8], df, title="Δz from first :TPC deposit",
-             xlabel="Δz (cm)", log_y=log_y, color="#46a")
+             xlabel="Δz (cm)", log_y=True, color="#46a")
 
     df = _read(input_dir, "stack_region_interaction.csv")
     _plot_region_interaction_table(flat[9], df)
@@ -296,38 +308,38 @@ def render_cluster_panel(input_dir: Path, title: str, log_y: bool) -> plt.Figure
 
     df = _read(input_dir, "cluster_Ec.csv")
     _plot_1d(flat[0], df, title="cluster energy Ec",
-             xlabel="E (MeV)", log_y=log_y, color="#a64")
+             xlabel="E (MeV)", log_y=True, color="#a64")
 
     df = _read(input_dir, "cluster_Emax.csv")
     _plot_1d(flat[1], df, title="per-event Emax",
-             xlabel="E (MeV)", log_y=log_y, color="#a64")
+             xlabel="E (MeV)", log_y=True, color="#a64")
 
     df = _read(input_dir, "cluster_Emin.csv")
     _plot_1d(flat[2], df, title="per-event Emin",
-             xlabel="E (MeV)", log_y=log_y, color="#a64")
+             xlabel="E (MeV)", log_y=True, color="#a64")
 
     df = _read(input_dir, "cluster_Einc.csv")
     _plot_1d(flat[3], df, title="per-event Σ Ec",
-             xlabel="E (MeV)", log_y=log_y, color="#a64")
+             xlabel="E (MeV)", log_y=True, color="#a64")
 
     df = _read(input_dir, "cluster_closest_D3.csv")
     _plot_1d(flat[4], df, title="closest pair distance (3D)",
-             xlabel="D (cm)", log_y=log_y, color="#46a")
+             xlabel="D (cm)", log_y=True, color="#46a")
 
     df = _read(input_dir, "cluster_furthest_D3.csv")
     _plot_1d(flat[5], df, title="furthest pair distance (3D)",
-             xlabel="D (cm)", log_y=log_y, color="#46a")
+             xlabel="D (cm)", log_y=True, color="#46a")
 
     df = _read(input_dir, "cluster_closest_dz.csv")
     _plot_1d(flat[6], df, title="closest pair |Δz|",
-             xlabel="|Δz| (cm)", log_y=log_y, color="#46a")
+             xlabel="|Δz| (cm)", log_y=True, color="#46a")
 
     df = _read(input_dir, "cluster_furthest_dz.csv")
     _plot_1d(flat[7], df, title="furthest pair |Δz|",
-             xlabel="|Δz| (cm)", log_y=log_y, color="#46a")
+             xlabel="|Δz| (cm)", log_y=True, color="#46a")
 
     df = _read(input_dir, "cluster_N_clusters.csv")
-    _plot_int_bar(flat[8], df, title="N clusters per photon", xlabel="n")
+    _plot_int_bar(flat[8], df, title="N clusters per photon", xlabel="n", log_y=True)
 
     df = _read(input_dir, "cluster_r2_vs_z.csv")
     _plot_2d_heatmap(flat[9], df,
@@ -350,7 +362,7 @@ def render_rejection_panel(input_dir: Path, title: str, log_y: bool) -> plt.Figu
 
     df = _read(input_dir, "rejected_skin_E.csv")
     _plot_1d(axes[0, 0], df, title="rejected_skin: triggering E",
-             xlabel="E (MeV)", log_y=log_y, color="#c54")
+             xlabel="E (MeV)", log_y=True, color="#c54")
 
     df = _read(input_dir, "rejected_skin_r2z.csv")
     _plot_2d_heatmap(axes[0, 1], df,
@@ -359,7 +371,7 @@ def render_rejection_panel(input_dir: Path, title: str, log_y: bool) -> plt.Figu
 
     df = _read(input_dir, "rejected_fv_E.csv")
     _plot_1d(axes[1, 0], df, title="rejected_fv: triggering E",
-             xlabel="E (MeV)", log_y=log_y, color="#c54")
+             xlabel="E (MeV)", log_y=True, color="#c54")
 
     df = _read(input_dir, "rejected_fv_r2z.csv")
     _plot_2d_heatmap(axes[1, 1], df,
@@ -389,13 +401,13 @@ def render_individual(input_dir: Path, out: Path, log_y: bool) -> None:
 
         fig, ax = plt.subplots(figsize=(7, 4.5))
         if cols == ["interaction", "count"]:
-            _plot_categorical_bar(ax, df, title=stem, xlabel="interaction")
+            _plot_categorical_bar(ax, df, title=stem, xlabel="interaction", log_y=True)
         elif cols == ["region", "interaction", "count"]:
             _plot_region_interaction_table(ax, df)
         elif cols[-1] == "count" and len(cols) == 2:
             _plot_int_bar(ax, df, title=stem, xlabel=cols[0])
         elif cols[-1] == "count" and len(cols) == 3:
-            _plot_1d(ax, df, title=stem, xlabel=cols[0], log_y=log_y)
+            _plot_1d(ax, df, title=stem, xlabel=cols[0], log_y=True)
         elif cols[-1] == "count" and len(cols) == 5:
             fig.set_size_inches(8, 6)
             _plot_2d_heatmap(ax, df, title=stem, xlabel=cols[0], ylabel=cols[2])
