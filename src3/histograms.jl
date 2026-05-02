@@ -281,6 +281,14 @@ struct ClusterHistogramSet
     ec2d_n_bins::Int
     ec2d_max_MeV::Float64
     Ec_vs_dz_2d_counts::Matrix{Int}    # shape: (dz_n_bins, ec2d_n_bins)
+
+    # SS pre-ROI spectra: cluster energy of the (single) visible cluster
+    # for events that have passed all upstream cuts (skin, FV, SC) and are
+    # about to be ROI-tested. `ec` is the true (deterministic) cluster
+    # energy, `es` is the smeared energy that the ROI cut acts on. Filled
+    # by `fill_ss_pre_roi!` from `run.jl`. Same binning as `Ec_counts`.
+    ss_ec_pre_roi_counts::Vector{Int}
+    ss_es_pre_roi_counts::Vector{Int}
 end
 
 function ClusterHistogramSet(;
@@ -312,6 +320,8 @@ function ClusterHistogramSet(;
         zeros(Int, D_n_bins, z_n_bins),
         ec2d_n_bins, Float64(ec2d_max_MeV),
         zeros(Int, dz_n_bins, ec2d_n_bins),
+        zeros(Int, E_n_bins),
+        zeros(Int, E_n_bins),
     )
 end
 
@@ -422,7 +432,35 @@ function merge_cluster_histograms!(into::ClusterHistogramSet,
     @. into.r2_vs_z_2d_counts     += src.r2_vs_z_2d_counts
     @. into.D_vs_z_2d_counts      += src.D_vs_z_2d_counts
     @. into.Ec_vs_dz_2d_counts    += src.Ec_vs_dz_2d_counts
+    @. into.ss_ec_pre_roi_counts  += src.ss_ec_pre_roi_counts
+    @. into.ss_es_pre_roi_counts  += src.ss_es_pre_roi_counts
     into
+end
+
+"""
+    fill_ss_pre_roi!(ch::ClusterHistogramSet, clusters::Vector{Cluster},
+                      params::MCParams)
+
+Bin the (ec, es) of the single visible cluster into `ss_ec_pre_roi_counts`
+and `ss_es_pre_roi_counts`. Caller must guarantee the event reached the
+pre-ROI SS state — i.e., `classify_event` returned `:SS_in_ROI` or
+`:SS_outside_ROI`. Picks the visible cluster (ec > E_visible_keV/1000)
+rather than `clusters[1]` to handle the case where a sub-visible cluster
+is sorted ahead of the visible one.
+"""
+function fill_ss_pre_roi!(ch::ClusterHistogramSet,
+                           clusters::Vector{Cluster},
+                           params::MCParams)
+    thr_MeV = params.E_visible_keV / 1000.0
+    @inbounds for c in clusters
+        if c.ec > thr_MeV
+            iec = _bin_idx(c.ec, 0.0, ch.E_max_MeV, ch.E_n_bins)
+            ies = _bin_idx(c.es, 0.0, ch.E_max_MeV, ch.E_n_bins)
+            iec > 0 && (ch.ss_ec_pre_roi_counts[iec] += 1)
+            ies > 0 && (ch.ss_es_pre_roi_counts[ies] += 1)
+            return
+        end
+    end
 end
 
 # ===========================================================================

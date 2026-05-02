@@ -176,8 +176,16 @@ function run_mc(det::LXeDetector, eff::EffectiveSource,
                                           clusters, params)
                 local_stack_hist   !== nothing &&
                     update_stack_histograms!(local_stack_hist, local_stack, params)
-                local_cluster_hist !== nothing &&
+                if local_cluster_hist !== nothing
                     update_cluster_histograms!(local_cluster_hist, clusters, params)
+                    # SS pre-ROI spectrum: events that survived skin/FV/SC and are
+                    # about to be ROI-tested. The set is exactly
+                    # {:SS_in_ROI, :SS_outside_ROI} as returned by classify_event
+                    # (companion-veto reclassification happens later, below).
+                    if outcome === :SS_in_ROI || outcome === :SS_outside_ROI
+                        fill_ss_pre_roi!(local_cluster_hist, clusters, params)
+                    end
+                end
             elseif fv === :vetoed_skin
                 outcome = :skin_vetoed
             else  # :rejected_fv

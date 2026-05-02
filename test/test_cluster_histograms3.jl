@@ -121,4 +121,44 @@ end
     @test ch1.Ec_counts[bin(2.0)] == 1
 end
 
+# ---------------------------------------------------------------------------
+# 7. fill_ss_pre_roi!: bins ec into ss_ec_pre_roi_counts and es into
+#    ss_es_pre_roi_counts. Picks the visible cluster (not clusters[1]).
+# ---------------------------------------------------------------------------
+
+@testset "7. fill_ss_pre_roi!: ec and es of the visible cluster" begin
+    ch = ClusterHistogramSet()
+    sub = params.E_visible_keV / 1000.0 * 0.5
+    cs = [mk(ec=sub,    es=sub),         # sub-visible — must be skipped
+          mk(ec=2.448, es=2.460)]        # the visible one
+    fill_ss_pre_roi!(ch, cs, params)
+    bin = E -> floor(Int, E / 2.7 * 270) + 1
+    @test ch.ss_ec_pre_roi_counts[bin(2.448)] == 1
+    @test ch.ss_es_pre_roi_counts[bin(2.460)] == 1
+    @test sum(ch.ss_ec_pre_roi_counts) == 1
+    @test sum(ch.ss_es_pre_roi_counts) == 1
+end
+
+@testset "8. fill_ss_pre_roi!: no visible cluster → no fill" begin
+    ch = ClusterHistogramSet()
+    sub = params.E_visible_keV / 1000.0 * 0.5
+    cs = [mk(ec=sub, es=sub), mk(ec=sub, es=sub)]
+    fill_ss_pre_roi!(ch, cs, params)
+    @test sum(ch.ss_ec_pre_roi_counts) == 0
+    @test sum(ch.ss_es_pre_roi_counts) == 0
+end
+
+@testset "9. merge: ss_ec_pre_roi and ss_es_pre_roi merge correctly" begin
+    ch1 = ClusterHistogramSet()
+    ch2 = ClusterHistogramSet()
+    fill_ss_pre_roi!(ch1, [mk(ec=2.0, es=2.0)], params)
+    fill_ss_pre_roi!(ch2, [mk(ec=2.5, es=2.5)], params)
+    merge_cluster_histograms!(ch1, ch2)
+    bin = E -> floor(Int, E / 2.7 * 270) + 1
+    @test ch1.ss_ec_pre_roi_counts[bin(2.0)] == 1
+    @test ch1.ss_ec_pre_roi_counts[bin(2.5)] == 1
+    @test ch1.ss_es_pre_roi_counts[bin(2.0)] == 1
+    @test ch1.ss_es_pre_roi_counts[bin(2.5)] == 1
+end
+
 println("\n  ── test_cluster_histograms3.jl: ClusterHistogramSet OK ──\n")

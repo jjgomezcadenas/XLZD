@@ -108,7 +108,8 @@ export track_photon_stack, fast_veto
 
 # Stack & cluster diagnostic histograms
 export StackHistogramSet, update_stack_histograms!, merge_stack_histograms!
-export ClusterHistogramSet, update_cluster_histograms!, merge_cluster_histograms!
+export ClusterHistogramSet, update_cluster_histograms!, merge_cluster_histograms!,
+       fill_ss_pre_roi!
 
 # Rejection histograms
 export RejectionHistograms

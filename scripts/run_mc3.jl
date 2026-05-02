@@ -375,7 +375,9 @@ function _save_cluster_csvs(dir::String, ch::ClusterHistogramSet)
     for (name, V) in (("cluster_Ec.csv",  ch.Ec_counts),
                        ("cluster_Emax.csv", ch.Emax_counts),
                        ("cluster_Emin.csv", ch.Emin_counts),
-                       ("cluster_Einc.csv", ch.Einc_counts))
+                       ("cluster_Einc.csv", ch.Einc_counts),
+                       ("cluster_ss_ec_pre_roi.csv", ch.ss_ec_pre_roi_counts),
+                       ("cluster_ss_es_pre_roi.csv", ch.ss_es_pre_roi_counts))
         _write_1d(joinpath(dir, name), V;
                   lo=0.0, hi=ch.E_max_MeV,
                   left_label="bin_left_MeV", right_label="bin_right_MeV")

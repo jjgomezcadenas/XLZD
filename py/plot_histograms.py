@@ -68,6 +68,14 @@ REJECTION_CSVS = (
     "rejected_fv_r2z.csv",
 )
 
+# SS pre-ROI spectrum: the cluster energy the ROI cut would act on, for
+# events that survived skin / FV / SC. Two CSVs (true ec, smeared es) →
+# two panels in SS_energy_precut.png with the ROI window overlaid.
+SS_PRECUT_CSVS = (
+    "cluster_ss_ec_pre_roi.csv",
+    "cluster_ss_es_pre_roi.csv",
+)
+
 
 # ---------------------------------------------------------------------------
 # Argument parsing
@@ -88,7 +96,7 @@ def parse_args() -> argparse.Namespace:
     )
     p.add_argument(
         "--family",
-        choices=("stack", "cluster", "rejection", "all"),
+        choices=("stack", "cluster", "rejection", "ss_precut", "all"),
         default="all",
         help="Which histogram family to plot (default: all detected).",
     )
@@ -416,6 +424,64 @@ def render_rejection_panel(input_dir: Path, title: str, log_y: bool) -> plt.Figu
 
 
 # ---------------------------------------------------------------------------
+# SS pre-ROI energy spectrum (true ec + smeared es) with ROI window overlay
+# ---------------------------------------------------------------------------
+def _read_cuts_from_summary(input_dir: Path) -> tuple[float, float]:
+    """Return (Q_ββ in MeV, ROI half-width in MeV) read from
+    `<parent>/summary.csv`. Falls back to MCParams defaults
+    (Q_ββ = 2.458 MeV, halfwidth = 0.0172 MeV) if the file is missing or
+    the columns aren't present (older runs)."""
+    Q_DEFAULT_MeV  = 2.458
+    HW_DEFAULT_MeV = 0.0172
+    summary_path = input_dir.parent / "summary.csv"
+    if not summary_path.is_file():
+        return Q_DEFAULT_MeV, HW_DEFAULT_MeV
+    try:
+        s = pd.read_csv(summary_path)
+        if "Q_betabeta_keV" in s.columns and "ROI_halfwidth_keV" in s.columns:
+            return float(s["Q_betabeta_keV"].iloc[0]) / 1000.0, \
+                   float(s["ROI_halfwidth_keV"].iloc[0]) / 1000.0
+    except Exception:
+        pass
+    return Q_DEFAULT_MeV, HW_DEFAULT_MeV
+
+
+def _plot_1d_with_roi(
+    ax: plt.Axes,
+    df: pd.DataFrame,
+    *,
+    title: str,
+    Q_MeV: float,
+    HW_MeV: float,
+    color: str,
+) -> None:
+    _plot_1d(ax, df, title=title, xlabel="E (MeV)", log_y=True, color=color)
+    # ROI window: shaded band + dashed line at Q_ββ.
+    ax.axvspan(Q_MeV - HW_MeV, Q_MeV + HW_MeV, color="#fc6", alpha=0.35,
+               label=f"ROI: Q_ββ ± {HW_MeV*1000:.1f} keV")
+    ax.axvline(Q_MeV, color="#a40", linestyle="--", linewidth=1.2,
+               label=f"Q_ββ = {Q_MeV*1000:.0f} keV")
+    ax.legend(loc="upper left", fontsize=8)
+
+
+def render_ss_precut_panel(input_dir: Path, title: str, log_y: bool) -> plt.Figure:
+    Q_MeV, HW_MeV = _read_cuts_from_summary(input_dir)
+    fig, axes = plt.subplots(1, 2, figsize=(14, 5.5), constrained_layout=True)
+    fig.suptitle(f"{title} — SS energy pre-ROI cut", fontsize=14)
+
+    df = _read(input_dir, "cluster_ss_ec_pre_roi.csv")
+    _plot_1d_with_roi(axes[0], df,
+                       title="SS true energy ec (no smearing)",
+                       Q_MeV=Q_MeV, HW_MeV=HW_MeV, color="#46a")
+
+    df = _read(input_dir, "cluster_ss_es_pre_roi.csv")
+    _plot_1d_with_roi(axes[1], df,
+                       title="SS smeared energy es (ROI cut acts on this)",
+                       Q_MeV=Q_MeV, HW_MeV=HW_MeV, color="#a64")
+    return fig
+
+
+# ---------------------------------------------------------------------------
 # Per-histogram (--separate) renderer
 # ---------------------------------------------------------------------------
 def _save_one(fig: plt.Figure, path: Path) -> None:
@@ -425,7 +491,7 @@ def _save_one(fig: plt.Figure, path: Path) -> None:
 
 def render_individual(input_dir: Path, out: Path, log_y: bool) -> None:
     """One PNG per CSV; auto-dispatch by filename suffix / column shape."""
-    for csv in (*STACK_CSVS, *CLUSTER_CSVS, *REJECTION_CSVS):
+    for csv in (*STACK_CSVS, *CLUSTER_CSVS, *REJECTION_CSVS, *SS_PRECUT_CSVS):
         df = _read(input_dir, csv)
         if df is None:
             continue
@@ -471,12 +537,14 @@ def main() -> None:
     title = args.title if args.title else args.input_dir.name
 
     families = {
-        "stack":     (STACK_CSVS,     "stack.png",     render_stack_panel),
-        "cluster":   (CLUSTER_CSVS,   "cluster.png",   render_cluster_panel),
-        "rejection": (REJECTION_CSVS, "rejection.png", render_rejection_panel),
+        "stack":     (STACK_CSVS,     "stack.png",             render_stack_panel),
+        "cluster":   (CLUSTER_CSVS,   "cluster.png",           render_cluster_panel),
+        "rejection": (REJECTION_CSVS, "rejection.png",         render_rejection_panel),
+        "ss_precut": (SS_PRECUT_CSVS, "SS_energy_precut.png",  render_ss_precut_panel),
     }
     todo = (
-        ["stack", "cluster", "rejection"] if args.family == "all" else [args.family]
+        ["stack", "cluster", "rejection", "ss_precut"]
+        if args.family == "all" else [args.family]
     )
 
     for fam in todo:
