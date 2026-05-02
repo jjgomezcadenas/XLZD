@@ -189,29 +189,39 @@ function main()
         println()
     end
 
-    # Per-outcome breakdown — one block per source, one outcome per line.
-    # Order follows the natural event flow:
-    #   Total → Escape → Skin veto → Outside-FV veto → MS → SS outside ROI
-    #         → SS in ROI → Companion vetoed.
-    # Counts and fractions both shown; fractions in scientific notation.
-    println("── Per-outcome breakdown ──")
-    breakdown_rows = (
-        ("Escape",           :escaped),
-        ("Skin veto",        :skin_vetoed),
-        ("Outside-FV veto",  :outside_FV),
-        ("MS rejected",      :MS_rejected),
-        ("SS outside ROI",   :SS_outside_ROI),
-        ("SS in ROI",        :SS_in_ROI),
-        ("Companion vetoed", :companion_vetoed),
-    )
+    # Per-source funnel — cumulative survivors at each selection stage,
+    # so the killer cut is visible at a glance. Each stage shows:
+    #   N_i        absolute count surviving up to this stage
+    #   cum=...    N_i / N_total            (cumulative survival)
+    #   acc=...    N_i / N_{i-1}            (per-stage acceptance)
+    println("── Per-source funnel ──")
     for r in results
-        n = r.n_total
+        n0 = r.n_total
+        n1 = n0 - r.counts[:escaped]                       # into detector
+        n2 = n1 - r.counts[:skin_vetoed]                   # pass skin veto
+        n3 = n2 - r.counts[:outside_FV]                    # inside FV
+        n4 = n3 - r.counts[:MS_rejected]                   # accepted as SS
+        n5 = n4 - r.counts[:SS_outside_ROI]                # in ROI (pre-companion)
+        n6 = n5 - r.counts[:companion_vetoed]              # after companion veto
+
         @printf("\n  ── %s ──\n", r.name)
-        @printf("    %-22s N  = %12d\n", "Total events run", n)
-        for (i, (label, key)) in enumerate(breakdown_rows)
-            ni = r.counts[key]
-            @printf("    %-22s N%-1d = %12d  (%.3e)\n",
-                    label, i, ni, ni / n)
+        @printf("    %-24s N  = %12d  cum=%.3e\n",
+                "Total events run", n0, 1.0)
+        rows = (
+            ("Into detector",         n1),
+            ("Pass skin veto",        n2),
+            ("Inside FV",             n3),
+            ("Accepted as SS",        n4),
+            ("In ROI (pre-companion)", n5),
+            ("After companion veto",  n6),
+        )
+        prev = n0
+        for (i, (label, ni)) in enumerate(rows)
+            cum = ni / n0
+            acc_str = prev == 0 ? "  ---  " : @sprintf("%.3e", ni / prev)
+            @printf("    %-24s N%-1d = %12d  cum=%.3e  acc=%s\n",
+                    label, i, ni, cum, acc_str)
+            prev = ni
         end
     end
     println()
