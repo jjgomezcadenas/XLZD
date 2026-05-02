@@ -93,6 +93,15 @@ function run_mc(det::LXeDetector, eff::EffectiveSource,
     apply_veto = comp_eff !== nothing && eff.isotope === :Tl208
     r_comp     = apply_veto ? companion_reach_prob(comp_eff) : 0.0
 
+    # Build the inverse-CDF for u once per source (and once for the
+    # companion, if any). The CDF is read-only after construction so
+    # all threads share the same vector. Without this caching,
+    # `sample_entry` allocates a fresh CDF on every call — at 10⁹
+    # events × 8 threads that's enough allocation pressure to crash GC.
+    eff_cdf  = build_cdf(eff.u_bins, eff.dNdu)
+    comp_cdf = comp_eff === nothing ? nothing :
+               build_cdf(comp_eff.u_bins, comp_eff.dNdu)
+
     thread_counts = [Dict{Symbol,Int}(o => 0 for o in _MC_OUTCOMES)
                      for _ in 1:n_threads]
     thread_rej_hist = with_rejection_histograms ?
@@ -154,12 +163,14 @@ function run_mc(det::LXeDetector, eff::EffectiveSource,
         end
         for i in 1:n_local
             copy!(local_snap, rng)
-            fv = fast_veto(rng, det, eff, xcom, params; rej_hist=local_rej)
+            fv = fast_veto(rng, det, eff, xcom, params;
+                            rej_hist=local_rej, cdf=eff_cdf)
             if fv === :pass
                 copy!(rng, local_snap)
                 empty!(local_stack)
                 status   = track_photon_stack(rng, det, eff, xcom,
-                                              params, local_stack)
+                                              params, local_stack;
+                                              cdf=eff_cdf)
                 clusters = build_clusters(rng, local_stack, params)
                 outcome  = classify_event(status, local_stack,
                                           clusters, params)
@@ -174,7 +185,8 @@ function run_mc(det::LXeDetector, eff::EffectiveSource,
             end
             if apply_veto && outcome === :SS_in_ROI
                 if rand(rng) < r_comp
-                    if companion_visible!(rng, det, comp_eff, xcom, params)
+                    if companion_visible!(rng, det, comp_eff, xcom, params;
+                                           cdf=comp_cdf)
                         outcome = :companion_vetoed
                     end
                 end

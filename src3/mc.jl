@@ -83,8 +83,11 @@ main γ has already been tagged `:SS_in_ROI`.
 function companion_visible!(rng::AbstractRNG, det::LXeDetector,
                              comp_eff::EffectiveSource,
                              xcom::XCOMTable,
-                             params::MCParams)::Bool
-    x, y, z, dx, dy, dz = sample_entry(rng, det, comp_eff)
+                             params::MCParams;
+                             cdf::Union{Vector{Float64}, Nothing}=nothing)::Bool
+    x, y, z, dx, dy, dz = cdf === nothing ?
+                          sample_entry(rng, det, comp_eff) :
+                          sample_entry(rng, det, comp_eff, cdf)
     E = comp_eff.E_MeV
     E_visible_MeV   = params.E_visible_keV   * 1.0e-3
     E_skin_veto_MeV = params.E_skin_veto_keV * 1.0e-3

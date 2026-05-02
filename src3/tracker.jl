@@ -64,9 +64,12 @@ The status return is derived from whether any row was pushed:
 function track_photon_stack(rng::AbstractRNG, det::LXeDetector,
                              eff::EffectiveSource, xcom::XCOMTable,
                              params::MCParams, stack::PhotonStack;
-                             rej_hist::Union{RejectionHistograms, Nothing}=nothing
+                             rej_hist::Union{RejectionHistograms, Nothing}=nothing,
+                             cdf::Union{Vector{Float64}, Nothing}=nothing
                              )::Symbol
-    x, y, z, dx, dy, dz = sample_entry(rng, det, eff)
+    x, y, z, dx, dy, dz = cdf === nothing ?
+                          sample_entry(rng, det, eff) :
+                          sample_entry(rng, det, eff, cdf)
     _track_child_photon!(stack, rng, det, xcom, params,
                           x, y, z, dx, dy, dz, eff.E_MeV,
                           eff.region, 0)
@@ -246,9 +249,12 @@ Threshold sources: `params.E_visible_keV`, `params.E_skin_veto_keV`.
 function fast_veto(rng::AbstractRNG, det::LXeDetector,
                     eff::EffectiveSource, xcom::XCOMTable,
                     params::MCParams;
-                    rej_hist::Union{RejectionHistograms, Nothing}=nothing
+                    rej_hist::Union{RejectionHistograms, Nothing}=nothing,
+                    cdf::Union{Vector{Float64}, Nothing}=nothing
                     )::Symbol
-    x, y, z, dx, dy, dz = sample_entry(rng, det, eff)
+    x, y, z, dx, dy, dz = cdf === nothing ?
+                          sample_entry(rng, det, eff) :
+                          sample_entry(rng, det, eff, cdf)
     e   = eff.E_MeV
     ε   = _TRACKER_BOUNDARY_NUDGE
     E_visible_MeV   = params.E_visible_keV   / 1000.0

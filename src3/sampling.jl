@@ -148,14 +148,27 @@ end
 
 """
     sample_entry(rng, det, eff::EffectiveSource) -> (x, y, z, dx, dy, dz)
+    sample_entry(rng, det, eff::EffectiveSource, cdf::Vector{Float64})
+        -> (x, y, z, dx, dy, dz)
 
 Sample one (entry point, direction) for the given EffectiveSource by
-dispatching on its region. Builds the CDF on every call — for
-production MC throughput, callers should cache the CDF themselves and
-use `sample_barrel_entry` / `sample_endcap_entry` directly.
+dispatching on its region.
+
+The 3-arg form rebuilds the CDF on every call — convenient for tests
+and one-off scripts but **not** for production MC (allocates ~2N times
+per thread, which crashes the GC at high N).
+
+The 4-arg form takes a precomputed CDF (from `build_cdf(eff.u_bins,
+eff.dNdu)`); production callers should build the CDF once per source
+outside the event loop and pass it in.
 """
 function sample_entry(rng::AbstractRNG, det::LXeDetector, eff::EffectiveSource)
     cdf = build_cdf(eff.u_bins, eff.dNdu)
+    sample_entry(rng, det, eff, cdf)
+end
+
+function sample_entry(rng::AbstractRNG, det::LXeDetector,
+                       eff::EffectiveSource, cdf::Vector{Float64})
     if eff.region === :barrel
         return sample_barrel_entry(rng, det, cdf, eff.u_bins)
     else
