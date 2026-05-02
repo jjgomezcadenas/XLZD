@@ -170,6 +170,25 @@ function main()
     @printf("  TOTAL background (cryostat sources) : %.4e events/yr\n", total_bg)
     println()
 
+    # Run-wide analysis cuts (same for all sources). Printed together so the
+    # numbers above can be read against the configuration that produced them.
+    let
+        roi_lo_keV = params.Q_betabeta_keV - params.ROI_halfwidth_keV
+        roi_hi_keV = params.Q_betabeta_keV + params.ROI_halfwidth_keV
+        println("── Analysis cuts ──")
+        @printf("  Q_ββ                : %.1f keV\n", params.Q_betabeta_keV)
+        @printf("  σ_E / E             : %.4f\n",     params.σ_E_over_E)
+        @printf("  ROI window          : Q_ββ ± %.2f keV  →  [%.2f, %.2f] keV\n",
+                params.ROI_halfwidth_keV, roi_lo_keV, roi_hi_keV)
+        @printf("  FV box              : z ∈ [%.1f, %.1f] cm,  r ≤ %.1f cm\n",
+                params.fv_z_min_cm, params.fv_z_max_cm,
+                sqrt(params.fv_r2_max_cm2))
+        @printf("  Visible threshold   : %.1f keV  (per-cluster)\n", params.E_visible_keV)
+        @printf("  Skin-veto threshold : %.1f keV  (cumulative on :Skin)\n", params.E_skin_veto_keV)
+        @printf("  Tracking cutoff     : %.1f keV  (residual γ energy)\n", params.E_tracking_cutoff_keV)
+        println()
+    end
+
     # Per-outcome breakdown — one block per source, one outcome per line.
     # Order follows the natural event flow:
     #   Total → Escape → Skin veto → Outside-FV veto → MS → SS outside ROI
@@ -197,13 +216,18 @@ function main()
     end
     println()
 
-    # Save CSV
+    # Save CSV. Run-wide cut columns are repeated on every row so each line
+    # carries the analysis configuration that produced it.
     csv_path = joinpath(out_dir, "summary.csv")
+    fv_r_max_cm = sqrt(params.fv_r2_max_cm2)
     open(csv_path, "w") do f
         println(f, "source,isotope,n_total,gamma_per_yr_total,f_SS_in_ROI,",
                    "bg_per_yr,r_comp,runtime_s,",
                    "n_escaped,n_MS,n_skin_vetoed,n_SS_outside_FV,",
-                   "n_SS_outside_ROI,n_SS_in_ROI,n_companion_vetoed")
+                   "n_SS_outside_ROI,n_SS_in_ROI,n_companion_vetoed,",
+                   "Q_betabeta_keV,sigma_E_over_E,ROI_halfwidth_keV,",
+                   "fv_z_min_cm,fv_z_max_cm,fv_r_max_cm,",
+                   "E_visible_keV,E_skin_veto_keV")
         for r in results
             println(f, join([
                 r.name, r.isotope, r.n_total,
@@ -216,6 +240,14 @@ function main()
                 r.counts[:skin_vetoed], r.counts[:outside_FV],
                 r.counts[:SS_outside_ROI], r.counts[:SS_in_ROI],
                 r.counts[:companion_vetoed],
+                @sprintf("%.3f", params.Q_betabeta_keV),
+                @sprintf("%.6f", params.σ_E_over_E),
+                @sprintf("%.3f", params.ROI_halfwidth_keV),
+                @sprintf("%.3f", params.fv_z_min_cm),
+                @sprintf("%.3f", params.fv_z_max_cm),
+                @sprintf("%.3f", fv_r_max_cm),
+                @sprintf("%.3f", params.E_visible_keV),
+                @sprintf("%.3f", params.E_skin_veto_keV),
             ], ","))
         end
     end
