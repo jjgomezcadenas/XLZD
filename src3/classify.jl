@@ -53,15 +53,19 @@ Assign one of the symbols in `CLASSIFY_EVENT_OUTCOMES` (excluding
 
 Decision chain (first match wins):
 
-    vetoed_skin              → :skin_vetoed       (fast tracker veto)
-    rejected_fv              → :outside_FV         (fast tracker reject)
-    escaped                  → :escaped
-    empty clusters           → :escaped
-    !select_skin(stack,p)    → :skin_vetoed       (slow cumulative check)
-    !select_FV(clusters,p)   → :outside_FV         (slow per-cluster check)
-    >1 cluster               → :MS_rejected
-    1 cluster:
+    vetoed_skin                     → :skin_vetoed       (fast tracker veto)
+    rejected_fv                     → :outside_FV         (fast tracker reject)
+    escaped                         → :escaped
+    empty clusters                  → :escaped
+    !select_skin(stack,p)           → :skin_vetoed       (slow cumulative check)
+    !select_FV(clusters,p)          → :outside_FV         (slow per-cluster check)
+    0 visible clusters              → :escaped
+    >1 visible cluster              → :MS_rejected
+    1 visible cluster:
         select_ROI(c,p) ? :SS_in_ROI : :SS_outside_ROI
+
+"Visible" means `c.ec * 1000 > params.E_visible_keV`. Sub-visible
+clusters are ignored throughout (consistent with `select_FV`).
 
 Pure: no RNG (smearing already happened in `build_clusters`).
 """
@@ -75,6 +79,19 @@ function classify_event(status::Symbol,
     isempty(clusters)         && return :escaped
     select_skin(stack, params) || return :skin_vetoed
     select_FV(clusters, params) || return :outside_FV
-    select_SC(clusters)        || return :MS_rejected
-    return select_ROI(clusters[1], params) ? :SS_in_ROI : :SS_outside_ROI
+
+    # Find the visible cluster(s). 0 → no detectable signal; ≥2 → MS;
+    # 1 → SS, classified by ROI on the visible cluster.
+    thr_MeV = params.E_visible_keV / 1000.0
+    n_vis = 0
+    vis_idx = 0
+    @inbounds for (i, c) in enumerate(clusters)
+        if c.ec > thr_MeV
+            n_vis += 1
+            n_vis > 1 && return :MS_rejected
+            vis_idx = i
+        end
+    end
+    n_vis == 0 && return :escaped
+    return select_ROI(clusters[vis_idx], params) ? :SS_in_ROI : :SS_outside_ROI
 end

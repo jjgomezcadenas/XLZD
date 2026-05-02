@@ -19,23 +19,60 @@ const HW_MeV = HW_keV / 1000.0
 mk(ec, es; x=0.0, y=0.0, z=50.0) = Cluster(x, y, z, ec, es)
 
 # ---------------------------------------------------------------------------
-# select_SC — pure cluster-count predicate
+# select_SC — visible-cluster-count predicate
+# (sub-visible clusters with ec ≤ E_visible_keV/1000 are ignored — this is
+#  what makes the SS/MS check geometry-invariant. See test_select3 cases
+#  23-27 below for the visibility-filter behaviour.)
 # ---------------------------------------------------------------------------
 
+const E_VIS_MEV_SC = params.E_visible_keV / 1000.0
+
 @testset "1. select_SC: empty list → false" begin
-    @test select_SC(Cluster[]) === false
+    @test select_SC(Cluster[], params) === false
 end
 
-@testset "2. select_SC: one cluster → true" begin
-    @test select_SC([mk(Q_MeV, Q_MeV)]) === true
+@testset "2. select_SC: one visible cluster → true" begin
+    @test select_SC([mk(Q_MeV, Q_MeV)], params) === true
 end
 
-@testset "3. select_SC: two clusters → false" begin
-    @test select_SC([mk(1.0, 1.0), mk(0.5, 0.5)]) === false
+@testset "3. select_SC: two visible clusters → false" begin
+    @test select_SC([mk(1.0, 1.0), mk(0.5, 0.5)], params) === false
 end
 
-@testset "4. select_SC: three clusters → false" begin
-    @test select_SC([mk(0.3, 0.3), mk(0.7, 0.7), mk(1.2, 1.2)]) === false
+@testset "4. select_SC: three visible clusters → false" begin
+    @test select_SC([mk(0.3, 0.3), mk(0.7, 0.7), mk(1.2, 1.2)], params) === false
+end
+
+@testset "4a. select_SC: 1 visible + N sub-visible → true (regression for the SS/MS bug)" begin
+    # The bug we're guarding against: build_clusters keeps every :TPC row
+    # with edep > 0, so a vertical photon descending through LXe creates
+    # extra sub-visible clusters at z-spaced positions. Counting those in
+    # select_SC penalised vertical trajectories (e.g. CTH) far more than
+    # horizontal ones (CB), producing a spurious SS_in_ROI suppression.
+    sub = E_VIS_MEV_SC * 0.5         # well below visible threshold
+    cs = [mk(Q_MeV, Q_MeV; z=50.0),
+          mk(sub,    sub;    z=20.0),
+          mk(sub,    sub;    z=80.0)]
+    @test select_SC(cs, params) === true
+end
+
+@testset "4b. select_SC: 0 visible + many sub-visible → false" begin
+    sub = E_VIS_MEV_SC * 0.3
+    cs = [mk(sub, sub; z=20.0), mk(sub, sub; z=50.0), mk(sub, sub; z=80.0)]
+    @test select_SC(cs, params) === false
+end
+
+@testset "4c. select_SC: 2 visible + N sub-visible → false" begin
+    sub = E_VIS_MEV_SC * 0.5
+    cs = [mk(1.0, 1.0; z=30.0),
+          mk(sub, sub; z=50.0),
+          mk(0.7, 0.7; z=70.0)]
+    @test select_SC(cs, params) === false
+end
+
+@testset "4d. select_SC: visibility threshold is strict (ec == thr → not visible)" begin
+    cs = [mk(E_VIS_MEV_SC, E_VIS_MEV_SC; z=50.0)]    # ec exactly at threshold
+    @test select_SC(cs, params) === false
 end
 
 # ---------------------------------------------------------------------------

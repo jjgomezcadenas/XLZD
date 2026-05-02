@@ -191,12 +191,69 @@ end
 #     (documents the new spec: only ec > E_visible_keV triggers FV reject)
 # ---------------------------------------------------------------------------
 
-@testset "16. SS cluster outside FV but ec < visible → :SS_outside_ROI" begin
+@testset "16. lone sub-visible cluster anywhere → :escaped" begin
     sub_visible = params.E_visible_keV / 1000.0 * 0.5
     cs = [mk(z=Z_HIGH, ec=sub_visible, es=sub_visible)]
-    # Cluster is sub-visible-threshold → select_FV ignores it.
-    # Energy too low to be in ROI → :SS_outside_ROI.
+    # Cluster is sub-visible-threshold → select_FV ignores it AND it doesn't
+    # count towards select_SC. With 0 visible clusters there is no signal
+    # to classify → :escaped.
+    @test classify_event(:completed, empty_stack(), cs, params) === :escaped
+    # Same outcome regardless of position (sub-visible everywhere is invisible).
+    cs_in = [mk(z=Z_MID, ec=sub_visible, es=sub_visible)]
+    @test classify_event(:completed, empty_stack(), cs_in, params) === :escaped
+end
+
+# ---------------------------------------------------------------------------
+# 17. SS bug regression: 1 visible cluster in FV/ROI + N sub-visible
+#     z-spread clusters → must be classified :SS_in_ROI, NOT :MS_rejected.
+#
+#     This is the bug that produced 0 SS_in_ROI events from CTH_Tl208 at
+#     1e9 samples while CB_Tl208 produced ~92. Vertical CTH trajectories
+#     create sub-visible clusters at z-spaced positions; the old
+#     length-based select_SC counted them and rejected the event as MS.
+# ---------------------------------------------------------------------------
+
+@testset "17. SS in FV/ROI + N sub-visible z-spread → :SS_in_ROI (bug regression)" begin
+    sub = params.E_visible_keV / 1000.0 * 0.5     # sub-visible
+    cs = [mk(z=Z_MID, ec=Q_MeV, es=Q_MeV),         # visible, in FV, in ROI
+          mk(z=Z_LOW,  ec=sub,    es=sub),          # sub-vis, outside FV
+          mk(z=Z_HIGH, ec=sub,    es=sub)]          # sub-vis, outside FV
+    @test classify_event(:completed, empty_stack(), cs, params) === :SS_in_ROI
+end
+
+@testset "18. SS in FV but es outside ROI + sub-vis clusters → :SS_outside_ROI" begin
+    sub = params.E_visible_keV / 1000.0 * 0.5
+    cs = [mk(z=Z_MID, ec=Q_MeV, es=Q_MeV + 5*HW_MeV),
+          mk(z=Z_HIGH, ec=sub,   es=sub)]
     @test classify_event(:completed, empty_stack(), cs, params) === :SS_outside_ROI
+end
+
+@testset "19. 0 visible clusters (all sub-vis) → :escaped" begin
+    sub = params.E_visible_keV / 1000.0 * 0.5
+    cs = [mk(z=Z_MID, ec=sub, es=sub),
+          mk(z=Z_LOW, ec=sub, es=sub)]
+    # No visible signal at all — treat as escaped (no detectable activity).
+    @test classify_event(:completed, empty_stack(), cs, params) === :escaped
+end
+
+@testset "20. 2 visible clusters + many sub-vis → :MS_rejected" begin
+    sub = params.E_visible_keV / 1000.0 * 0.5
+    cs = [mk(z=30.0, ec=Q_MeV, es=Q_MeV),
+          mk(z=40.0, ec=sub,    es=sub),
+          mk(z=60.0, ec=0.5,    es=0.5),             # second visible
+          mk(z=80.0, ec=sub,    es=sub)]
+    @test classify_event(:completed, empty_stack(), cs, params) === :MS_rejected
+end
+
+@testset "21. visible cluster picked for ROI is the visible one, not clusters[1]" begin
+    # Sub-visible cluster sorted first; visible cluster is later in the list.
+    # Must use the VISIBLE cluster's es for the ROI decision.
+    sub  = params.E_visible_keV / 1000.0 * 0.5
+    # Sub-visible has es == sub (~5 keV), nowhere near ROI.
+    # Visible has es == Q_MeV (in ROI).
+    cs = [mk(z=Z_LOW,  ec=sub,    es=sub),       # NOT visible — would give :SS_outside_ROI if used
+          mk(z=Z_MID,  ec=Q_MeV, es=Q_MeV)]      # visible + in ROI
+    @test classify_event(:completed, empty_stack(), cs, params) === :SS_in_ROI
 end
 
 println("\n  ── test_classify_event3.jl: classify_event (with slow checks) OK ──\n")

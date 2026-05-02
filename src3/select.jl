@@ -2,7 +2,9 @@
 #
 # Atomic decisions used by the event-outcome classifier:
 #
-#   * `select_SC(clusters)`         — "is this a single-cluster event?"
+#   * `select_SC(clusters, params)` — "is this a single-VISIBLE-cluster
+#                                       event?" (sub-visible clusters
+#                                       ignored, like in `select_FV`)
 #   * `select_ROI(cluster, params)` — "does the SMEARED cluster energy
 #                                      fall inside the ROI window?"
 #   * `select_FV(clusters, params)` — "do all clusters above the visible
@@ -25,12 +27,31 @@
 # Symbols and resamples internally; it dies at cutover.
 
 """
-    select_SC(clusters::Vector{Cluster}) -> Bool
+    select_SC(clusters::Vector{Cluster}, params::MCParams) -> Bool
 
-True iff the event has exactly one cluster. Pure cluster-count predicate.
-Does not consider FV, skin overflow, or energy. Stateless.
+True iff the event has exactly one **visible** cluster, where "visible"
+means `c.ec * 1000 > params.E_visible_keV`. Sub-visible clusters are
+ignored (consistent with `select_FV`, which also ignores them).
+
+Why visibility matters: `build_clusters` includes every `:TPC` row with
+`edep > 0`, so a sub-visible Compton kick or below-threshold residual
+deposit creates its own cluster if it is z-separated from the main
+deposit. Counting those would penalize vertical photon trajectories
+(where sub-visible deposits z-spread by ~mfp) far more than horizontal
+ones — even though the sub-visible deposits would never be seen by the
+detector. Counting only visible clusters removes that bias.
 """
-@inline select_SC(clusters::Vector{Cluster})::Bool = length(clusters) == 1
+@inline function select_SC(clusters::Vector{Cluster}, params::MCParams)::Bool
+    thr_MeV = params.E_visible_keV / 1000.0
+    n = 0
+    @inbounds for c in clusters
+        if c.ec > thr_MeV
+            n += 1
+            n > 1 && return false
+        end
+    end
+    return n == 1
+end
 
 """
     select_ROI(cluster::Cluster, params::MCParams) -> Bool
