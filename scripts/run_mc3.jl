@@ -170,21 +170,30 @@ function main()
     @printf("  TOTAL background (cryostat sources) : %.4e events/yr\n", total_bg)
     println()
 
-    # Per-outcome breakdown — fraction of n_total (scientific notation)
-    println("── Per-outcome breakdown (fraction of n_total) ──")
-    @printf("  %-12s %12s %12s %12s %12s %12s %12s %12s\n",
-            "source", "esc", "MS", "skin", "outFV",
-            "outROI", "in_ROI", "comp_veto")
-    println("  ", "─"^114)
+    # Per-outcome breakdown — one block per source, one outcome per line.
+    # Order follows the natural event flow:
+    #   Total → Escape → Skin veto → Outside-FV veto → MS → SS outside ROI
+    #         → SS in ROI → Companion vetoed.
+    # Counts and fractions both shown; fractions in scientific notation.
+    println("── Per-outcome breakdown ──")
+    breakdown_rows = (
+        ("Escape",           :escaped),
+        ("Skin veto",        :skin_vetoed),
+        ("Outside-FV veto",  :outside_FV),
+        ("MS rejected",      :MS_rejected),
+        ("SS outside ROI",   :SS_outside_ROI),
+        ("SS in ROI",        :SS_in_ROI),
+        ("Companion vetoed", :companion_vetoed),
+    )
     for r in results
-        n    = r.n_total
-        frac = (k::Symbol) -> @sprintf("%.3e", r.counts[k] / n)
-        @printf("  %-12s %12s %12s %12s %12s %12s %12s %12s\n",
-                r.name,
-                frac(:escaped),    frac(:MS_rejected),
-                frac(:skin_vetoed), frac(:outside_FV),
-                frac(:SS_outside_ROI), frac(:SS_in_ROI),
-                frac(:companion_vetoed))
+        n = r.n_total
+        @printf("\n  ── %s ──\n", r.name)
+        @printf("    %-22s N  = %12d\n", "Total events run", n)
+        for (i, (label, key)) in enumerate(breakdown_rows)
+            ni = r.counts[key]
+            @printf("    %-22s N%-1d = %12d  (%.3e)\n",
+                    label, i, ni, ni / n)
+        end
     end
     println()
 
