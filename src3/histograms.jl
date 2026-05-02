@@ -275,6 +275,12 @@ struct ClusterHistogramSet
     D_n_bins::Int
     D_max_cm::Float64
     D_vs_z_2d_counts::Matrix{Int}
+
+    # Per-cluster (ec, Δz_to_nearest_other_cluster) — 2D scatter
+    # for diagnosing MS-rejection regime.
+    ec2d_n_bins::Int
+    ec2d_max_MeV::Float64
+    Ec_vs_dz_2d_counts::Matrix{Int}    # shape: (dz_n_bins, ec2d_n_bins)
 end
 
 function ClusterHistogramSet(;
@@ -284,7 +290,8 @@ function ClusterHistogramSet(;
         dz_n_bins::Int=100, dz_max_cm::Real=50.0,
         r2_n_bins::Int=100, r2_max_cm2::Real=82.1^2,
         z_n_bins::Int=100,  z_min_cm::Real=-69.0, z_max_cm::Real=145.6,
-        D_n_bins::Int=100,  D_max_cm::Real=100.0)
+        D_n_bins::Int=100,  D_max_cm::Real=100.0,
+        ec2d_n_bins::Int=100, ec2d_max_MeV::Real=2.7)
     ClusterHistogramSet(
         E_n_bins, Float64(E_max_MeV),
         zeros(Int, E_n_bins),
@@ -303,6 +310,8 @@ function ClusterHistogramSet(;
         zeros(Int, r2_n_bins, z_n_bins),
         D_n_bins,  Float64(D_max_cm),
         zeros(Int, D_n_bins, z_n_bins),
+        ec2d_n_bins, Float64(ec2d_max_MeV),
+        zeros(Int, dz_n_bins, ec2d_n_bins),
     )
 end
 
@@ -373,6 +382,22 @@ function update_cluster_histograms!(ch::ClusterHistogramSet,
         i = _bin_idx(d3_max, 0.0, ch.D3_max_cm, ch.D3_n_bins); i > 0 && (ch.furthest_D3_counts[i] += 1)
         i = _bin_idx(dz_min, 0.0, ch.dz_max_cm, ch.dz_n_bins); i > 0 && (ch.closest_dz_counts[i]  += 1)
         i = _bin_idx(dz_max, 0.0, ch.dz_max_cm, ch.dz_n_bins); i > 0 && (ch.furthest_dz_counts[i] += 1)
+
+        # Per-cluster (ec, dz_to_nearest_other) — diagnostic for MS regime.
+        @inbounds for i in 1:nc
+            ci = clusters[i]
+            dz_near = Inf
+            for j in 1:nc
+                j == i && continue
+                adz = abs(ci.zc - clusters[j].zc)
+                adz < dz_near && (dz_near = adz)
+            end
+            idx_dz = _bin_idx(dz_near, 0.0, ch.dz_max_cm,  ch.dz_n_bins)
+            idx_ec = _bin_idx(ci.ec,  0.0, ch.ec2d_max_MeV, ch.ec2d_n_bins)
+            if idx_dz > 0 && idx_ec > 0
+                ch.Ec_vs_dz_2d_counts[idx_dz, idx_ec] += 1
+            end
+        end
     end
     nothing
 end
@@ -396,6 +421,7 @@ function merge_cluster_histograms!(into::ClusterHistogramSet,
     @. into.furthest_dz_counts    += src.furthest_dz_counts
     @. into.r2_vs_z_2d_counts     += src.r2_vs_z_2d_counts
     @. into.D_vs_z_2d_counts      += src.D_vs_z_2d_counts
+    @. into.Ec_vs_dz_2d_counts    += src.Ec_vs_dz_2d_counts
     into
 end
 

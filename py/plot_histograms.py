@@ -47,18 +47,18 @@ STACK_CSVS = (
     "stack_region_interaction.csv",
 )
 
+# Detection list for the cluster.png panel. Some CSVs (Emax, Emin, Einc,
+# D_vs_z) are still produced by the MC but intentionally NOT plotted in
+# the combined panel — they are kept on disk for ad-hoc analysis.
 CLUSTER_CSVS = (
     "cluster_Ec.csv",
-    "cluster_Emax.csv",
-    "cluster_Emin.csv",
-    "cluster_Einc.csv",
     "cluster_closest_D3.csv",
     "cluster_furthest_D3.csv",
     "cluster_closest_dz.csv",
     "cluster_furthest_dz.csv",
     "cluster_N_clusters.csv",
     "cluster_r2_vs_z.csv",
-    "cluster_D_vs_z.csv",
+    "cluster_Ec_vs_dz.csv",
 )
 
 REJECTION_CSVS = (
@@ -179,13 +179,14 @@ def _plot_categorical_bar(
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
     ax.set_title(title)
-    # Place text in the MIDDLE of each bar (vertical centre), in
-    # scientific notation, larger font.
+    # Place text JUST INSIDE the top of each bar so the value sits
+    # at the same visual height regardless of bar magnitude (important
+    # on log scale where centre-of-bar lands far below short bars).
     for i, y in enumerate(values):
         if y > 0:
-            ax.text(i, y / 2.0,
+            ax.text(i, y,
                     f"{y:.2e}" if normalize else f"{int(y):,}",
-                    ha="center", va="center", fontsize=11, color="white",
+                    ha="center", va="top", fontsize=11, color="white",
                     weight="bold")
     plt.setp(ax.get_xticklabels(), rotation=30, ha="right", fontsize=8)
     if log_y and values.max() > 0:
@@ -348,7 +349,9 @@ def render_stack_panel(input_dir: Path, title: str, log_y: bool) -> plt.Figure:
 
 def render_cluster_panel(input_dir: Path, title: str, log_y: bool) -> plt.Figure:
     # 11 plots in a 3×4 grid (1 cell unused).
-    fig, axes = plt.subplots(3, 4, figsize=(22, 13), constrained_layout=True)
+    # 8 plots in a 2×4 grid (Emax / Emin / Einc / D_vs_z dropped per
+    # user preference; CSVs are still on disk for ad-hoc analysis).
+    fig, axes = plt.subplots(2, 4, figsize=(22, 11), constrained_layout=True)
     fig.suptitle(f"{title} — cluster histograms", fontsize=14)
     flat = axes.flatten()
 
@@ -356,48 +359,35 @@ def render_cluster_panel(input_dir: Path, title: str, log_y: bool) -> plt.Figure
     _plot_1d(flat[0], df, title="cluster energy Ec",
              xlabel="E (MeV)", log_y=True, color="#a64")
 
-    df = _read(input_dir, "cluster_Emax.csv")
-    _plot_1d(flat[1], df, title="per-event Emax",
-             xlabel="E (MeV)", log_y=True, color="#a64")
-
-    df = _read(input_dir, "cluster_Emin.csv")
-    _plot_1d(flat[2], df, title="per-event Emin",
-             xlabel="E (MeV)", log_y=True, color="#a64")
-
-    df = _read(input_dir, "cluster_Einc.csv")
-    _plot_1d(flat[3], df, title="per-event Σ Ec",
-             xlabel="E (MeV)", log_y=True, color="#a64")
+    df = _read(input_dir, "cluster_N_clusters.csv")
+    _plot_int_bar(flat[1], df, title="N clusters per photon", xlabel="n",
+                  log_y=True)
 
     df = _read(input_dir, "cluster_closest_D3.csv")
-    _plot_1d(flat[4], df, title="closest pair distance (3D)",
+    _plot_1d(flat[2], df, title="closest pair distance (3D)",
              xlabel="D (cm)", log_y=True, color="#46a")
 
     df = _read(input_dir, "cluster_furthest_D3.csv")
-    _plot_1d(flat[5], df, title="furthest pair distance (3D)",
+    _plot_1d(flat[3], df, title="furthest pair distance (3D)",
              xlabel="D (cm)", log_y=True, color="#46a")
 
     df = _read(input_dir, "cluster_closest_dz.csv")
-    _plot_1d(flat[6], df, title="closest pair |Δz|",
+    _plot_1d(flat[4], df, title="closest pair |Δz|",
              xlabel="|Δz| (cm)", log_y=True, color="#46a")
 
     df = _read(input_dir, "cluster_furthest_dz.csv")
-    _plot_1d(flat[7], df, title="furthest pair |Δz|",
+    _plot_1d(flat[5], df, title="furthest pair |Δz|",
              xlabel="|Δz| (cm)", log_y=True, color="#46a")
 
-    df = _read(input_dir, "cluster_N_clusters.csv")
-    _plot_int_bar(flat[8], df, title="N clusters per photon", xlabel="n", log_y=True)
-
     df = _read(input_dir, "cluster_r2_vs_z.csv")
-    _plot_2d_heatmap(flat[9], _r2_to_r(df),
+    _plot_2d_heatmap(flat[6], _r2_to_r(df),
                      title="r vs z (cluster centroid)",
                      rlabel="r (cm)", zlabel="z (cm)")
 
-    df = _read(input_dir, "cluster_D_vs_z.csv")
-    _plot_2d_heatmap(flat[10], df,
-                     title="D vs z (cluster centroid)",
-                     rlabel="D (cm)",  zlabel="z (cm)")
-
-    flat[11].axis("off")
+    df = _read(input_dir, "cluster_Ec_vs_dz.csv")
+    _plot_2d_heatmap(flat[7], df,
+                     title="Ec vs |Δz to nearest cluster| (per cluster)",
+                     rlabel="Ec (MeV)", zlabel="|Δz| (cm)")
     return fig
 
 

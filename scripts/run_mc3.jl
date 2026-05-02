@@ -369,6 +369,15 @@ function _save_cluster_csvs(dir::String, ch::ClusterHistogramSet)
               x_left="bin_D_left_cm",    x_right="bin_D_right_cm",
               y_lo=ch.z_min_cm,   y_hi=ch.z_max_cm,   y_n=ch.z_n_bins,
               y_left="bin_z_left_cm",    y_right="bin_z_right_cm")
+    # New: per-cluster (Δz_to_nearest, ec) — diagnostic for MS regime.
+    # Note: matrix is stored (dz, ec) but written transposed so the first
+    # two CSV columns are ec (which the plotter routes to the Y axis).
+    _write_2d(joinpath(dir, "cluster_Ec_vs_dz.csv"),
+              permutedims(ch.Ec_vs_dz_2d_counts);
+              x_lo=0.0,           x_hi=ch.ec2d_max_MeV, x_n=ch.ec2d_n_bins,
+              x_left="bin_ec_left_MeV",  x_right="bin_ec_right_MeV",
+              y_lo=0.0,           y_hi=ch.dz_max_cm,    y_n=ch.dz_n_bins,
+              y_left="bin_dz_left_cm",   y_right="bin_dz_right_cm")
 end
 
 function _save_rejection_csvs(dir::String, rh::RejectionHistograms)
