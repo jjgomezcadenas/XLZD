@@ -3,7 +3,7 @@
 Reads the per-source `hist_<source>/` directory written by run_mc3 and
 renders three combined PNG panels:
 
-    stack.png      — StackHistogramSet (10 plots: ng_max, first_interaction,
+    stack.png      — StackHistogramSet (9 plots: first_interaction,
                      n_photo / n_compton / n_pair / n_below_thresh,
                      inclusive_edep, E_first, delta_z, region_interaction)
     cluster.png    — ClusterHistogramSet (11 plots: Ec / Emax / Emin / Einc,
@@ -159,7 +159,7 @@ def _plot_categorical_bar(
     ax.set_title(title)
     for i, y in enumerate(df["count"]):
         ax.text(i, y, f"{y:,}", ha="center", va="bottom", fontsize=7)
-    plt.setp(ax.get_xticklabels(), rotation=20, ha="right")
+    plt.setp(ax.get_xticklabels(), rotation=30, ha="right", fontsize=8)
     if log_y and df["count"].max() > 0:
         ax.set_yscale("log")
         ax.set_ylim(bottom=0.5)
@@ -194,33 +194,33 @@ def _plot_2d_heatmap(
     df: pd.DataFrame,
     *,
     title: str,
-    xlabel: str,
-    ylabel: str,
+    rlabel: str,   # axis label for the r²/D dimension (CSV columns 0,1)
+    zlabel: str,   # axis label for the z dimension     (CSV columns 2,3)
 ) -> None:
     """Render a 2D histogram from a CSV with columns:
-        x_left, x_right, y_left, y_right, count.
+        rL, rR, zL, zR, count.
+
+    Rendered with z on X axis and r² (or D) on Y axis (physics convention).
     """
-    x_lefts = df.iloc[:, 0]
-    y_lefts = df.iloc[:, 2]
-    x_edges = np.unique(
+    r_edges = np.unique(
         np.concatenate([df.iloc[:, 0].values, df.iloc[:, 1].values])
     )
-    y_edges = np.unique(
+    z_edges = np.unique(
         np.concatenate([df.iloc[:, 2].values, df.iloc[:, 3].values])
     )
-    nx = len(x_edges) - 1
-    ny = len(y_edges) - 1
-    M = np.zeros((nx, ny), dtype=float)
-    # Map (x_left, y_left) → bin indices via searchsorted.
-    xi = np.searchsorted(x_edges[:-1], x_lefts.values, side="right") - 1
-    yi = np.searchsorted(y_edges[:-1], y_lefts.values, side="right") - 1
-    for i, j, c in zip(xi, yi, df["count"].values):
-        if 0 <= i < nx and 0 <= j < ny:
+    nr = len(r_edges) - 1
+    nz = len(z_edges) - 1
+    M = np.zeros((nr, nz), dtype=float)
+    ri = np.searchsorted(r_edges[:-1], df.iloc[:, 0].values, side="right") - 1
+    zi = np.searchsorted(z_edges[:-1], df.iloc[:, 2].values, side="right") - 1
+    for i, j, c in zip(ri, zi, df["count"].values):
+        if 0 <= i < nr and 0 <= j < nz:
             M[i, j] = c
-    im = ax.pcolormesh(x_edges, y_edges, M.T, cmap="viridis", shading="flat")
+    # Place z on X axis, r²/D on Y axis: pcolormesh(x_edges, y_edges, C[ny,nx]).
+    im = ax.pcolormesh(z_edges, r_edges, M, cmap="viridis", shading="flat")
     plt.colorbar(im, ax=ax, label="count")
-    ax.set_xlabel(xlabel)
-    ax.set_ylabel(ylabel)
+    ax.set_xlabel(zlabel)
+    ax.set_ylabel(rlabel)
     ax.set_title(title)
 
 
@@ -238,7 +238,7 @@ def _plot_region_interaction_table(ax: plt.Axes, df: pd.DataFrame) -> None:
     total = M.sum()
     F = M / total if total > 0 else M
     im = ax.imshow(F, cmap="Blues", aspect="auto")
-    ax.set_xticks(range(len(inter_order)), inter_order, rotation=20, ha="right")
+    ax.set_xticks(range(len(inter_order)), inter_order, rotation=30, ha="right", fontsize=8)
     ax.set_yticks(range(len(region_order)), region_order)
     ax.set_title("region × interaction (fraction of all deposits)")
     fmax = F.max() if F.size else 0.0
@@ -254,56 +254,50 @@ def _plot_region_interaction_table(ax: plt.Axes, df: pd.DataFrame) -> None:
 # Family renderers
 # ---------------------------------------------------------------------------
 def render_stack_panel(input_dir: Path, title: str, log_y: bool) -> plt.Figure:
-    fig, axes = plt.subplots(3, 4, figsize=(20, 11))
-    fig.suptitle(f"{title} — stack histograms")
+    # 9 plots in a 3×3 grid (ng_max dropped per user preference).
+    fig, axes = plt.subplots(3, 3, figsize=(20, 14), constrained_layout=True)
+    fig.suptitle(f"{title} — stack histograms", fontsize=14)
     flat = axes.flatten()
 
-    df = _read(input_dir, "stack_ng_max.csv")
-    _plot_int_bar(flat[0], df, title="ng_max (chain depth)", xlabel="ng_max", log_y=True)
-
     df = _read(input_dir, "stack_first_interaction.csv")
-    _plot_categorical_bar(flat[1], df,
+    _plot_categorical_bar(flat[0], df,
                           title="first interaction type",
                           xlabel="interaction", log_y=True)
 
     df = _read(input_dir, "stack_n_photo.csv")
-    _plot_int_bar(flat[2], df, title="n_photo per event", xlabel="n", log_y=True)
+    _plot_int_bar(flat[1], df, title="n_photo per event", xlabel="n", log_y=True)
 
     df = _read(input_dir, "stack_n_compton.csv")
-    _plot_int_bar(flat[3], df, title="n_compton per event", xlabel="n", log_y=True)
+    _plot_int_bar(flat[2], df, title="n_compton per event", xlabel="n", log_y=True)
 
     df = _read(input_dir, "stack_n_pair.csv")
-    _plot_int_bar(flat[4], df, title="n_pair per event", xlabel="n", log_y=True)
+    _plot_int_bar(flat[3], df, title="n_pair per event", xlabel="n", log_y=True)
 
     df = _read(input_dir, "stack_n_below_thresh.csv")
-    _plot_int_bar(flat[5], df, title="n_below_thresh per event", xlabel="n", log_y=True)
+    _plot_int_bar(flat[4], df, title="n_below_thresh per event", xlabel="n", log_y=True)
 
     df = _read(input_dir, "stack_inclusive_edep.csv")
-    _plot_1d(flat[6], df, title="inclusive Σ edep",
+    _plot_1d(flat[5], df, title="inclusive Σ edep",
              xlabel="E (MeV)", log_y=True, color="#a64")
 
     df = _read(input_dir, "stack_E_first.csv")
-    _plot_1d(flat[7], df, title="E of first :TPC deposit",
+    _plot_1d(flat[6], df, title="E of first :TPC deposit",
              xlabel="E (MeV)", log_y=True, color="#a64")
 
     df = _read(input_dir, "stack_delta_z.csv")
-    _plot_1d(flat[8], df, title="Δz from first :TPC deposit",
+    _plot_1d(flat[7], df, title="Δz from first :TPC deposit",
              xlabel="Δz (cm)", log_y=True, color="#46a")
 
     df = _read(input_dir, "stack_region_interaction.csv")
-    _plot_region_interaction_table(flat[9], df)
+    _plot_region_interaction_table(flat[8], df)
 
-    # Hide unused panels.
-    for k in (10, 11):
-        flat[k].axis("off")
-
-    fig.tight_layout(rect=(0, 0, 1, 0.96))
     return fig
 
 
 def render_cluster_panel(input_dir: Path, title: str, log_y: bool) -> plt.Figure:
-    fig, axes = plt.subplots(3, 4, figsize=(20, 11))
-    fig.suptitle(f"{title} — cluster histograms")
+    # 11 plots in a 3×4 grid (1 cell unused).
+    fig, axes = plt.subplots(3, 4, figsize=(22, 13), constrained_layout=True)
+    fig.suptitle(f"{title} — cluster histograms", fontsize=14)
     flat = axes.flatten()
 
     df = _read(input_dir, "cluster_Ec.csv")
@@ -344,21 +338,20 @@ def render_cluster_panel(input_dir: Path, title: str, log_y: bool) -> plt.Figure
     df = _read(input_dir, "cluster_r2_vs_z.csv")
     _plot_2d_heatmap(flat[9], df,
                      title="r² vs z (cluster centroid)",
-                     xlabel="r² (cm²)", ylabel="z (cm)")
+                     rlabel="r² (cm²)", zlabel="z (cm)")
 
     df = _read(input_dir, "cluster_D_vs_z.csv")
     _plot_2d_heatmap(flat[10], df,
                      title="D vs z (cluster centroid)",
-                     xlabel="D (cm)", ylabel="z (cm)")
+                     rlabel="D (cm)",  zlabel="z (cm)")
 
     flat[11].axis("off")
-    fig.tight_layout(rect=(0, 0, 1, 0.96))
     return fig
 
 
 def render_rejection_panel(input_dir: Path, title: str, log_y: bool) -> plt.Figure:
-    fig, axes = plt.subplots(2, 2, figsize=(14, 10))
-    fig.suptitle(f"{title} — fast-veto rejection histograms")
+    fig, axes = plt.subplots(2, 2, figsize=(14, 10), constrained_layout=True)
+    fig.suptitle(f"{title} — fast-veto rejection histograms", fontsize=14)
 
     df = _read(input_dir, "rejected_skin_E.csv")
     _plot_1d(axes[0, 0], df, title="rejected_skin: triggering E",
@@ -367,7 +360,7 @@ def render_rejection_panel(input_dir: Path, title: str, log_y: bool) -> plt.Figu
     df = _read(input_dir, "rejected_skin_r2z.csv")
     _plot_2d_heatmap(axes[0, 1], df,
                      title="rejected_skin: r² vs z",
-                     xlabel="r² (cm²)", ylabel="z (cm)")
+                     rlabel="r² (cm²)", zlabel="z (cm)")
 
     df = _read(input_dir, "rejected_fv_E.csv")
     _plot_1d(axes[1, 0], df, title="rejected_fv: triggering E",
@@ -376,9 +369,7 @@ def render_rejection_panel(input_dir: Path, title: str, log_y: bool) -> plt.Figu
     df = _read(input_dir, "rejected_fv_r2z.csv")
     _plot_2d_heatmap(axes[1, 1], df,
                      title="rejected_fv: r² vs z",
-                     xlabel="r² (cm²)", ylabel="z (cm)")
-
-    fig.tight_layout(rect=(0, 0, 1, 0.96))
+                     rlabel="r² (cm²)", zlabel="z (cm)")
     return fig
 
 
@@ -410,7 +401,7 @@ def render_individual(input_dir: Path, out: Path, log_y: bool) -> None:
             _plot_1d(ax, df, title=stem, xlabel=cols[0], log_y=True)
         elif cols[-1] == "count" and len(cols) == 5:
             fig.set_size_inches(8, 6)
-            _plot_2d_heatmap(ax, df, title=stem, xlabel=cols[0], ylabel=cols[2])
+            _plot_2d_heatmap(ax, df, title=stem, rlabel=cols[0], zlabel=cols[2])
         else:
             ax.text(0.5, 0.5, f"unknown shape:\n{cols}",
                     ha="center", va="center")
