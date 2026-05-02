@@ -134,35 +134,63 @@ def _present(input_dir: Path, names: tuple[str, ...]) -> bool:
 # Generic plot primitives
 # ---------------------------------------------------------------------------
 def _plot_int_bar(
-    ax: plt.Axes, df: pd.DataFrame, *, title: str, xlabel: str, log_y: bool = False
+    ax: plt.Axes, df: pd.DataFrame, *,
+    title: str, xlabel: str,
+    log_y: bool = False,
+    normalize: bool = False,
+    show_values: bool = True,
+    xlim_max: int | None = None,
 ) -> None:
-    ax.bar(df.iloc[:, 0], df["count"], color="#684", edgecolor="none")
+    counts = df["count"].astype(float)
+    total = counts.sum()
+    values = counts / total if (normalize and total > 0) else counts
+    ylabel = "fraction" if normalize else "events"
+    ax.bar(df.iloc[:, 0], values, color="#684", edgecolor="none")
     ax.set_xlabel(xlabel)
-    ax.set_ylabel("events")
+    ax.set_ylabel(ylabel)
     ax.set_title(title)
-    nonzero = df[df["count"] > 0]
-    if not nonzero.empty and len(nonzero) <= 12:
-        for x, y in zip(nonzero.iloc[:, 0], nonzero["count"]):
-            ax.text(x, y, f"{y}", ha="center", va="bottom", fontsize=7)
-    if log_y and df["count"].max() > 0:
+    if show_values:
+        nonzero_mask = counts > 0
+        nz_x = df.iloc[:, 0][nonzero_mask]
+        nz_y = values[nonzero_mask]
+        if len(nz_x) <= 12:
+            for x, y in zip(nz_x, nz_y):
+                ax.text(x, y, f"{y:.2e}" if normalize else f"{int(y)}",
+                        ha="center", va="bottom", fontsize=7)
+    if log_y and (values.max() > 0):
         ax.set_yscale("log")
-        ax.set_ylim(bottom=0.5)
+        ax.set_ylim(bottom=values[values > 0].min() / 2 if normalize else 0.5)
+    if xlim_max is not None:
+        ax.set_xlim(-0.5, xlim_max + 0.5)
 
 
 def _plot_categorical_bar(
-    ax: plt.Axes, df: pd.DataFrame, *, title: str, xlabel: str, log_y: bool = False
+    ax: plt.Axes, df: pd.DataFrame, *,
+    title: str, xlabel: str,
+    log_y: bool = False,
+    normalize: bool = False,
 ) -> None:
+    counts = df["count"].astype(float)
+    total = counts.sum()
+    values = counts / total if (normalize and total > 0) else counts
+    ylabel = "fraction" if normalize else "events"
     cats = df.iloc[:, 0].astype(str).tolist()
-    ax.bar(cats, df["count"], color=["#3b6", "#46a", "#a64", "#888"])
+    ax.bar(cats, values, color=["#3b6", "#46a", "#a64", "#888"])
     ax.set_xlabel(xlabel)
-    ax.set_ylabel("events")
+    ax.set_ylabel(ylabel)
     ax.set_title(title)
-    for i, y in enumerate(df["count"]):
-        ax.text(i, y, f"{y:,}", ha="center", va="bottom", fontsize=7)
+    # Place text in the MIDDLE of each bar (vertical centre), in
+    # scientific notation, larger font.
+    for i, y in enumerate(values):
+        if y > 0:
+            ax.text(i, y / 2.0,
+                    f"{y:.2e}" if normalize else f"{int(y):,}",
+                    ha="center", va="center", fontsize=11, color="white",
+                    weight="bold")
     plt.setp(ax.get_xticklabels(), rotation=30, ha="right", fontsize=8)
-    if log_y and df["count"].max() > 0:
+    if log_y and values.max() > 0:
         ax.set_yscale("log")
-        ax.set_ylim(bottom=0.5)
+        ax.set_ylim(bottom=values[values > 0].min() / 2 if normalize else 0.5)
 
 
 def _plot_1d(
@@ -172,21 +200,35 @@ def _plot_1d(
     title: str,
     xlabel: str,
     log_y: bool = False,
+    normalize: bool = False,
     color: str = "#46a",
 ) -> None:
     left = df.iloc[:, 0]
     right = df.iloc[:, 1]
+    counts = df["count"].astype(float)
+    total = counts.sum()
+    values = counts / total if (normalize and total > 0) else counts
+    ylabel = "fraction" if normalize else "entries"
     centres = 0.5 * (left + right)
     width = right - left
-    ax.bar(centres, df["count"], width=width, color=color, edgecolor="none")
+    ax.bar(centres, values, width=width, color=color, edgecolor="none")
     ax.set_xlabel(xlabel)
-    ax.set_ylabel("entries")
+    ax.set_ylabel(ylabel)
     ax.set_title(title)
-    if log_y:
-        # Avoid log(0): set y_min to 0.5 so empty bars stay visible.
+    if log_y and values.max() > 0:
         ax.set_yscale("log")
-        if df["count"].max() > 0:
-            ax.set_ylim(bottom=0.5)
+        ax.set_ylim(bottom=values[values > 0].min() / 2 if normalize else 0.5)
+
+
+def _r2_to_r(df: pd.DataFrame) -> pd.DataFrame:
+    """Convert a 2D-heatmap DataFrame whose first two columns are r²
+    bin edges (cm²) into one with r bin edges (cm). Bin widths in r
+    become non-uniform (smaller at large r), but pcolormesh handles
+    non-uniform edges fine."""
+    out = df.copy()
+    out.iloc[:, 0] = np.sqrt(out.iloc[:, 0].values)
+    out.iloc[:, 1] = np.sqrt(out.iloc[:, 1].values)
+    return out
 
 
 def _plot_2d_heatmap(
@@ -249,7 +291,7 @@ def _plot_region_interaction_table(ax: plt.Axes, df: pd.DataFrame) -> None:
         for j in range(F.shape[1]):
             ax.text(j, i, f"{F[i, j]:.2e}", ha="center", va="center",
                     color="white" if F[i, j] > 0.5 * fmax else "black",
-                    fontsize=8)
+                    fontsize=12, weight="bold")
     plt.colorbar(im, ax=ax, label="fraction")
 
 
@@ -265,31 +307,38 @@ def render_stack_panel(input_dir: Path, title: str, log_y: bool) -> plt.Figure:
     df = _read(input_dir, "stack_first_interaction.csv")
     _plot_categorical_bar(flat[0], df,
                           title="first interaction type",
-                          xlabel="interaction", log_y=True)
+                          xlabel="interaction", log_y=True,
+                          normalize=True)
 
     df = _read(input_dir, "stack_n_photo.csv")
-    _plot_int_bar(flat[1], df, title="n_photo per event", xlabel="n", log_y=True)
+    _plot_int_bar(flat[1], df, title="n_photo per event", xlabel="n",
+                  log_y=True, normalize=True,
+                  show_values=False, xlim_max=10)
 
     df = _read(input_dir, "stack_n_compton.csv")
-    _plot_int_bar(flat[2], df, title="n_compton per event", xlabel="n", log_y=True)
+    _plot_int_bar(flat[2], df, title="n_compton per event", xlabel="n",
+                  log_y=True, normalize=True, show_values=False)
 
     df = _read(input_dir, "stack_n_pair.csv")
-    _plot_int_bar(flat[3], df, title="n_pair per event", xlabel="n", log_y=True)
+    _plot_int_bar(flat[3], df, title="n_pair per event", xlabel="n",
+                  log_y=True, normalize=True,
+                  show_values=False, xlim_max=5)
 
     df = _read(input_dir, "stack_n_below_thresh.csv")
-    _plot_int_bar(flat[4], df, title="n_below_thresh per event", xlabel="n", log_y=True)
+    _plot_int_bar(flat[4], df, title="n_below_thresh per event", xlabel="n",
+                  log_y=True, normalize=True, show_values=False)
 
     df = _read(input_dir, "stack_inclusive_edep.csv")
     _plot_1d(flat[5], df, title="inclusive Σ edep",
-             xlabel="E (MeV)", log_y=True, color="#a64")
+             xlabel="E (MeV)", log_y=True, normalize=True, color="#a64")
 
     df = _read(input_dir, "stack_E_first.csv")
     _plot_1d(flat[6], df, title="E of first :TPC deposit",
-             xlabel="E (MeV)", log_y=True, color="#a64")
+             xlabel="E (MeV)", log_y=True, normalize=True, color="#a64")
 
     df = _read(input_dir, "stack_delta_z.csv")
     _plot_1d(flat[7], df, title="Δz from first :TPC deposit",
-             xlabel="Δz (cm)", log_y=True, color="#46a")
+             xlabel="Δz (cm)", log_y=True, normalize=True, color="#46a")
 
     df = _read(input_dir, "stack_region_interaction.csv")
     _plot_region_interaction_table(flat[8], df)
@@ -339,9 +388,9 @@ def render_cluster_panel(input_dir: Path, title: str, log_y: bool) -> plt.Figure
     _plot_int_bar(flat[8], df, title="N clusters per photon", xlabel="n", log_y=True)
 
     df = _read(input_dir, "cluster_r2_vs_z.csv")
-    _plot_2d_heatmap(flat[9], df,
-                     title="r² vs z (cluster centroid)",
-                     rlabel="r² (cm²)", zlabel="z (cm)")
+    _plot_2d_heatmap(flat[9], _r2_to_r(df),
+                     title="r vs z (cluster centroid)",
+                     rlabel="r (cm)", zlabel="z (cm)")
 
     df = _read(input_dir, "cluster_D_vs_z.csv")
     _plot_2d_heatmap(flat[10], df,
@@ -361,18 +410,18 @@ def render_rejection_panel(input_dir: Path, title: str, log_y: bool) -> plt.Figu
              xlabel="E (MeV)", log_y=True, color="#c54")
 
     df = _read(input_dir, "rejected_skin_r2z.csv")
-    _plot_2d_heatmap(axes[0, 1], df,
-                     title="rejected_skin: r² vs z",
-                     rlabel="r² (cm²)", zlabel="z (cm)")
+    _plot_2d_heatmap(axes[0, 1], _r2_to_r(df),
+                     title="rejected_skin: r vs z",
+                     rlabel="r (cm)", zlabel="z (cm)")
 
     df = _read(input_dir, "rejected_fv_E.csv")
     _plot_1d(axes[1, 0], df, title="rejected_fv: triggering E",
              xlabel="E (MeV)", log_y=True, color="#c54")
 
     df = _read(input_dir, "rejected_fv_r2z.csv")
-    _plot_2d_heatmap(axes[1, 1], df,
-                     title="rejected_fv: r² vs z",
-                     rlabel="r² (cm²)", zlabel="z (cm)")
+    _plot_2d_heatmap(axes[1, 1], _r2_to_r(df),
+                     title="rejected_fv: r vs z",
+                     rlabel="r (cm)", zlabel="z (cm)")
     return fig
 
 
@@ -404,7 +453,15 @@ def render_individual(input_dir: Path, out: Path, log_y: bool) -> None:
             _plot_1d(ax, df, title=stem, xlabel=cols[0], log_y=True)
         elif cols[-1] == "count" and len(cols) == 5:
             fig.set_size_inches(8, 6)
-            _plot_2d_heatmap(ax, df, title=stem, rlabel=cols[0], zlabel=cols[2])
+            # Convert r²-vs-z CSVs to r-vs-z on the fly.
+            is_r2 = "r2" in cols[0] or "r²" in cols[0]
+            if is_r2:
+                _plot_2d_heatmap(ax, _r2_to_r(df),
+                                 title=stem.replace("r2", "r"),
+                                 rlabel="r (cm)", zlabel=cols[2])
+            else:
+                _plot_2d_heatmap(ax, df, title=stem,
+                                 rlabel=cols[0], zlabel=cols[2])
         else:
             ax.text(0.5, 0.5, f"unknown shape:\n{cols}",
                     ha="center", va="center")
