@@ -170,21 +170,21 @@ function main()
     @printf("  TOTAL background (cryostat sources) : %.4e events/yr\n", total_bg)
     println()
 
-    # Per-outcome breakdown — counts and fraction of n_total (scientific)
-    println("── Per-outcome breakdown ──")
-    @printf("  %-12s %20s %20s %20s %20s %20s %20s %20s\n",
+    # Per-outcome breakdown — fraction of n_total (scientific notation)
+    println("── Per-outcome breakdown (fraction of n_total) ──")
+    @printf("  %-12s %12s %12s %12s %12s %12s %12s %12s\n",
             "source", "esc", "MS", "skin", "outFV",
             "outROI", "in_ROI", "comp_veto")
-    println("  ", "─"^158)
+    println("  ", "─"^114)
     for r in results
-        n  = r.n_total
-        cell = (k::Symbol) -> @sprintf("%9d (%.3e)", r.counts[k], r.counts[k] / n)
-        @printf("  %-12s %20s %20s %20s %20s %20s %20s %20s\n",
+        n    = r.n_total
+        frac = (k::Symbol) -> @sprintf("%.3e", r.counts[k] / n)
+        @printf("  %-12s %12s %12s %12s %12s %12s %12s %12s\n",
                 r.name,
-                cell(:escaped),    cell(:MS_rejected),
-                cell(:skin_vetoed), cell(:outside_FV),
-                cell(:SS_outside_ROI), cell(:SS_in_ROI),
-                cell(:companion_vetoed))
+                frac(:escaped),    frac(:MS_rejected),
+                frac(:skin_vetoed), frac(:outside_FV),
+                frac(:SS_outside_ROI), frac(:SS_in_ROI),
+                frac(:companion_vetoed))
     end
     println()
 
