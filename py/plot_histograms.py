@@ -222,6 +222,9 @@ def _plot_2d_heatmap(
     ax.set_xlabel(zlabel)
     ax.set_ylabel(rlabel)
     ax.set_title(title)
+    # Span the full bin range (full LXe region), not just where data falls.
+    ax.set_xlim(z_edges[0], z_edges[-1])
+    ax.set_ylim(r_edges[0], r_edges[-1])
 
 
 def _plot_region_interaction_table(ax: plt.Axes, df: pd.DataFrame) -> None:
