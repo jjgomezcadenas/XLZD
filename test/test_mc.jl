@@ -33,7 +33,10 @@ end
 
     # Histogram dimensions match params
     @test size(tr.H_signal) == (params.hist_n_z_bins, params.hist_n_r2_bins)
-    @test length(tr.E_total_cluster_all_SS) == params.hist_n_E_bins
+    @test size(tr.H_cluster_pre_fv) == (params.hist_n_z_bins, params.hist_n_r2_bins)
+    @test length(tr.h_E_cluster_inclusive) == params.hist_n_E_bins
+    @test length(tr.h_u_sampled) == 100
+    @test length(tr.h_dz) == 200
 end
 
 @testset "track_one_photon! — Bi-214 single call" begin
@@ -128,7 +131,8 @@ end
     @test result.counts[:outside_bfv] > N * 0.5
 
     # Histograms have entries
-    @test sum(result.H_first_interaction) > 0
+    @test sum(result.h_u_sampled) > 0
+    @test sum(result.H_cluster_pre_fv) > 0
 
     # Bin edges correct
     @test length(result.bin_edges_z) == params.hist_n_z_bins + 1

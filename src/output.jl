@@ -113,19 +113,24 @@ function write_h5(result::Result, path::String)
             grp["n_$(k)"] = v
         end
 
-        # /histograms_2D/
-        grp = create_group(f, "histograms_2D")
+        # /histograms/ — organized by cut stage
+        grp = create_group(f, "histograms")
         grp["bin_edges_z"] = result.bin_edges_z
         grp["bin_edges_r2"] = result.bin_edges_r2
-        grp["H_first_interaction"] = result.H_first_interaction
-        grp["H_cluster_position"] = result.H_cluster_position
-        grp["H_signal"] = result.H_signal
-        grp["H_total_energy"] = result.H_total_energy
-
-        # /histograms_1D/
-        grp = create_group(f, "histograms_1D")
         grp["bin_edges_E_keV"] = result.bin_edges_E_keV
-        grp["E_total_cluster_all_SS"] = result.E_total_cluster_all_SS
+        # Cut 1
+        grp["h_u_sampled"] = result.h_u_sampled
+        # Cut 2
+        grp["H_cluster_pre_fv"] = result.H_cluster_pre_fv
+        # Cut 3
+        grp["h_dz"] = result.h_dz
+        grp["h_n_visible"] = result.h_n_visible
+        grp["h_E_cluster_inclusive"] = result.h_E_cluster_inclusive
+        # Cut 4
+        grp["H_ss_fv"] = result.H_ss_fv
+        grp["h_E_ss_fv"] = result.h_E_ss_fv
+        grp["H_signal"] = result.H_signal
+        # Diagnostics
         grp["n_interactions_per_photon"] = result.n_interactions_per_photon
         grp["path_length_in_LXe_cm"] = result.path_length_in_LXe
 
@@ -242,31 +247,83 @@ function _heatmap_with_fv(H, bin_edges_z, bin_edges_r2, params, title_str)
     return p
 end
 
-function plot_heatmap_signal(result::Result, path::String)
-    d = _compute_derived(result)
-    title = @sprintf("SS-in-ROI (N=%d) — %s", d.n_ss_roi, result.source.label)
-    p = _heatmap_with_fv(result.H_signal, result.bin_edges_z,
-                         result.bin_edges_r2, result.params, title)
-    savefig(p, path)
-end
+# ── Cut 1: angular distribution ──
 
-function plot_heatmap_first_interaction(result::Result, path::String)
-    title = @sprintf("First interaction — %s", result.source.label)
-    p = _heatmap_with_fv(result.H_first_interaction, result.bin_edges_z,
-                         result.bin_edges_r2, result.params, title)
-    savefig(p, path)
-end
-
-function plot_spectrum_SS(result::Result, path::String)
-    pr = result.params
-    edges = result.bin_edges_E_keV
-    centers = 0.5 .* (edges[1:end-1] .+ edges[2:end])
+function plot_cut1_dNdu(result::Result, path::String)
+    n_bins = length(result.h_u_sampled)
+    u_edges = range(0.0, 1.0, length=n_bins + 1)
+    u_centers = 0.5 .* (u_edges[1:end-1] .+ u_edges[2:end])
 
     gr()
-    p = plot(centers, result.E_total_cluster_all_SS;
+    p = bar(u_centers, result.h_u_sampled;
+            xlabel="u = cos θ", ylabel="counts",
+            title="Cut 1: dN/du — $(result.source.label)",
+            legend=false, color=:steelblue)
+
+    savefig(p, path)
+end
+
+# ── Cut 2: cluster position before FV/skin cuts ──
+
+function plot_cut2_cluster_pre_fv(result::Result, path::String)
+    p = _heatmap_with_fv(result.H_cluster_pre_fv, result.bin_edges_z,
+                         result.bin_edges_r2, result.params,
+                         "Cut 2: cluster position (pre-FV) — $(result.source.label)")
+    savefig(p, path)
+end
+
+# ── Cut 3: SS/MS classification ──
+
+function plot_cut3_ssms(result::Result, path::String)
+    pr = result.params
+    gr()
+
+    # Panel 1: Δz distribution with SS/MS threshold
+    n_dz = length(result.h_dz)
+    dz_edges = range(0.0, 2.0, length=n_dz + 1)  # 0–2 cm = 0–20 mm
+    dz_centers_mm = 0.5 .* (dz_edges[1:end-1] .+ dz_edges[2:end]) .* 10.0  # convert to mm
+    p1 = bar(dz_centers_mm, result.h_dz;
+             xlabel="Δz (mm)", ylabel="counts",
+             title="Δz distribution", legend=:topright, color=:coral)
+    vline!(p1, [pr.cut_Δz_threshold_mm]; linecolor=:red, linewidth=2,
+           label="SS/MS cut", linestyle=:dash)
+
+    # Panel 2: n_visible deposits per event
+    n_nv = length(result.h_n_visible)
+    p2 = bar(1:n_nv, result.h_n_visible;
+             xlabel="n visible deposits", ylabel="counts",
+             title="Visible deposits per event", legend=false, color=:teal)
+
+    # Panel 3: cluster energy (inclusive, SS + MS)
+    E_edges = result.bin_edges_E_keV
+    E_centers = 0.5 .* (E_edges[1:end-1] .+ E_edges[2:end])
+    p3 = plot(E_centers, result.h_E_cluster_inclusive;
+              xlabel="E_cluster (keV)", ylabel="counts",
+              title="Cluster energy (inclusive)", legend=false, linecolor=:purple)
+
+    p_all = plot(p1, p2, p3; layout=(1, 3), size=(1500, 400))
+    savefig(p_all, path)
+end
+
+# ── Cut 4: SS in FV → ROI ──
+
+function plot_cut4_ss_fv(result::Result, path::String)
+    p = _heatmap_with_fv(result.H_ss_fv, result.bin_edges_z,
+                         result.bin_edges_r2, result.params,
+                         "Cut 4: SS in FV — $(result.source.label)")
+    savefig(p, path)
+end
+
+function plot_cut4_energy(result::Result, path::String)
+    pr = result.params
+    E_edges = result.bin_edges_E_keV
+    E_centers = 0.5 .* (E_edges[1:end-1] .+ E_edges[2:end])
+
+    gr()
+    p = plot(E_centers, result.h_E_ss_fv;
              xlabel="E (keV)", ylabel="counts",
-             title="SS energy spectrum — $(result.source.label)",
-             label="all SS", linecolor=:blue, legend=:topleft)
+             title="SS energy in FV — $(result.source.label)",
+             label="SS in FV", linecolor=:blue, legend=:topleft)
 
     roi_lo = pr.phys_Q_betabeta_keV - pr.cut_ROI_halfwidth_keV
     roi_hi = pr.phys_Q_betabeta_keV + pr.cut_ROI_halfwidth_keV
@@ -275,10 +332,21 @@ function plot_spectrum_SS(result::Result, path::String)
     savefig(p, path)
 end
 
-function plot_diagnostic(result::Result, path::String)
+function plot_cut4_signal(result::Result, path::String)
+    d = _compute_derived(result)
+    title = @sprintf("SS-in-ROI (N=%d) — %s", d.n_ss_roi, result.source.label)
+    p = _heatmap_with_fv(result.H_signal, result.bin_edges_z,
+                         result.bin_edges_r2, result.params, title)
+    savefig(p, path)
+end
+
+# ── Diagnostics (kept) ──
+
+function plot_diagnostics(result::Result, path::String)
     pr = result.params
     gr()
 
+    # Panel 1: outcome bar chart
     labels = ["out_bfv", "escaped", "MS_rej", "SS_noFV", "SS_noROI", "comp_veto", "skin_veto", "SS_ROI"]
     syms   = [:outside_bfv, :escaped, :MS_rejected, :SS_outside_FV,
               :SS_outside_ROI, :companion_vetoed, :skin_vetoed, :SS_in_ROI]
@@ -286,11 +354,13 @@ function plot_diagnostic(result::Result, path::String)
     p1 = bar(labels, vals; ylabel="counts", title="Outcomes",
              legend=false, color=:steelblue, xrotation=30)
 
+    # Panel 2: n_interactions (Compton cascade length)
     n_bins_int = length(result.n_interactions_per_photon)
     p2 = bar(1:n_bins_int, result.n_interactions_per_photon;
              xlabel="n_interactions", ylabel="counts",
-             title="Interactions per photon", legend=false, color=:coral)
+             title="Compton cascade length", legend=false, color=:coral)
 
+    # Panel 3: path length in LXe
     n_bins_pl = length(result.path_length_in_LXe)
     pl_edges = range(0.0, 500.0, length=n_bins_pl + 1)
     pl_centers = 0.5 .* (pl_edges[1:end-1] .+ pl_edges[2:end])
@@ -298,13 +368,7 @@ function plot_diagnostic(result::Result, path::String)
              xlabel="path length (cm)", ylabel="counts",
              title="Path length in LXe", legend=false, color=:mediumpurple)
 
-    z_c  = 0.5 .* (result.bin_edges_z[1:end-1] .+ result.bin_edges_z[2:end])
-    r2_c = 0.5 .* (result.bin_edges_r2[1:end-1] .+ result.bin_edges_r2[2:end])
-    p4 = heatmap(z_c, r2_c, result.H_total_energy';
-                 xlabel="z (cm)", ylabel="r² (cm²)",
-                 title="Energy deposits", color=:inferno)
-
-    p_all = plot(p1, p2, p3, p4; layout=(2, 2), size=(1000, 800))
+    p_all = plot(p1, p2, p3; layout=(1, 3), size=(1500, 400))
     savefig(p_all, path)
 end
 
@@ -335,11 +399,14 @@ function write_outputs(result::Result)
         @warn "Could not copy viewer: $e"
     end
 
-    println("Plotting...")
-    plot_heatmap_signal(result, joinpath(dir, "heatmap_signal.png"))
-    plot_heatmap_first_interaction(result, joinpath(dir, "heatmap_first_interaction.png"))
-    plot_spectrum_SS(result, joinpath(dir, "spectrum_SS.png"))
-    plot_diagnostic(result, joinpath(dir, "diagnostic.png"))
+    println("Plotting cut-flow histograms...")
+    plot_cut1_dNdu(result, joinpath(dir, "cut1_dNdu.png"))
+    plot_cut2_cluster_pre_fv(result, joinpath(dir, "cut2_cluster_pre_fv.png"))
+    plot_cut3_ssms(result, joinpath(dir, "cut3_ssms.png"))
+    plot_cut4_ss_fv(result, joinpath(dir, "cut4_ss_fv.png"))
+    plot_cut4_energy(result, joinpath(dir, "cut4_energy.png"))
+    plot_cut4_signal(result, joinpath(dir, "cut4_signal.png"))
+    plot_diagnostics(result, joinpath(dir, "diagnostics.png"))
 
     # Print final result
     d = _compute_derived(result)

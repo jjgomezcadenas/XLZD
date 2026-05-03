@@ -7,13 +7,22 @@ Per-thread accumulator: outcome counts, 2D/1D histograms, trajectory buffer.
 """
 mutable struct ThreadResult
     counts::Dict{Symbol, Int}
-    H_first_interaction::Matrix{Float64}
-    H_cluster_position::Matrix{Float64}
-    H_signal::Matrix{Float64}
-    H_total_energy::Matrix{Float64}
-    E_total_cluster_all_SS::Vector{Float64}
+    # Cut 1: angular distribution of all sampled gammas
+    h_u_sampled::Vector{Float64}           # 1D, u = cos θ ∈ [0, 1]
+    # Cut 2: cluster position before FV/skin cuts (all events with a cluster)
+    H_cluster_pre_fv::Matrix{Float64}      # 2D, z vs r²
+    # Cut 3: SS/MS — filled for all events with ≥1 visible deposit
+    h_dz::Vector{Float64}                  # 1D, |Δz| for every 2nd+ visible deposit
+    h_n_visible::Vector{Float64}           # 1D, number of visible deposits per event
+    h_E_cluster_inclusive::Vector{Float64}  # 1D, total cluster energy (SS + MS)
+    # Cut 4: SS in FV → ROI
+    H_ss_fv::Matrix{Float64}              # 2D, z vs r² for SS events in FV
+    h_E_ss_fv::Vector{Float64}            # 1D, SS energy spectrum in FV (with ROI band)
+    H_signal::Matrix{Float64}             # 2D, z vs r² for SS_in_ROI only
+    # Diagnostics (kept)
     n_interactions_per_photon::Vector{Float64}
     path_length_in_LXe::Vector{Float64}
+    # Trajectory buffers
     traj_buffer::TrajectoryBuffer
     traj_buffer_fv::TrajectoryBuffer
 end
@@ -36,11 +45,14 @@ function ThreadResult(params::Params)::ThreadResult
 
     ThreadResult(
         counts,
-        zeros(Float64, nz, nr2),   # H_first_interaction
-        zeros(Float64, nz, nr2),   # H_cluster_position
+        zeros(Float64, 100),       # h_u_sampled (100 bins, u ∈ [0,1])
+        zeros(Float64, nz, nr2),   # H_cluster_pre_fv
+        zeros(Float64, 200),       # h_dz (200 bins, 0–2 cm = 0–20 mm)
+        zeros(Float64, 30),        # h_n_visible (up to 30 visible deposits)
+        zeros(Float64, nE),        # h_E_cluster_inclusive
+        zeros(Float64, nz, nr2),   # H_ss_fv
+        zeros(Float64, nE),        # h_E_ss_fv
         zeros(Float64, nz, nr2),   # H_signal
-        zeros(Float64, nz, nr2),   # H_total_energy
-        zeros(Float64, nE),        # E_total_cluster_all_SS
         zeros(Float64, 50),        # n_interactions_per_photon
         zeros(Float64, 100),       # path_length_in_LXe
         TrajectoryBuffer(params.mc_n_traj_per_outcome),
@@ -225,16 +237,26 @@ struct Result
     source::SourceConfig
     xcom::XCOMTable
     counts::Dict{Symbol, Int}
-    H_first_interaction::Matrix{Float64}
-    H_cluster_position::Matrix{Float64}
+    # Cut 1
+    h_u_sampled::Vector{Float64}
+    # Cut 2
+    H_cluster_pre_fv::Matrix{Float64}
+    # Cut 3
+    h_dz::Vector{Float64}
+    h_n_visible::Vector{Float64}
+    h_E_cluster_inclusive::Vector{Float64}
+    # Cut 4
+    H_ss_fv::Matrix{Float64}
+    h_E_ss_fv::Vector{Float64}
     H_signal::Matrix{Float64}
-    H_total_energy::Matrix{Float64}
-    E_total_cluster_all_SS::Vector{Float64}
+    # Diagnostics
     n_interactions_per_photon::Vector{Float64}
     path_length_in_LXe::Vector{Float64}
+    # Bin edges
     bin_edges_z::Vector{Float64}
     bin_edges_r2::Vector{Float64}
     bin_edges_E_keV::Vector{Float64}
+    # Trajectories
     trajectories::Vector{Trajectory}
     trajectories_fv::Vector{Trajectory}
     runtime_seconds::Float64
@@ -301,13 +323,20 @@ function track_one_photon!(state::ThreadResult, rng::AbstractRNG,
     x, y, z = sample_entry_point(rng, source, geom.L_lxe)
 
     # 2. Sample inward direction from angular distribution
-    dx, dy, dz = sample_entry_direction(rng, source, x, y, z, geom.L_lxe)
+    dx, dy, dz, u_sampled = sample_entry_direction(rng, source, x, y, z, geom.L_lxe)
+
+    # Cut 1 histogram: dN/du for all sampled gammas
+    iu = _bin_index(u_sampled, 0.0, 1.0, length(state.h_u_sampled))
+    if iu > 0
+        state.h_u_sampled[iu] += 1.0
+    end
 
     # 3. Initialize photon state
     E = source.E_MeV
     E_cluster = 0.0
     z_cluster = NaN;  x_cluster = NaN;  y_cluster = NaN
     cluster_started = false
+    n_visible = 0          # count of visible deposits (for Cut 3 histogram)
     E_skin_deposit = 0.0   # accumulated energy in skin region
     outcome = :in_progress
     n_int = 0
@@ -437,11 +466,16 @@ function track_one_photon!(state::ThreadResult, rng::AbstractRNG,
                 end
             elseif E_dep ≥ E_visible && z ≥ geom.z_cathode && z ≤ geom.L_lxe
                 # In drift region: normal SS/MS logic
+                n_visible += 1
                 if !cluster_started
                     z_cluster = z;  x_cluster = x;  y_cluster = y
                     E_cluster = E_dep;  cluster_started = true
                 else
-                    if abs(z - z_cluster) < Δz_thresh
+                    dz_val = abs(z - z_cluster)
+                    # Cut 3 histogram: fill every Δz (including the one that breaks)
+                    idz = _bin_index(dz_val, 0.0, 2.0, length(state.h_dz))
+                    if idz > 0; state.h_dz[idz] += 1.0; end
+                    if dz_val < Δz_thresh
                         E_cluster += E_dep
                     else
                         outcome = :MS_rejected;  break
@@ -477,11 +511,15 @@ function track_one_photon!(state::ThreadResult, rng::AbstractRNG,
                     outcome = :skin_vetoed;  break
                 end
             elseif E_dep ≥ E_visible && z ≥ geom.z_cathode && z ≤ geom.L_lxe
+                n_visible += 1
                 if !cluster_started
                     z_cluster = z;  x_cluster = x;  y_cluster = y
                     E_cluster = E_dep;  cluster_started = true
                 else
-                    if abs(z - z_cluster) < Δz_thresh
+                    dz_val = abs(z - z_cluster)
+                    idz = _bin_index(dz_val, 0.0, 2.0, length(state.h_dz))
+                    if idz > 0; state.h_dz[idz] += 1.0; end
+                    if dz_val < Δz_thresh
                         E_cluster += E_dep
                     else
                         outcome = :MS_rejected;  break
@@ -504,11 +542,15 @@ function track_one_photon!(state::ThreadResult, rng::AbstractRNG,
                         outcome = :skin_vetoed;  break
                     end
                 elseif E_dep_final ≥ E_visible && z ≥ geom.z_cathode && z ≤ geom.L_lxe
+                    n_visible += 1
                     if !cluster_started
                         z_cluster = z;  x_cluster = x;  y_cluster = y
                         E_cluster = E_dep_final;  cluster_started = true
                     else
-                        if abs(z - z_cluster) < Δz_thresh
+                        dz_val = abs(z - z_cluster)
+                        idz = _bin_index(dz_val, 0.0, 2.0, length(state.h_dz))
+                        if idz > 0; state.h_dz[idz] += 1.0; end
+                        if dz_val < Δz_thresh
                             E_cluster += E_dep_final
                         else
                             outcome = :MS_rejected;  break
@@ -554,29 +596,38 @@ function track_one_photon!(state::ThreadResult, rng::AbstractRNG,
     # 6. Record outcome
     state.counts[outcome] += 1
 
-    # Fill histograms
-    if n_int > 0
-        _fill_2d!(state.H_first_interaction, first_int_z,
-                  first_int_x^2 + first_int_y^2, params)
-    end
+    # Fill histograms by cut stage
 
+    # Cut 2: cluster position before FV/skin cuts (all events with a cluster)
     if cluster_started
         r2_cl = x_cluster^2 + y_cluster^2
-        _fill_2d!(state.H_cluster_position, z_cluster, r2_cl, params)
+        _fill_2d!(state.H_cluster_pre_fv, z_cluster, r2_cl, params)
+    end
 
+    # Cut 3: SS/MS diagnostics (all events with ≥1 visible deposit)
+    if n_visible > 0
+        inv = min(n_visible, length(state.h_n_visible))
+        state.h_n_visible[inv] += 1.0
+    end
+    if cluster_started
+        iE = _bin_index(E_cluster * 1000.0, 0.0, params.hist_E_max_keV,
+                        params.hist_n_E_bins)
+        if iE > 0
+            state.h_E_cluster_inclusive[iE] += 1.0
+        end
+    end
+
+    # Cut 4: SS events in FV
+    if outcome in (:SS_in_ROI, :SS_outside_ROI)
+        r2_cl = x_cluster^2 + y_cluster^2
+        _fill_2d!(state.H_ss_fv, z_cluster, r2_cl, params)
+        iE = _bin_index(E_cluster * 1000.0, 0.0, params.hist_E_max_keV,
+                        params.hist_n_E_bins)
+        if iE > 0
+            state.h_E_ss_fv[iE] += 1.0
+        end
         if outcome == :SS_in_ROI
             _fill_2d!(state.H_signal, z_cluster, r2_cl, params)
-        end
-
-        _fill_2d_weighted!(state.H_total_energy, z_cluster, r2_cl,
-                           E_cluster * 1000.0, params)
-
-        if outcome == :SS_in_ROI || outcome == :SS_outside_ROI
-            iE = _bin_index(E_cluster * 1000.0, 0.0, params.hist_E_max_keV,
-                            params.hist_n_E_bins)
-            if iE > 0
-                state.E_total_cluster_all_SS[iE] += 1.0
-            end
         end
     end
 
@@ -687,11 +738,15 @@ function merge_results(thread_results::Vector{ThreadResult},
         counts[k] = sum(tr.counts[k] for tr in thread_results)
     end
 
-    H_fi  = sum(tr.H_first_interaction for tr in thread_results)
-    H_cp  = sum(tr.H_cluster_position  for tr in thread_results)
-    H_sig = sum(tr.H_signal            for tr in thread_results)
-    H_te  = sum(tr.H_total_energy      for tr in thread_results)
-    E_ss  = sum(tr.E_total_cluster_all_SS for tr in thread_results)
+    # Sum histograms across threads
+    h_u   = sum(tr.h_u_sampled for tr in thread_results)
+    H_cpf = sum(tr.H_cluster_pre_fv for tr in thread_results)
+    h_dz  = sum(tr.h_dz for tr in thread_results)
+    h_nv  = sum(tr.h_n_visible for tr in thread_results)
+    h_Ei  = sum(tr.h_E_cluster_inclusive for tr in thread_results)
+    H_sfv = sum(tr.H_ss_fv for tr in thread_results)
+    h_Esf = sum(tr.h_E_ss_fv for tr in thread_results)
+    H_sig = sum(tr.H_signal for tr in thread_results)
     n_ip  = sum(tr.n_interactions_per_photon for tr in thread_results)
     pl    = sum(tr.path_length_in_LXe for tr in thread_results)
 
@@ -708,7 +763,9 @@ function merge_results(thread_results::Vector{ThreadResult},
                              params.mc_n_traj_per_outcome)
 
     Result(params, geom, source, xcom, counts,
-           H_fi, H_cp, H_sig, H_te, E_ss, n_ip, pl,
+           h_u, H_cpf, h_dz, h_nv, h_Ei,
+           H_sfv, h_Esf, H_sig,
+           n_ip, pl,
            bin_edges_z, bin_edges_r2, bin_edges_E,
            trajs, trajs_fv, runtime_seconds)
 end

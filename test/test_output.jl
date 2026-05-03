@@ -84,9 +84,13 @@ end
     @test isfile(joinpath(test_dir, "results.h5"))
     @test isfile(joinpath(test_dir, "summary.txt"))
     @test isfile(joinpath(test_dir, "trajectories.json"))
-    @test isfile(joinpath(test_dir, "heatmap_signal.png"))
-    @test isfile(joinpath(test_dir, "spectrum_SS.png"))
-    @test isfile(joinpath(test_dir, "diagnostic.png"))
+    @test isfile(joinpath(test_dir, "cut1_dNdu.png"))
+    @test isfile(joinpath(test_dir, "cut2_cluster_pre_fv.png"))
+    @test isfile(joinpath(test_dir, "cut3_ssms.png"))
+    @test isfile(joinpath(test_dir, "cut4_ss_fv.png"))
+    @test isfile(joinpath(test_dir, "cut4_energy.png"))
+    @test isfile(joinpath(test_dir, "cut4_signal.png"))
+    @test isfile(joinpath(test_dir, "diagnostics.png"))
 
     # summary.txt should contain key info
     txt = read(joinpath(test_dir, "summary.txt"), String)

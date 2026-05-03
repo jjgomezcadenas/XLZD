@@ -451,7 +451,7 @@ function sample_entry_direction(rng::AbstractRNG, source::SourceConfig,
 
     # Normalize for safety
     norm = sqrt(dx * dx + dy * dy + dz * dz)
-    return (dx / norm, dy / norm, dz / norm)
+    return (dx / norm, dy / norm, dz / norm, u)
 end
 
 """
