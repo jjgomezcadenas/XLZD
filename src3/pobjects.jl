@@ -81,7 +81,54 @@ struct PSurface
     act_Th232_late_mBqkg::Float64
 end
 
-const PObject = Union{PCyl, PDisk, PSurface}
+"""
+    PAnnularDisk(R_in, R_out, z_face, H_axial, normal_sign, material,
+                 act_U238_late_mBqkg, act_Th232_late_mBqkg, count=1, name="")
+
+Field-cage grid-holder primitive: a thick-walled annular slab with axis
+along ẑ. Inner radius `R_in`, outer radius `R_out`, axial thickness
+`H_axial`, with the **LXe-facing face** at z = `z_face`. The slab
+extends *away* from the LXe along `−normal_sign · ẑ` for `H_axial` cm:
+
+  * `normal_sign = +1` ⇒ slab spans z ∈ [z_face − H_axial, z_face],
+                          inward normal is +ẑ (face on top, slab below)
+  * `normal_sign = −1` ⇒ slab spans z ∈ [z_face, z_face + H_axial],
+                          inward normal is −ẑ (face on bottom, slab above)
+
+Self-shielding uses the same plane-parallel slab integral as `PDisk`
+with `t_src = H_axial`. Outward emission (out the *other* face of the
+slab) is discarded by construction — for the FCBG/FCTG holders that
+"other" face opens into RFR / gas-anode region, both irrelevant for
+the active LXe accounting.
+"""
+struct PAnnularDisk
+    R_in::Float64
+    R_out::Float64
+    z_face::Float64
+    H_axial::Float64
+    normal_sign::Int          # +1 (emit +ẑ) or −1 (emit −ẑ)
+    material::Material
+    act_U238_late_mBqkg::Float64
+    act_Th232_late_mBqkg::Float64
+    count::Int
+    name::String
+
+    function PAnnularDisk(R_in, R_out, z_face, H_axial, normal_sign,
+                          material, aU, aTh; count::Integer=1, name="")
+        R_in  > 0          || error("PAnnularDisk: R_in must be positive (got $R_in)")
+        R_out > R_in       ||
+            error("PAnnularDisk: R_out ($R_out) must exceed R_in ($R_in)")
+        H_axial > 0        ||
+            error("PAnnularDisk: H_axial must be positive (got $H_axial)")
+        normal_sign in (+1, -1) ||
+            error("PAnnularDisk: normal_sign must be ±1 (got $normal_sign)")
+        new(Float64(R_in), Float64(R_out), Float64(z_face),
+            Float64(H_axial), Int(normal_sign), material,
+            Float64(aU), Float64(aTh), Int(count), String(name))
+    end
+end
+
+const PObject = Union{PCyl, PDisk, PSurface, PAnnularDisk}
 
 # ---------------------------------------------------------------------------
 # Mass and activity
@@ -93,6 +140,14 @@ mass(p::PDisk)::Float64 = mass(p.geom, p.material.density) * p.count
 
 "Mass (kg) for a surface source: explicit field, no geometry derivation."
 mass(p::PSurface)::Float64 = p.total_mass_kg
+
+"Annular slab volume (cm³): π·(R_out² − R_in²)·H_axial."
+volume_shell(p::PAnnularDisk)::Float64 =
+    π * (p.R_out^2 - p.R_in^2) * p.H_axial
+
+"Mass (kg) of the annular slab: volume × density × count."
+mass(p::PAnnularDisk)::Float64 =
+    volume_shell(p) * p.material.density * p.count / 1000.0
 
 "Total ²³⁸U-late activity (mBq)."
 activity_U238_late(p::PObject)::Float64 = mass(p) * p.act_U238_late_mBqkg
@@ -124,9 +179,10 @@ The slab thickness used in the self-shielding integral. For both `PCyl`
 and `PDisk` this is the wall thickness in the inward direction (radial
 for cylinders, normal-to-surface for discs).
 """
-source_slab_thickness(p::PCyl)::Float64    = p.geom.wall_thickness
-source_slab_thickness(p::PDisk)::Float64   = p.geom.wall_thickness
-source_slab_thickness(::PSurface)::Float64 = 0.0
+source_slab_thickness(p::PCyl)::Float64         = p.geom.wall_thickness
+source_slab_thickness(p::PDisk)::Float64        = p.geom.wall_thickness
+source_slab_thickness(::PSurface)::Float64      = 0.0
+source_slab_thickness(p::PAnnularDisk)::Float64 = p.H_axial
 
 """
     self_shielded_spectrum(p, gamma_rate_per_yr, E_MeV, u_bins) -> dNdu
@@ -143,7 +199,8 @@ where R is the total γ-production rate (γ/yr) and t_src the source
 slab thickness. The integral over u ∈ (0, 1] gives the inward-going
 γ/yr at the inner surface.
 """
-function self_shielded_spectrum(p::Union{PCyl,PDisk}, gamma_rate_per_yr::Real,
+function self_shielded_spectrum(p::Union{PCyl,PDisk,PAnnularDisk},
+                                gamma_rate_per_yr::Real,
                                 E_MeV::Real, u_bins::Vector{Float64})
     μ_src = p.material.μ_lin(E_MeV)
     t_src = source_slab_thickness(p)

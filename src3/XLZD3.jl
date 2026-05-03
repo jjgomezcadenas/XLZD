@@ -47,10 +47,10 @@ export total_mass, mass_breakdown, mc_active_extras, mc_active_mass
 export Material, load_material
 
 # Physics-aware geometry
-export PCyl, PDisk, PSurface, PObject
+export PCyl, PDisk, PSurface, PAnnularDisk, PObject
 export activity_U238_late, activity_Th232_late
 export gamma_rate_Bi214, gamma_rate_Tl208, gamma_rate_Tl208_companion
-export source_slab_thickness, self_shielded_spectrum
+export source_slab_thickness, self_shielded_spectrum, volume_shell
 
 # Constants
 export BR_BI214_GAMMA, BR_TL208_FROM_CHAIN, BR_TL208_COMPANION, SEC_PER_YEAR

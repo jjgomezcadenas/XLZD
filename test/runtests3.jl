@@ -15,6 +15,7 @@ const TEST_FILES = [
     "test_physics3.jl",
     "test_material3.jl",
     "test_pobjects3.jl",
+    "test_pannulardisk3.jl",
     "test_sources3.jl",
     "test_transport3.jl",
     "test_effective_sources3.jl",
