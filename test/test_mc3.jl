@@ -231,14 +231,16 @@ end
     res = run_mc(det, eff, nothing, xcom, params, 1000; mc_seed=0x1234)
     @test res.stack_hists   isa StackHistogramSet
     @test res.cluster_hists isa ClusterHistogramSet
-    # Stack/cluster histograms accumulate ONCE per event that reaches
-    # full tracking (i.e. fast_veto returned :pass). Events fast-rejected
-    # (:vetoed_skin / :rejected_fv from the FAST path) skip the update.
-    # The two sums must therefore agree with each other and be > 0 and
-    # ≤ n_total.
-    n_h = sum(res.stack_hists.path_length_LXe_counts)
-    @test n_h == sum(res.cluster_hists.N_clusters_counts)
-    @test 0 < n_h <= res.n_total
+    @test res.cut_hists     isa CutHistograms
+    # path_length_LXe is filled once per fast-pass event → sum ≤ n_total.
+    n_path = sum(res.stack_hists.path_length_LXe_counts)
+    @test 0 < n_path <= res.n_total
+    # Ec is filled once per cluster, so its sum is total cluster count
+    # (≥ n_path because most events have ≥ 1 cluster, and some have many).
+    @test sum(res.cluster_hists.Ec_counts) > 0
+    # h_u_sampled fills once per *sampled* photon (regardless of fast-veto)
+    # so it must equal n_total.
+    @test sum(res.cut_hists.h_u_sampled) == res.n_total
 end
 
 @testset "with_*_histograms=false leaves them as nothing" begin

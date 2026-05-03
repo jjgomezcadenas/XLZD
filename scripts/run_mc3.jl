@@ -58,9 +58,6 @@ function parse_cli()
             arg_type = Float64
             default  = 39.0
             help     = "FV r maximum (cm). r² = (fv-r-max)² is what MCParams stores."
-        "--no-rejection-histograms"
-            action   = :store_true
-            help     = "Skip writing the rejected_skin / rejected_fv histograms."
         "--no-stack-histos"
             action   = :store_true
             help     = "Skip accumulating + writing StackHistogramSet CSVs."
@@ -89,7 +86,6 @@ function main()
     fv_z_min  = args["fv-z-min"]
     fv_z_max  = args["fv-z-max"]
     fv_r_max  = args["fv-r-max"]
-    do_rej_hist       = !args["no-rejection-histograms"]
     do_stack_hist     = !args["no-stack-histos"]
     do_cluster_hist   = !args["no-cluster-histos"]
     do_cut_hist       = !args["no-cut-histos"]
@@ -133,7 +129,6 @@ function main()
                               mc_seed=seed, verbose=true,
                               with_stack_histograms=do_stack_hist,
                               with_cluster_histograms=do_cluster_hist,
-                              with_rejection_histograms=do_rej_hist,
                               with_cut_histograms=do_cut_hist,
                               sample_stack=sample_stack_n,
                               sample_stack_dir=out_dir)
@@ -154,7 +149,6 @@ function main()
                                mc_seed=seed, verbose=true,
                                with_stack_histograms=do_stack_hist,
                                with_cluster_histograms=do_cluster_hist,
-                               with_rejection_histograms=do_rej_hist,
                                with_cut_histograms=do_cut_hist,
                                sample_stack=sample_stack_n,
                                sample_stack_path=sample_path))
@@ -270,13 +264,10 @@ function main()
     println("  → wrote $csv_path")
 
     # ───────── Histogram CSVs (one folder per source) ─────────
-    if do_rej_hist || do_stack_hist || do_cluster_hist || do_cut_hist
+    if do_stack_hist || do_cluster_hist || do_cut_hist
         for r in results
             h_dir = joinpath(out_dir, "hist_$(r.name)")
             wrote = false
-            if do_rej_hist && r.rej_hist !== nothing
-                mkpath(h_dir); _save_rejection_csvs(h_dir, r.rej_hist); wrote = true
-            end
             if do_stack_hist && r.stack_hists !== nothing
                 mkpath(h_dir); _save_stack_csvs(h_dir, r.stack_hists); wrote = true
             end
@@ -373,56 +364,9 @@ end
 # ---------------------------------------------------------------------------
 
 function _save_cluster_csvs(dir::String, ch::ClusterHistogramSet)
-    # 1D energies
-    for (name, V) in (("cluster_Ec.csv",  ch.Ec_counts),
-                       ("cluster_Emax.csv", ch.Emax_counts),
-                       ("cluster_Emin.csv", ch.Emin_counts),
-                       ("cluster_Einc.csv", ch.Einc_counts),
-                       ("cluster_ss_ec_pre_roi.csv", ch.ss_ec_pre_roi_counts),
-                       ("cluster_ss_es_pre_roi.csv", ch.ss_es_pre_roi_counts))
-        _write_1d(joinpath(dir, name), V;
-                  lo=0.0, hi=ch.E_max_MeV,
-                  left_label="bin_left_MeV", right_label="bin_right_MeV")
-    end
-
-    # 1D pair distances
-    _write_1d(joinpath(dir, "cluster_closest_D3.csv"),  ch.closest_D3_counts;
-              lo=0.0, hi=ch.D3_max_cm,
-              left_label="bin_left_cm", right_label="bin_right_cm")
-    _write_1d(joinpath(dir, "cluster_furthest_D3.csv"), ch.furthest_D3_counts;
-              lo=0.0, hi=ch.D3_max_cm,
-              left_label="bin_left_cm", right_label="bin_right_cm")
-    _write_1d(joinpath(dir, "cluster_closest_dz.csv"),  ch.closest_dz_counts;
-              lo=0.0, hi=ch.dz_max_cm,
-              left_label="bin_left_cm", right_label="bin_right_cm")
-    _write_1d(joinpath(dir, "cluster_furthest_dz.csv"), ch.furthest_dz_counts;
-              lo=0.0, hi=ch.dz_max_cm,
-              left_label="bin_left_cm", right_label="bin_right_cm")
-
-    # Cluster multiplicity (integer bucket)
-    _write_int_bins(joinpath(dir, "cluster_N_clusters.csv"),
-                    ch.N_clusters_counts; label="n_clusters")
-
-    # 2D heatmaps
-    _write_2d(joinpath(dir, "cluster_r2_vs_z.csv"), ch.r2_vs_z_2d_counts;
-              x_lo=0.0,           x_hi=ch.r2_max_cm2, x_n=ch.r2_n_bins,
-              x_left="bin_r2_left_cm2",  x_right="bin_r2_right_cm2",
-              y_lo=ch.z_min_cm,   y_hi=ch.z_max_cm,   y_n=ch.z_n_bins,
-              y_left="bin_z_left_cm",    y_right="bin_z_right_cm")
-    _write_2d(joinpath(dir, "cluster_D_vs_z.csv"), ch.D_vs_z_2d_counts;
-              x_lo=0.0,           x_hi=ch.D_max_cm,   x_n=ch.D_n_bins,
-              x_left="bin_D_left_cm",    x_right="bin_D_right_cm",
-              y_lo=ch.z_min_cm,   y_hi=ch.z_max_cm,   y_n=ch.z_n_bins,
-              y_left="bin_z_left_cm",    y_right="bin_z_right_cm")
-    # New: per-cluster (Δz_to_nearest, ec) — diagnostic for MS regime.
-    # Note: matrix is stored (dz, ec) but written transposed so the first
-    # two CSV columns are ec (which the plotter routes to the Y axis).
-    _write_2d(joinpath(dir, "cluster_Ec_vs_dz.csv"),
-              permutedims(ch.Ec_vs_dz_2d_counts);
-              x_lo=0.0,           x_hi=ch.ec2d_max_MeV, x_n=ch.ec2d_n_bins,
-              x_left="bin_ec_left_MeV",  x_right="bin_ec_right_MeV",
-              y_lo=0.0,           y_hi=ch.dz_max_cm,    y_n=ch.dz_n_bins,
-              y_left="bin_dz_left_cm",   y_right="bin_dz_right_cm")
+    _write_1d(joinpath(dir, "diag_cluster_Ec.csv"), ch.Ec_counts;
+              lo=0.0, hi=ch.E_max_MeV,
+              left_label="bin_left_MeV", right_label="bin_right_MeV")
 end
 
 # ---------------------------------------------------------------------------
@@ -468,36 +412,6 @@ function _save_cut_csvs(dir::String, ch::CutHistograms)
               x_left="bin_r_left_cm",   x_right="bin_r_right_cm",
               y_lo=ch.z_min_cm,   y_hi=ch.z_max_cm,   y_n=ch.z_n_bins,
               y_left="bin_z_left_cm",   y_right="bin_z_right_cm")
-end
-
-function _save_rejection_csvs(dir::String, rh::RejectionHistograms)
-    r2_bw = rh.r2_max_cm2 / rh.r2_n_bins
-    z_bw  = (rh.z_max_cm - rh.z_min_cm) / rh.z_n_bins
-    e_bw  = rh.E_max_MeV / rh.E_n_bins
-    function _write_r2z(path, M)
-        open(path, "w") do f
-            println(f, "bin_r2_left_cm2,bin_r2_right_cm2,bin_z_left_cm,bin_z_right_cm,count")
-            for i in 1:rh.r2_n_bins, j in 1:rh.z_n_bins
-                r2_l = (i-1) * r2_bw
-                r2_r = i      * r2_bw
-                z_l  = rh.z_min_cm + (j-1) * z_bw
-                z_r  = rh.z_min_cm + j     * z_bw
-                println(f, "$r2_l,$r2_r,$z_l,$z_r,$(M[i, j])")
-            end
-        end
-    end
-    function _write_E(path, V)
-        open(path, "w") do f
-            println(f, "bin_left_MeV,bin_right_MeV,count")
-            for i in 1:rh.E_n_bins
-                println(f, "$((i-1)*e_bw),$(i*e_bw),$(V[i])")
-            end
-        end
-    end
-    _write_r2z(joinpath(dir, "rejected_skin_r2z.csv"), rh.skin_r2z_counts)
-    _write_E(  joinpath(dir, "rejected_skin_E.csv"),   rh.skin_E_counts)
-    _write_r2z(joinpath(dir, "rejected_fv_r2z.csv"),   rh.fv_r2z_counts)
-    _write_E(  joinpath(dir, "rejected_fv_E.csv"),     rh.fv_E_counts)
 end
 
 main()

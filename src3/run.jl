@@ -23,7 +23,7 @@ Fields:
                        (per-cluster energy, multiplicity, pair distances,
                        r²/D vs z heatmaps).
                        `nothing` if `with_cluster_histograms=false`.
-  * `rej_hist`       — RejectionHistograms (skin/FV early-reject diagnostics).
+  * `cut_hists`      — CutHistograms (per-cut funnel set; see histograms.jl).
 """
 struct MCResult
     name::String
@@ -37,7 +37,6 @@ struct MCResult
     r_comp::Float64
     stack_hists::Union{StackHistogramSet, Nothing}
     cluster_hists::Union{ClusterHistogramSet, Nothing}
-    rej_hist::Union{RejectionHistograms, Nothing}
     cut_hists::Union{CutHistograms, Nothing}
 end
 
@@ -46,8 +45,7 @@ const _MC_OUTCOMES = (:escaped, :MS_rejected, :skin_vetoed,
                       :companion_vetoed)
 
 """
-    run_mc(det, eff, comp_eff, xcom, params, n_samples; mc_seed=1234,
-            with_rejection_histograms=true, verbose=false) -> MCResult
+    run_mc(det, eff, comp_eff, xcom, params, n_samples; mc_seed=1234) -> MCResult
 
 Run the per-photon MC with `n_samples` photons sampled from `eff`,
 parallelised across `Threads.nthreads()` threads. Each thread is seeded
@@ -56,7 +54,7 @@ with `mc_seed + thread_id` for reproducibility.
 Per-event pipeline (see `src3/tracker.jl` for the algorithm):
 
     copy!(snapshot, rng)
-    fv = fast_veto(rng, det, eff, xcom, params; rej_hist)
+    fv = fast_veto(rng, det, eff, xcom, params; cut_hist=local_cut)
     if fv === :pass
         copy!(rng, snapshot)                    # restore for the same event
         empty!(stack)
@@ -69,12 +67,11 @@ Per-event pipeline (see `src3/tracker.jl` for the algorithm):
 If `eff.isotope === :Tl208` and `comp_eff` is provided, the companion
 veto is applied: each `:SS_in_ROI` candidate is converted to
 `:companion_vetoed` with probability
-`r_comp · P(companion produces visible deposit)`, where
-`r_comp = companion_reach_prob(comp_eff)`. For Bi-214 sources, pass
-`comp_eff = nothing`.
+`r_comp · P(companion produces visible deposit)`. For Bi-214 sources,
+pass `comp_eff = nothing`.
 
-The kwarg `with_histograms` is reserved for stack-based control
-histograms (currently a no-op; `MCResult.histograms` is always `nothing`).
+The cut-flow `CutHistograms` is filled along the way (cut-1 + cut-2
+inside `fast_veto`, cut-3 + cut-4 here after `classify_event`).
 """
 function run_mc(det::LXeDetector, eff::EffectiveSource,
                 comp_eff::Union{EffectiveSource, Nothing},
@@ -83,7 +80,6 @@ function run_mc(det::LXeDetector, eff::EffectiveSource,
                 verbose::Bool=false,
                 with_stack_histograms::Bool=true,
                 with_cluster_histograms::Bool=true,
-                with_rejection_histograms::Bool=true,
                 with_cut_histograms::Bool=true,
                 sample_stack::Int=0,
                 sample_stack_path::Union{AbstractString, Nothing}=nothing
@@ -106,12 +102,6 @@ function run_mc(det::LXeDetector, eff::EffectiveSource,
 
     thread_counts = [Dict{Symbol,Int}(o => 0 for o in _MC_OUTCOMES)
                      for _ in 1:n_threads]
-    thread_rej_hist = with_rejection_histograms ?
-                      [RejectionHistograms(r2_max_cm2 = det.R_ICV_inner^2,
-                                            z_min_cm   = det.z_LXe_bottom,
-                                            z_max_cm   = det.z_gate)
-                       for _ in 1:n_threads] :
-                      Vector{RejectionHistograms}()
     thread_stack_hist = with_stack_histograms ?
                         [StackHistogramSet() for _ in 1:n_threads] :
                         Vector{StackHistogramSet}()
@@ -151,7 +141,6 @@ function run_mc(det::LXeDetector, eff::EffectiveSource,
         n_local      = base + (tid <= rem ? 1 : 0)
         rng          = MersenneTwister(mc_seed + tid)
         local_counts = thread_counts[tid]
-        local_rej    = with_rejection_histograms ? thread_rej_hist[tid] : nothing
         local_stack_hist   = with_stack_histograms   ? thread_stack_hist[tid]   : nothing
         local_cluster_hist = with_cluster_histograms ? thread_cluster_hist[tid] : nothing
         local_cut    = with_cut_histograms ? thread_cut_hist[tid] : nothing
@@ -178,8 +167,7 @@ function run_mc(det::LXeDetector, eff::EffectiveSource,
             # fast_veto fills cut 1 (h_u_sampled) on every photon and
             # cut 2 (first_interaction_r_z) when the photon interacts.
             fv = fast_veto(rng, det, eff, xcom, params;
-                            rej_hist=local_rej, cut_hist=local_cut,
-                            cdf=eff_cdf)
+                            cut_hist=local_cut, cdf=eff_cdf)
             if fv === :pass
                 copy!(rng, local_snap)
                 empty!(local_stack)
@@ -191,16 +179,8 @@ function run_mc(det::LXeDetector, eff::EffectiveSource,
                                           clusters, params)
                 local_stack_hist   !== nothing &&
                     update_stack_histograms!(local_stack_hist, local_stack, params)
-                if local_cluster_hist !== nothing
+                local_cluster_hist !== nothing &&
                     update_cluster_histograms!(local_cluster_hist, clusters, params)
-                    # SS pre-ROI spectrum: events that survived skin/FV/SC and are
-                    # about to be ROI-tested. The set is exactly
-                    # {:SS_in_ROI, :SS_outside_ROI} as returned by classify_event
-                    # (companion-veto reclassification happens later, below).
-                    if outcome === :SS_in_ROI || outcome === :SS_outside_ROI
-                        fill_ss_pre_roi!(local_cluster_hist, clusters, params)
-                    end
-                end
                 # Cut 3: events that passed skin + FV (= NOT escaped /
                 # skin_vetoed / outside_FV). Equivalent to outcome ∈
                 # {MS_rejected, SS_outside_ROI, SS_in_ROI}; companion_vetoed
@@ -285,18 +265,6 @@ function run_mc(det::LXeDetector, eff::EffectiveSource,
     f_ss_roi = counts[:SS_in_ROI] / n_total
     bg       = f_ss_roi * eff.total_per_yr
 
-    merged_rej = if with_rejection_histograms
-        rh = RejectionHistograms(r2_max_cm2 = det.R_ICV_inner^2,
-                                  z_min_cm   = det.z_LXe_bottom,
-                                  z_max_cm   = det.z_gate)
-        for tr in thread_rej_hist
-            merge_rejection_histograms!(rh, tr)
-        end
-        rh
-    else
-        nothing
-    end
-
     merged_stack_hist = if with_stack_histograms
         sh = StackHistogramSet()
         for th in thread_stack_hist
@@ -334,7 +302,7 @@ function run_mc(det::LXeDetector, eff::EffectiveSource,
 
     MCResult(eff.name, eff.isotope, counts, n_total, runtime,
              eff.total_per_yr, f_ss_roi, bg, r_comp,
-             merged_stack_hist, merged_cluster_hist, merged_rej,
+             merged_stack_hist, merged_cluster_hist,
              merged_cut_hist)
 end
 
@@ -352,7 +320,6 @@ function run_mc_all(det::LXeDetector, effs::Vector{EffectiveSource},
                     verbose::Bool=false,
                     with_stack_histograms::Bool=true,
                     with_cluster_histograms::Bool=true,
-                    with_rejection_histograms::Bool=true,
                     with_cut_histograms::Bool=true,
                     sample_stack::Int=0,
                     sample_stack_dir::Union{AbstractString, Nothing}=nothing
@@ -382,7 +349,6 @@ function run_mc_all(det::LXeDetector, effs::Vector{EffectiveSource},
                               mc_seed=seed, verbose=verbose,
                               with_stack_histograms=with_stack_histograms,
                               with_cluster_histograms=with_cluster_histograms,
-                              with_rejection_histograms=with_rejection_histograms,
                               with_cut_histograms=with_cut_histograms,
                               sample_stack=sample_stack,
                               sample_stack_path=sample_path))

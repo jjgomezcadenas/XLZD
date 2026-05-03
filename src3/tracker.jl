@@ -5,17 +5,19 @@
 # `path_to_next_region`, `companion_visible!`, `companion_reach_prob`.
 #
 # Public functions:
-#   * `track_photon_stack(rng, det, eff, xcom, params, stack; rej_hist=nothing)`
+#   * `track_photon_stack(rng, det, eff, xcom, params, stack; cdf=nothing)`
 #       Tracks one γ from `eff` through the LXe; pushes one row per
 #       interaction onto `stack`. Compton outgoing γ recurse via tail
 #       loop; pair vertices spawn two 511 keV children with back-to-back
 #       random axis (one level of real recursion). Returns one of
 #       `:completed` (stack populated) / `:escaped` (no row pushed).
-#   * `fast_veto(rng, det, eff, xcom, params; rej_hist=nothing)`
+#   * `fast_veto(rng, det, eff, xcom, params; cut_hist=nothing, cdf=nothing)`
 #       Single-deposit pre-screen on the first interaction. Returns
 #       `:vetoed_skin`, `:rejected_fv`, or `:pass`. Caller (run_mc)
 #       wraps with copy!(snapshot, rng) / copy!(rng, snapshot) so
 #       `track_photon_stack` re-samples the same first interaction.
+#       Fills cut-1 (h_u_sampled) and cut-2 (first_interaction_r_z)
+#       on the optional `cut_hist::CutHistograms`.
 #   - 11i: delete legacy tracker from src3/mc.jl                      TODO
 #
 # Region-class semantics:
@@ -40,13 +42,10 @@ const _TRACKER_BOUNDARY_NUDGE = 1.0e-7
 
 """
     track_photon_stack(rng, det, eff, xcom, params, stack;
-                        rej_hist=nothing) -> status::Symbol
+                        cdf=nothing) -> status::Symbol
 
-Stack-based per-photon tracker (work in progress; see file header for
-the step-by-step status).
-
-**Step 11e:** samples one γ from `eff` and delegates to
-`_track_child_photon!` for transport + interactions. Compton-outgoing
+Stack-based per-photon tracker. Samples one γ from `eff` and delegates
+to `_track_child_photon!` for transport + interactions. Compton-outgoing
 γ are tracked through the cascade (tail-loop, no real recursion). At
 a pair vertex, two 511 keV annihilation γ are spawned at the vertex
 position with back-to-back random axis; each is tracked by its own
@@ -58,13 +57,10 @@ The status return is derived from whether any row was pushed:
   `length(stack) == 0` -> :escaped (source photon left LXe before any
                                      interaction).
   `length(stack) >= 1` -> :completed.
-
-`rej_hist` is accepted but unused until 11f.
 """
 function track_photon_stack(rng::AbstractRNG, det::LXeDetector,
                              eff::EffectiveSource, xcom::XCOMTable,
                              params::MCParams, stack::PhotonStack;
-                             rej_hist::Union{RejectionHistograms, Nothing}=nothing,
                              cdf::Union{Vector{Float64}, Nothing}=nothing
                              )::Symbol
     x, y, z, dx, dy, dz, _u = cdf === nothing ?
@@ -220,7 +216,7 @@ end
 # fast_veto — pre-tracking single-deposit reject screen
 # ===========================================================================
 """
-    fast_veto(rng, det, eff, xcom, params; rej_hist=nothing) -> Symbol
+    fast_veto(rng, det, eff, xcom, params; cut_hist=nothing, cdf=nothing) -> Symbol
 
 Quick first-interaction screen returning one of:
   :pass         — first interaction does NOT trigger reject; caller
@@ -237,7 +233,7 @@ NOT call `track_photon_stack` or `_track_child_photon!`.
 
 Caller (`run_mc` in 11g) should:
     copy!(rng_snapshot, rng)
-    fv = fast_veto(rng, det, eff, xcom, params; rej_hist)
+    fv = fast_veto(rng, det, eff, xcom, params; cut_hist)
     if fv === :pass
         copy!(rng, rng_snapshot)
         track_photon_stack(rng, det, eff, xcom, params, stack)
@@ -251,7 +247,6 @@ Threshold sources: `params.E_visible_keV`, `params.E_skin_veto_keV`.
 function fast_veto(rng::AbstractRNG, det::LXeDetector,
                     eff::EffectiveSource, xcom::XCOMTable,
                     params::MCParams;
-                    rej_hist::Union{RejectionHistograms, Nothing}=nothing,
                     cut_hist::Union{CutHistograms, Nothing}=nothing,
                     cdf::Union{Vector{Float64}, Nothing}=nothing
                     )::Symbol
@@ -320,11 +315,9 @@ function fast_veto(rng::AbstractRNG, det::LXeDetector,
 
         # Apply the two fast-reject thresholds.
         if region === :TPC && !in_fv(x, y, z, params) && edep > E_visible_MeV
-            rej_hist !== nothing && fill_rejected_fv!(rej_hist, x, y, z, edep)
             return :rejected_fv
         end
         if region === :Skin && edep > E_skin_veto_MeV
-            rej_hist !== nothing && fill_rejected_skin!(rej_hist, x, y, z, edep)
             return :vetoed_skin
         end
 

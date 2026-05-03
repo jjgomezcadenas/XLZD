@@ -2,17 +2,15 @@
 #
 # Three histogram families:
 #
-#   * `StackHistogramSet`     — per-event quantities derived from the
-#                                full PhotonStack (chain depth, first
-#                                interaction type, per-region deposit
-#                                counts, inclusive energy, etc.)
-#   * `ClusterHistogramSet`   — per-event quantities derived from the
-#                                cluster vector (cluster energies,
-#                                pair distances, r²-vs-z and D-vs-z
-#                                heatmaps).
-#   * `RejectionHistograms`   — diagnostic for fast_veto rejections
-#                                (skin overflow / outside-FV first
-#                                deposit). 2D r²×z + 1D E for each.
+#   * `StackHistogramSet`     — three diagnostic plots derived from the
+#                                full PhotonStack: interaction-type
+#                                frequency, per-photon LXe path length,
+#                                region × interaction matrix.
+#   * `ClusterHistogramSet`   — per-cluster Ec spectrum (per-cluster
+#                                fill, every fast-pass event).
+#   * `CutHistograms`         — the cut-flow set: one accumulator per
+#                                stage of the analysis funnel. See its
+#                                docstring for the 8 sub-fields.
 #
 # Bin indexing helper `_bin_idx` is shared. Constructors take kwargs so
 # detector-specific binning can be tuned at the call site.
@@ -141,315 +139,43 @@ end
 """
     ClusterHistogramSet
 
-Per-event histograms accumulated from the `Vector{Cluster}` produced by
-`build_clusters`.
-
-Bins (defaults; configurable via kwargs):
-  - `Ec`              270 bins on [0, 2.7] MeV   per-cluster energy
-  - `N_clusters`       21 bins (0..20)            cluster multiplicity
-  - `Emax`, `Emin`,
-    `Einc`            270 bins on [0, 2.7] MeV   per-event extremes/sum
-  - `closest_D3`,
-    `furthest_D3`     100 bins on [0, 200] cm    3D nearest/farthest pair
-  - `closest_dz`,
-    `furthest_dz`     100 bins on [0, 50]  cm    z-only pair distances
-  - `r2_vs_z`        100×100 on [0, R_ICV²] × [z_min, z_max]
-  - `D_vs_z`         100×100 on [0,  100  ] × [z_min, z_max]
+Per-cluster diagnostic histogram. Stripped to a single field after the
+cut-flow refactor: per-cluster `Ec` (one entry per cluster across all
+fast-pass events). The cut-flow side of the analysis lives in
+`CutHistograms`.
 """
 struct ClusterHistogramSet
-    # Energies
     E_n_bins::Int
     E_max_MeV::Float64
     Ec_counts::Vector{Int}
-    N_clusters_counts::Vector{Int}
-    Emax_counts::Vector{Int}
-    Emin_counts::Vector{Int}
-    Einc_counts::Vector{Int}
-
-    # 1D pair distances
-    D3_n_bins::Int
-    D3_max_cm::Float64
-    closest_D3_counts::Vector{Int}
-    furthest_D3_counts::Vector{Int}
-    dz_n_bins::Int
-    dz_max_cm::Float64
-    closest_dz_counts::Vector{Int}
-    furthest_dz_counts::Vector{Int}
-
-    # 2D heatmaps
-    r2_n_bins::Int
-    r2_max_cm2::Float64
-    z_n_bins::Int
-    z_min_cm::Float64
-    z_max_cm::Float64
-    r2_vs_z_2d_counts::Matrix{Int}
-
-    D_n_bins::Int
-    D_max_cm::Float64
-    D_vs_z_2d_counts::Matrix{Int}
-
-    # Per-cluster (ec, Δz_to_nearest_other_cluster) — 2D scatter
-    # for diagnosing MS-rejection regime.
-    ec2d_n_bins::Int
-    ec2d_max_MeV::Float64
-    Ec_vs_dz_2d_counts::Matrix{Int}    # shape: (dz_n_bins, ec2d_n_bins)
-
-    # SS pre-ROI spectra: cluster energy of the (single) visible cluster
-    # for events that have passed all upstream cuts (skin, FV, SC) and are
-    # about to be ROI-tested. `ec` is the true (deterministic) cluster
-    # energy, `es` is the smeared energy that the ROI cut acts on. Filled
-    # by `fill_ss_pre_roi!` from `run.jl`. Same binning as `Ec_counts`.
-    ss_ec_pre_roi_counts::Vector{Int}
-    ss_es_pre_roi_counts::Vector{Int}
 end
 
-function ClusterHistogramSet(;
-        E_n_bins::Int=270, E_max_MeV::Real=2.7,
-        N_clusters_n::Int=21,
-        D3_n_bins::Int=100, D3_max_cm::Real=200.0,
-        dz_n_bins::Int=100, dz_max_cm::Real=50.0,
-        r2_n_bins::Int=100, r2_max_cm2::Real=82.1^2,
-        z_n_bins::Int=100,  z_min_cm::Real=-69.0, z_max_cm::Real=145.6,
-        D_n_bins::Int=100,  D_max_cm::Real=100.0,
-        ec2d_n_bins::Int=100, ec2d_max_MeV::Real=2.7)
-    ClusterHistogramSet(
-        E_n_bins, Float64(E_max_MeV),
-        zeros(Int, E_n_bins),
-        zeros(Int, N_clusters_n),
-        zeros(Int, E_n_bins),
-        zeros(Int, E_n_bins),
-        zeros(Int, E_n_bins),
-        D3_n_bins, Float64(D3_max_cm),
-        zeros(Int, D3_n_bins),
-        zeros(Int, D3_n_bins),
-        dz_n_bins, Float64(dz_max_cm),
-        zeros(Int, dz_n_bins),
-        zeros(Int, dz_n_bins),
-        r2_n_bins, Float64(r2_max_cm2),
-        z_n_bins,  Float64(z_min_cm), Float64(z_max_cm),
-        zeros(Int, r2_n_bins, z_n_bins),
-        D_n_bins,  Float64(D_max_cm),
-        zeros(Int, D_n_bins, z_n_bins),
-        ec2d_n_bins, Float64(ec2d_max_MeV),
-        zeros(Int, dz_n_bins, ec2d_n_bins),
-        zeros(Int, E_n_bins),
-        zeros(Int, E_n_bins),
-    )
+function ClusterHistogramSet(; E_n_bins::Int = 270, E_max_MeV::Real = 2.7,
+                              kwargs...)         # ignore legacy kwargs
+    ClusterHistogramSet(E_n_bins, Float64(E_max_MeV), zeros(Int, E_n_bins))
 end
 
 """
     update_cluster_histograms!(ch::ClusterHistogramSet,
                                 clusters::Vector{Cluster}, params::MCParams)
 
-Fold one event's clusters into `ch`. Empty cluster vectors only update
-`N_clusters_counts[1]` (= 0 clusters); per-event Emax/Emin/Einc and
-pair-distance histograms are skipped (no clusters → nothing to fill).
+Fold one event's clusters into `ch`. One entry per cluster is added to
+`Ec_counts`. Events with no clusters contribute nothing.
 """
 function update_cluster_histograms!(ch::ClusterHistogramSet,
                                      clusters::Vector{Cluster},
                                      params::MCParams)
-    nc = length(clusters)
-    _bin_int!(ch.N_clusters_counts, nc)
-    nc == 0 && return
-
-    # Per-cluster fills + per-event extremes/sum.
-    Emax = -Inf
-    Emin =  Inf
-    Einc = 0.0
     @inbounds for c in clusters
         ie = _bin_idx(c.ec, 0.0, ch.E_max_MeV, ch.E_n_bins)
         ie > 0 && (ch.Ec_counts[ie] += 1)
-        Einc += c.ec
-        Emax = max(Emax, c.ec)
-        Emin = min(Emin, c.ec)
-
-        # 2D heatmaps: r² vs z and D = √(x²+y²) vs z.
-        r2 = c.xc * c.xc + c.yc * c.yc
-        D  = sqrt(r2)
-        ir2 = _bin_idx(r2, 0.0, ch.r2_max_cm2, ch.r2_n_bins)
-        iD  = _bin_idx(D,  0.0, ch.D_max_cm,   ch.D_n_bins)
-        iz  = _bin_idx(c.zc, ch.z_min_cm, ch.z_max_cm, ch.z_n_bins)
-        if iz > 0
-            ir2 > 0 && (ch.r2_vs_z_2d_counts[ir2, iz] += 1)
-            iD  > 0 && (ch.D_vs_z_2d_counts[iD,  iz] += 1)
-        end
-    end
-    iemax = _bin_idx(Emax, 0.0, ch.E_max_MeV, ch.E_n_bins)
-    iemin = _bin_idx(Emin, 0.0, ch.E_max_MeV, ch.E_n_bins)
-    ieinc = _bin_idx(Einc, 0.0, ch.E_max_MeV, ch.E_n_bins)
-    iemax > 0 && (ch.Emax_counts[iemax] += 1)
-    iemin > 0 && (ch.Emin_counts[iemin] += 1)
-    ieinc > 0 && (ch.Einc_counts[ieinc] += 1)
-
-    # Pair distances: closest and furthest among all C(n,2) pairs.
-    if nc >= 2
-        d3_min = Inf;  d3_max = -Inf
-        dz_min = Inf;  dz_max = -Inf
-        @inbounds for i in 1:(nc - 1)
-            ci = clusters[i]
-            for j in (i + 1):nc
-                cj = clusters[j]
-                dx = ci.xc - cj.xc
-                dy = ci.yc - cj.yc
-                dz = ci.zc - cj.zc
-                d3 = sqrt(dx*dx + dy*dy + dz*dz)
-                adz = abs(dz)
-                d3 < d3_min && (d3_min = d3)
-                d3 > d3_max && (d3_max = d3)
-                adz < dz_min && (dz_min = adz)
-                adz > dz_max && (dz_max = adz)
-            end
-        end
-        i = _bin_idx(d3_min, 0.0, ch.D3_max_cm, ch.D3_n_bins); i > 0 && (ch.closest_D3_counts[i]  += 1)
-        i = _bin_idx(d3_max, 0.0, ch.D3_max_cm, ch.D3_n_bins); i > 0 && (ch.furthest_D3_counts[i] += 1)
-        i = _bin_idx(dz_min, 0.0, ch.dz_max_cm, ch.dz_n_bins); i > 0 && (ch.closest_dz_counts[i]  += 1)
-        i = _bin_idx(dz_max, 0.0, ch.dz_max_cm, ch.dz_n_bins); i > 0 && (ch.furthest_dz_counts[i] += 1)
-
-        # Per-cluster (ec, dz_to_nearest_other) — diagnostic for MS regime.
-        @inbounds for i in 1:nc
-            ci = clusters[i]
-            dz_near = Inf
-            for j in 1:nc
-                j == i && continue
-                adz = abs(ci.zc - clusters[j].zc)
-                adz < dz_near && (dz_near = adz)
-            end
-            idx_dz = _bin_idx(dz_near, 0.0, ch.dz_max_cm,  ch.dz_n_bins)
-            idx_ec = _bin_idx(ci.ec,  0.0, ch.ec2d_max_MeV, ch.ec2d_n_bins)
-            if idx_dz > 0 && idx_ec > 0
-                ch.Ec_vs_dz_2d_counts[idx_dz, idx_ec] += 1
-            end
-        end
     end
     nothing
 end
 
 function merge_cluster_histograms!(into::ClusterHistogramSet,
                                     src::ClusterHistogramSet)
-    @assert into.E_n_bins  == src.E_n_bins
-    @assert into.D3_n_bins == src.D3_n_bins
-    @assert into.dz_n_bins == src.dz_n_bins
-    @assert into.r2_n_bins == src.r2_n_bins
-    @assert into.z_n_bins  == src.z_n_bins
-    @assert into.D_n_bins  == src.D_n_bins
-    @. into.Ec_counts             += src.Ec_counts
-    @. into.N_clusters_counts     += src.N_clusters_counts
-    @. into.Emax_counts           += src.Emax_counts
-    @. into.Emin_counts           += src.Emin_counts
-    @. into.Einc_counts           += src.Einc_counts
-    @. into.closest_D3_counts     += src.closest_D3_counts
-    @. into.furthest_D3_counts    += src.furthest_D3_counts
-    @. into.closest_dz_counts     += src.closest_dz_counts
-    @. into.furthest_dz_counts    += src.furthest_dz_counts
-    @. into.r2_vs_z_2d_counts     += src.r2_vs_z_2d_counts
-    @. into.D_vs_z_2d_counts      += src.D_vs_z_2d_counts
-    @. into.Ec_vs_dz_2d_counts    += src.Ec_vs_dz_2d_counts
-    @. into.ss_ec_pre_roi_counts  += src.ss_ec_pre_roi_counts
-    @. into.ss_es_pre_roi_counts  += src.ss_es_pre_roi_counts
-    into
-end
-
-"""
-    fill_ss_pre_roi!(ch::ClusterHistogramSet, clusters::Vector{Cluster},
-                      params::MCParams)
-
-Bin the (ec, es) of the single visible cluster into `ss_ec_pre_roi_counts`
-and `ss_es_pre_roi_counts`. Caller must guarantee the event reached the
-pre-ROI SS state — i.e., `classify_event` returned `:SS_in_ROI` or
-`:SS_outside_ROI`. Picks the visible cluster (ec > E_visible_keV/1000)
-rather than `clusters[1]` to handle the case where a sub-visible cluster
-is sorted ahead of the visible one.
-"""
-function fill_ss_pre_roi!(ch::ClusterHistogramSet,
-                           clusters::Vector{Cluster},
-                           params::MCParams)
-    thr_MeV = params.E_visible_keV / 1000.0
-    @inbounds for c in clusters
-        if c.ec > thr_MeV
-            iec = _bin_idx(c.ec, 0.0, ch.E_max_MeV, ch.E_n_bins)
-            ies = _bin_idx(c.es, 0.0, ch.E_max_MeV, ch.E_n_bins)
-            iec > 0 && (ch.ss_ec_pre_roi_counts[iec] += 1)
-            ies > 0 && (ch.ss_es_pre_roi_counts[ies] += 1)
-            return
-        end
-    end
-end
-
-# ===========================================================================
-# RejectionHistograms — fast_veto rejection diagnostics (unchanged).
-# ===========================================================================
-"""
-    RejectionHistograms
-
-Two pairs of histograms: one pair (2-D r²×z + 1-D E) for skin-rejection
-events and one pair for FV-rejection events. Each histogram counts the
-*triggering* deposit position / energy.
-"""
-struct RejectionHistograms
-    r2_n_bins::Int
-    r2_max_cm2::Float64
-    z_n_bins::Int
-    z_min_cm::Float64
-    z_max_cm::Float64
-    E_n_bins::Int
-    E_max_MeV::Float64
-    skin_r2z_counts::Matrix{Int}
-    skin_E_counts::Vector{Int}
-    fv_r2z_counts::Matrix{Int}
-    fv_E_counts::Vector{Int}
-end
-
-function RejectionHistograms(; r2_n_bins::Int=60, r2_max_cm2::Real=82.1^2,
-                              z_n_bins::Int=100, z_min_cm::Real=-69.0,
-                              z_max_cm::Real=145.6,
-                              E_n_bins::Int=270,
-                              E_max_MeV::Real=2.7)
-    RejectionHistograms(
-        r2_n_bins, Float64(r2_max_cm2),
-        z_n_bins,  Float64(z_min_cm), Float64(z_max_cm),
-        E_n_bins,  Float64(E_max_MeV),
-        zeros(Int, r2_n_bins, z_n_bins),
-        zeros(Int, E_n_bins),
-        zeros(Int, r2_n_bins, z_n_bins),
-        zeros(Int, E_n_bins),
-    )
-end
-
-@inline function _fill_r2z!(M::Matrix{Int}, x::Float64, y::Float64, z::Float64,
-                             rh::RejectionHistograms)
-    r2 = x*x + y*y
-    i = _bin_idx(r2, 0.0, rh.r2_max_cm2, rh.r2_n_bins)
-    j = _bin_idx(z,  rh.z_min_cm, rh.z_max_cm, rh.z_n_bins)
-    if i > 0 && j > 0
-        M[i, j] += 1
-    end
-    nothing
-end
-
-@inline function fill_rejected_skin!(rh::RejectionHistograms,
-                                      x::Float64, y::Float64, z::Float64,
-                                      E_dep::Float64)
-    _fill_r2z!(rh.skin_r2z_counts, x, y, z, rh)
-    iE = _bin_idx(E_dep, 0.0, rh.E_max_MeV, rh.E_n_bins)
-    iE > 0 && (rh.skin_E_counts[iE] += 1)
-    nothing
-end
-
-@inline function fill_rejected_fv!(rh::RejectionHistograms,
-                                    x::Float64, y::Float64, z::Float64,
-                                    E_dep::Float64)
-    _fill_r2z!(rh.fv_r2z_counts, x, y, z, rh)
-    iE = _bin_idx(E_dep, 0.0, rh.E_max_MeV, rh.E_n_bins)
-    iE > 0 && (rh.fv_E_counts[iE] += 1)
-    nothing
-end
-
-function merge_rejection_histograms!(into::RejectionHistograms,
-                                      src::RejectionHistograms)
-    @. into.skin_r2z_counts += src.skin_r2z_counts
-    @. into.skin_E_counts   += src.skin_E_counts
-    @. into.fv_r2z_counts   += src.fv_r2z_counts
-    @. into.fv_E_counts     += src.fv_E_counts
+    @assert into.E_n_bins == src.E_n_bins
+    @. into.Ec_counts += src.Ec_counts
     into
 end
 
