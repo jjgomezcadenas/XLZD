@@ -58,15 +58,11 @@ function parse_cli()
             arg_type = Float64
             default  = 39.0
             help     = "FV r maximum (cm). r² = (fv-r-max)² is what MCParams stores."
-        "--no-stack-histos"
-            action   = :store_true
-            help     = "Skip accumulating + writing StackHistogramSet CSVs."
-        "--no-cluster-histos"
-            action   = :store_true
-            help     = "Skip accumulating + writing ClusterHistogramSet CSVs."
-        "--no-cut-histos"
-            action   = :store_true
-            help     = "Skip accumulating + writing the cut-flow CutHistograms CSVs."
+        "--histos"
+            arg_type = Bool
+            default  = true
+            help     = "Write all histogram CSVs (cuts + diagnostics). " *
+                       "Pass `--histos false` to skip them entirely."
         "--sample-stack"
             arg_type = Int
             default  = 0
@@ -86,9 +82,7 @@ function main()
     fv_z_min  = args["fv-z-min"]
     fv_z_max  = args["fv-z-max"]
     fv_r_max  = args["fv-r-max"]
-    do_stack_hist     = !args["no-stack-histos"]
-    do_cluster_hist   = !args["no-cluster-histos"]
-    do_cut_hist       = !args["no-cut-histos"]
+    do_histos         = args["histos"]
     sample_stack_n    = args["sample-stack"]
 
     # Construct output directory up front so per-source paths can be
@@ -127,9 +121,9 @@ function main()
     if src_i == 0
         results = run_mc_all(det, effs, xcom, params, N;
                               mc_seed=seed, verbose=true,
-                              with_stack_histograms=do_stack_hist,
-                              with_cluster_histograms=do_cluster_hist,
-                              with_cut_histograms=do_cut_hist,
+                              with_stack_histograms=do_histos,
+                              with_cluster_histograms=do_histos,
+                              with_cut_histograms=do_histos,
                               sample_stack=sample_stack_n,
                               sample_stack_dir=out_dir)
     else
@@ -147,9 +141,9 @@ function main()
                       nothing
         push!(results, run_mc(det, eff, comp_eff, xcom, params, N;
                                mc_seed=seed, verbose=true,
-                               with_stack_histograms=do_stack_hist,
-                               with_cluster_histograms=do_cluster_hist,
-                               with_cut_histograms=do_cut_hist,
+                               with_stack_histograms=do_histos,
+                               with_cluster_histograms=do_histos,
+                               with_cut_histograms=do_histos,
                                sample_stack=sample_stack_n,
                                sample_stack_path=sample_path))
     end
@@ -266,20 +260,14 @@ function main()
     println("  → wrote $csv_path")
 
     # ───────── Histogram CSVs (one folder per source) ─────────
-    if do_stack_hist || do_cluster_hist || do_cut_hist
+    if do_histos
         for r in results
             h_dir = joinpath(out_dir, "hist_$(r.name)")
-            wrote = false
-            if do_stack_hist && r.stack_hists !== nothing
-                mkpath(h_dir); _save_stack_csvs(h_dir, r.stack_hists); wrote = true
-            end
-            if do_cluster_hist && r.cluster_hists !== nothing
-                mkpath(h_dir); _save_cluster_csvs(h_dir, r.cluster_hists); wrote = true
-            end
-            if do_cut_hist && r.cut_hists !== nothing
-                mkpath(h_dir); _save_cut_csvs(h_dir, r.cut_hists); wrote = true
-            end
-            wrote && println("  → wrote $h_dir")
+            mkpath(h_dir)
+            r.stack_hists   !== nothing && _save_stack_csvs(h_dir,   r.stack_hists)
+            r.cluster_hists !== nothing && _save_cluster_csvs(h_dir, r.cluster_hists)
+            r.cut_hists     !== nothing && _save_cut_csvs(h_dir,     r.cut_hists)
+            println("  → wrote $h_dir")
         end
     end
     println()
