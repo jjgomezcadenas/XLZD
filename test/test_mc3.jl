@@ -236,7 +236,7 @@ end
     # (:vetoed_skin / :rejected_fv from the FAST path) skip the update.
     # The two sums must therefore agree with each other and be > 0 and
     # ≤ n_total.
-    n_h = sum(res.stack_hists.ng_max_counts)
+    n_h = sum(res.stack_hists.path_length_LXe_counts)
     @test n_h == sum(res.cluster_hists.N_clusters_counts)
     @test 0 < n_h <= res.n_total
 end

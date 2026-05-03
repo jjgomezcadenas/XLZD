@@ -344,40 +344,23 @@ const _INTERACTION_LABELS = ("PHOTO", "COMPTON", "PAIR", "BELOW_THRESH")
 const _STACK_REGION_LABELS = ("TPC", "Skin", "Inert")
 
 function _save_stack_csvs(dir::String, sh::StackHistogramSet)
-    _write_int_bins(joinpath(dir, "stack_ng_max.csv"),
-                    sh.ng_max_counts; label="ng_max")
-    _write_int_bins(joinpath(dir, "stack_n_photo.csv"),
-                    sh.n_photo_counts; label="n_photo")
-    _write_int_bins(joinpath(dir, "stack_n_compton.csv"),
-                    sh.n_compton_counts; label="n_compton")
-    _write_int_bins(joinpath(dir, "stack_n_pair.csv"),
-                    sh.n_pair_counts; label="n_pair")
-    _write_int_bins(joinpath(dir, "stack_n_below_thresh.csv"),
-                    sh.n_below_thresh_counts; label="n_below_thresh")
-
-    # First-interaction type (4 bins, labelled rather than indexed)
-    open(joinpath(dir, "stack_first_interaction.csv"), "w") do f
+    # Interaction-type frequency (one entry per stack row, normalisable to
+    # the cross-section ratios at the source energy).
+    open(joinpath(dir, "diag_interaction_type_freq.csv"), "w") do f
         println(f, "interaction,count")
-        for i in 1:4
-            println(f, "$(_INTERACTION_LABELS[i]),$(sh.first_interaction_counts[i])")
+        for i in 1:length(_INTERACTION_LABELS)
+            println(f, "$(_INTERACTION_LABELS[i]),$(sh.interaction_type_freq[i])")
         end
     end
 
-    _write_1d(joinpath(dir, "stack_inclusive_edep.csv"),
-              sh.inclusive_edep_counts;
-              lo=0.0, hi=sh.E_max_MeV,
-              left_label="bin_left_MeV", right_label="bin_right_MeV")
-    _write_1d(joinpath(dir, "stack_E_first.csv"),
-              sh.E_first_counts;
-              lo=0.0, hi=sh.E_max_MeV,
-              left_label="bin_left_MeV", right_label="bin_right_MeV")
-    _write_1d(joinpath(dir, "stack_delta_z.csv"),
-              sh.Δz_counts;
-              lo=0.0, hi=sh.Δz_max_cm,
+    # Per-photon LXe path length (1D bar).
+    _write_1d(joinpath(dir, "diag_path_length_LXe.csv"),
+              sh.path_length_LXe_counts;
+              lo=0.0, hi=sh.path_length_max_cm,
               left_label="bin_left_cm", right_label="bin_right_cm")
 
-    # Region × interaction (3×4 matrix)
-    open(joinpath(dir, "stack_region_interaction.csv"), "w") do f
+    # Region × interaction matrix (3×4).
+    open(joinpath(dir, "diag_region_interaction.csv"), "w") do f
         println(f, "region,interaction,count")
         for ri in 1:3, ci in 1:4
             println(f, "$(_STACK_REGION_LABELS[ri]),$(_INTERACTION_LABELS[ci]),$(sh.region_interaction_counts[ri, ci])")

@@ -1,8 +1,7 @@
 # test/test_stack_histograms3.jl — Unit tests for StackHistogramSet.
 #
-# Hand-built PhotonStack inputs, no MC. Each testset constructs a
-# stack via push_row! and asserts the resulting bin counts in the
-# StackHistogramSet.
+# Stripped to the three diagnostic histograms the cut-flow refactor
+# keeps: interaction_type_freq, path_length_LXe, region_interaction.
 
 using Test
 
@@ -25,80 +24,46 @@ function _stack_from(rows::Vector{Tuple{Symbol,Symbol,Float64}};
 end
 
 # ---------------------------------------------------------------------------
-# 1. Empty stack: ng_max bin 1 (=0 rows) increments; per-event totals = 0
+# 1. Empty stack: only path_length entry (= 0) lands.
 # ---------------------------------------------------------------------------
 
-@testset "1. empty stack → ng_max[1] += 1, all per-event counts in bin 1" begin
+@testset "1. empty stack → path_length[bin 1] += 1; nothing else" begin
     sh = StackHistogramSet()
-    s  = PhotonStack()
+    s  = PhotonStack()                        # path_length_LXe = 0
     update_stack_histograms!(sh, s, params)
-    @test sh.ng_max_counts[1] == 1
-    @test sh.n_photo_counts[1]        == 1
-    @test sh.n_compton_counts[1]      == 1
-    @test sh.n_pair_counts[1]         == 1
-    @test sh.n_below_thresh_counts[1] == 1
-    @test sum(sh.first_interaction_counts) == 0
-    @test sum(sh.inclusive_edep_counts)    == 0
-    @test sum(sh.E_first_counts)           == 0
-    @test sum(sh.Δz_counts)                == 0
+    @test sum(sh.interaction_type_freq)      == 0
+    @test sum(sh.region_interaction_counts)  == 0
+    @test sh.path_length_LXe_counts[1]        == 1
 end
 
 # ---------------------------------------------------------------------------
-# 2. Single :TPC PHOTO row: first_interaction[1] = 1; n_photo[2] = 1
+# 2. interaction_type_freq counts per row across all 4 types.
 # ---------------------------------------------------------------------------
 
-@testset "2. single :TPC PHOTO" begin
+@testset "2. interaction_type_freq counts each row" begin
     sh = StackHistogramSet()
-    s  = _stack_from([(:TPC, INT_PHOTO, 2.448)])
+    s  = _stack_from([(:TPC, INT_PHOTO,   1.0),
+                      (:TPC, INT_COMPTON, 0.5),
+                      (:TPC, INT_COMPTON, 0.3),
+                      (:TPC, INT_PAIR,    1.6),
+                      (:Skin, INT_BELOW_THRESH, 0.02)])
     update_stack_histograms!(sh, s, params)
-    @test sh.first_interaction_counts[1]  == 1   # PHOTO
-    @test sh.n_photo_counts[2]            == 1   # 1 photo this event
-    @test sh.n_compton_counts[1]          == 1   # 0 compton
-    @test sh.E_first_counts[ floor(Int, 2.448 / 2.7 * 270) + 1 ] == 1
-    @test sum(sh.Δz_counts) == 0   # only one :TPC row → no Δz pairs
-    @test sh.region_interaction_counts[1, 1] == 1   # (:TPC, PHOTO)
+    @test sh.interaction_type_freq[1] == 1     # PHOTO
+    @test sh.interaction_type_freq[2] == 2     # COMPTON
+    @test sh.interaction_type_freq[3] == 1     # PAIR
+    @test sh.interaction_type_freq[4] == 1     # BELOW_THRESH
+    @test sum(sh.interaction_type_freq) == 5
 end
 
 # ---------------------------------------------------------------------------
-# 3. PAIR + COMPTON sequence: first_interaction[3] (PAIR) = 1
+# 3. region_interaction matrix: rows × cols = (TPC/Skin/Inert) × (P/C/Pair/BT).
 # ---------------------------------------------------------------------------
 
-@testset "3. PAIR-then-COMPTON" begin
+@testset "3. region × interaction matrix" begin
     sh = StackHistogramSet()
-    s  = _stack_from([(:TPC, INT_PAIR,    1.593),
-                      (:TPC, INT_COMPTON, 0.300)])
-    update_stack_histograms!(sh, s, params)
-    @test sh.first_interaction_counts[3]  == 1   # PAIR
-    @test sh.n_pair_counts[2]             == 1
-    @test sh.n_compton_counts[2]          == 1
-    @test sh.region_interaction_counts[1, 3] == 1   # (:TPC, PAIR)
-    @test sh.region_interaction_counts[1, 2] == 1   # (:TPC, COMPTON)
-end
-
-# ---------------------------------------------------------------------------
-# 4. Δz: two :TPC rows at z = 50.0 and z = 50.10 → Δz = 0.1 cm in bin 1
-# ---------------------------------------------------------------------------
-
-@testset "4. Δz from first :TPC deposit" begin
-    sh = StackHistogramSet()
-    s  = PhotonStack()
-    push_row!(s; nm=0, parent_region=:CB, region=:TPC, interaction=INT_COMPTON,
-                  x=0.0, y=0.0, z=50.00, epre=2.0, edep=0.5)
-    push_row!(s; nm=1, parent_region=:TPC, region=:TPC, interaction=INT_PHOTO,
-                  x=0.0, y=0.0, z=50.10, epre=1.5, edep=1.5)
-    update_stack_histograms!(sh, s, params)
-    @test sh.Δz_counts[1] == 1   # 0.1 cm; bin 1 = [0, 0.5)
-end
-
-# ---------------------------------------------------------------------------
-# 5. Per-region × per-interaction counts: skin Compton + inert photo
-# ---------------------------------------------------------------------------
-
-@testset "5. region × interaction matrix" begin
-    sh = StackHistogramSet()
-    s  = _stack_from([(:TPC,  INT_COMPTON, 0.5),
-                      (:Skin, INT_COMPTON, 0.04),
-                      (:Inert, INT_PHOTO,  0.6)])
+    s  = _stack_from([(:TPC,   INT_COMPTON, 0.5),
+                      (:Skin,  INT_COMPTON, 0.04),
+                      (:Inert, INT_PHOTO,   0.6)])
     update_stack_histograms!(sh, s, params)
     @test sh.region_interaction_counts[1, 2] == 1   # TPC, COMPTON
     @test sh.region_interaction_counts[2, 2] == 1   # Skin, COMPTON
@@ -107,47 +72,46 @@ end
 end
 
 # ---------------------------------------------------------------------------
-# 6. inclusive_edep: sum across all rows
+# 4. path_length_LXe is read off `stack.path_length_LXe`, not from rows.
 # ---------------------------------------------------------------------------
 
-@testset "6. inclusive_edep totals" begin
-    sh = StackHistogramSet()
-    s  = _stack_from([(:TPC, INT_COMPTON, 0.5),
-                      (:TPC, INT_PHOTO,   0.3),
-                      (:Skin, INT_COMPTON, 0.04)])
+@testset "4. path_length_LXe binned from stack accumulator" begin
+    sh = StackHistogramSet(path_length_n_bins=10, path_length_max_cm=100.0)
+    s  = PhotonStack()
+    s.path_length_LXe = 35.0                 # bin (35/100*10)+1 = 4
     update_stack_histograms!(sh, s, params)
-    expected = 0.5 + 0.3 + 0.04
-    bin = floor(Int, expected / 2.7 * 270) + 1
-    @test sh.inclusive_edep_counts[bin] == 1
-    @test sum(sh.inclusive_edep_counts) == 1
+    @test sh.path_length_LXe_counts[4] == 1
+    @test sum(sh.path_length_LXe_counts) == 1
+end
+
+@testset "5. path_length_LXe out-of-range silently skipped" begin
+    sh = StackHistogramSet(path_length_n_bins=10, path_length_max_cm=10.0)
+    s  = PhotonStack()
+    s.path_length_LXe = 100.0                 # past max
+    update_stack_histograms!(sh, s, params)
+    @test sum(sh.path_length_LXe_counts) == 0
 end
 
 # ---------------------------------------------------------------------------
-# 7. ng_max counts the number of rows in the event (in bin = n+1)
+# 6. merge_stack_histograms! sums every field.
 # ---------------------------------------------------------------------------
 
-@testset "7. ng_max bins" begin
-    sh = StackHistogramSet()
-    s  = _stack_from([(:TPC, INT_COMPTON, 0.1),
-                      (:TPC, INT_COMPTON, 0.1),
-                      (:TPC, INT_PHOTO,   0.1)])
-    update_stack_histograms!(sh, s, params)
-    @test sh.ng_max_counts[4] == 1     # 3 rows → bin 3+1 = 4
-end
-
-# ---------------------------------------------------------------------------
-# 8. merge_stack_histograms! sums counts elementwise
-# ---------------------------------------------------------------------------
-
-@testset "8. merge_stack_histograms!" begin
+@testset "6. merge_stack_histograms! sums elementwise" begin
     sh1 = StackHistogramSet()
     sh2 = StackHistogramSet()
-    update_stack_histograms!(sh1, _stack_from([(:TPC, INT_PHOTO, 1.0)]), params)
-    update_stack_histograms!(sh2, _stack_from([(:TPC, INT_PAIR,  1.5)]), params)
+    update_stack_histograms!(sh1, _stack_from([(:TPC, INT_PHOTO,   1.0)]), params)
+    update_stack_histograms!(sh2, _stack_from([(:TPC, INT_COMPTON, 0.5)]), params)
     merge_stack_histograms!(sh1, sh2)
-    @test sh1.first_interaction_counts[1] == 1   # PHOTO from sh1
-    @test sh1.first_interaction_counts[3] == 1   # PAIR from sh2
-    @test sum(sh1.first_interaction_counts) == 2
+    @test sh1.interaction_type_freq[1] == 1                   # PHOTO from sh1
+    @test sh1.interaction_type_freq[2] == 1                   # COMPTON from sh2
+    @test sum(sh1.region_interaction_counts) == 2
+    @test sum(sh1.path_length_LXe_counts)    == 2             # both contributed bin 1
+end
+
+@testset "7. merge_stack_histograms! asserts compatible binning" begin
+    sh1 = StackHistogramSet(path_length_n_bins=100)
+    sh2 = StackHistogramSet(path_length_n_bins=50)            # mismatched
+    @test_throws AssertionError merge_stack_histograms!(sh1, sh2)
 end
 
 println("\n  ── test_stack_histograms3.jl: StackHistogramSet OK ──\n")

@@ -34,71 +34,43 @@ end
 """
     StackHistogramSet
 
-Per-event histograms accumulated from the rows of `PhotonStack`.
+Per-event diagnostic histograms accumulated from the rows of
+`PhotonStack`. Stripped to three plots that the cut-flow refactor keeps
+on the `diagnostics.png` panel:
 
-Bins (defaults; configurable via kwargs):
-  - `ng_max`              21 bins (0..20)        chain depth
-  - `first_interaction`    4 bins                PHOTO/COMPTON/PAIR/BELOW_THRESH
-  - `n_photo`             21 bins (0..20)        per-event counts
-  - `n_compton`           21 bins (0..20)
-  - `n_pair`              11 bins (0..10)
-  - `n_below_thresh`      11 bins (0..10)
-  - `inclusive_edep`     270 bins on [0, 2.7] MeV
-  - `E_first`            270 bins on [0, 2.7] MeV  (first :TPC deposit)
-  - `Δz`                 100 bins on [0, 50] cm    (Δz of subsequent
-                                                    :TPC deposits from
-                                                    first :TPC deposit)
-  - `region_interaction` 3×4 matrix (Symbol order documented below)
+  - `interaction_type_freq` 4 bins (PHOTO/COMPTON/PAIR/BELOW_THRESH) —
+                            one entry per stack row, so normalised the
+                            bar heights match the cross-section ratios
+                            at the source energy.
+  - `path_length_LXe`       1D, [0, 500] cm — per-photon total distance
+                            through any LXe region (TPC / Skin / Inert).
+                            Sourced from `stack.path_length_LXe`,
+                            accumulated by the tracker.
+  - `region_interaction`    3×4 matrix — per-region × per-interaction
+                            counts, one entry per stack row.
 
 `region_interaction_counts[r, t]`:
   rows: 1=:TPC, 2=:Skin, 3=:Inert
   cols: 1=PHOTO, 2=COMPTON, 3=PAIR, 4=BELOW_THRESH
 """
 struct StackHistogramSet
-    # Integer-bucket counts
-    ng_max_counts::Vector{Int}
-    first_interaction_counts::Vector{Int}      # length 4
-    n_photo_counts::Vector{Int}
-    n_compton_counts::Vector{Int}
-    n_pair_counts::Vector{Int}
-    n_below_thresh_counts::Vector{Int}
-
-    # Energy histograms
-    E_n_bins::Int
-    E_max_MeV::Float64
-    inclusive_edep_counts::Vector{Int}
-    E_first_counts::Vector{Int}
-
-    # Spatial: Δz from first :TPC deposit to subsequent :TPC deposits
-    Δz_n_bins::Int
-    Δz_max_cm::Float64
-    Δz_counts::Vector{Int}
-
-    # Per-region × per-interaction counts (3×4, see docstring)
-    region_interaction_counts::Matrix{Int}
+    interaction_type_freq::Vector{Int}          # 4 bins
+    path_length_n_bins::Int
+    path_length_max_cm::Float64
+    path_length_LXe_counts::Vector{Int}
+    region_interaction_counts::Matrix{Int}      # 3×4
 end
 
 const _STACK_REGIONS      = (:TPC, :Skin, :Inert)
 const _STACK_INTERACTIONS = (INT_PHOTO, INT_COMPTON, INT_PAIR, INT_BELOW_THRESH)
 
 function StackHistogramSet(;
-        ng_max_n::Int=21,
-        n_photo_n::Int=21, n_compton_n::Int=21,
-        n_pair_n::Int=11,  n_below_thresh_n::Int=11,
-        E_n_bins::Int=270, E_max_MeV::Real=2.7,
-        Δz_n_bins::Int=100, Δz_max_cm::Real=50.0)
+        path_length_n_bins::Int = 100,
+        path_length_max_cm::Real = 500.0)
     StackHistogramSet(
-        zeros(Int, ng_max_n),
-        zeros(Int, 4),
-        zeros(Int, n_photo_n),
-        zeros(Int, n_compton_n),
-        zeros(Int, n_pair_n),
-        zeros(Int, n_below_thresh_n),
-        E_n_bins, Float64(E_max_MeV),
-        zeros(Int, E_n_bins),
-        zeros(Int, E_n_bins),
-        Δz_n_bins, Float64(Δz_max_cm),
-        zeros(Int, Δz_n_bins),
+        zeros(Int, length(_STACK_INTERACTIONS)),
+        path_length_n_bins, Float64(path_length_max_cm),
+        zeros(Int, path_length_n_bins),
         zeros(Int, length(_STACK_REGIONS), length(_STACK_INTERACTIONS)),
     )
 end
@@ -130,96 +102,36 @@ end
     update_stack_histograms!(sh::StackHistogramSet, stack::PhotonStack,
                               params::MCParams)
 
-Fold one event's stack into `sh`. Does nothing for an empty stack
-(those events contribute to every per-event count as 0, which lands
-in bin 0 of the integer-bucket histograms — i.e. the n_*=0 events).
+Fold one event's stack into `sh`. Increments:
+  - one entry per stack row in `interaction_type_freq` and
+    `region_interaction_counts`;
+  - one entry in `path_length_LXe_counts` from the photon's accumulated
+    `stack.path_length_LXe`. Filled even when the stack is empty (the
+    photon may have traversed gas / FC / outside without depositing).
 """
 function update_stack_histograms!(sh::StackHistogramSet,
                                    stack::PhotonStack,
                                    params::MCParams)
-    n = length(stack)
-
-    # Chain depth — fill even when zero (records "no interaction" events).
-    _bin_int!(sh.ng_max_counts, n)
-
-    # Per-interaction-type counts (also filled when zero).
-    n_photo = 0
-    n_compton = 0
-    n_pair = 0
-    n_below = 0
-    inclusive_E = 0.0
     @inbounds for r in stack.rows
-        if r.interaction === INT_PHOTO
-            n_photo += 1
-        elseif r.interaction === INT_COMPTON
-            n_compton += 1
-        elseif r.interaction === INT_PAIR
-            n_pair += 1
-        elseif r.interaction === INT_BELOW_THRESH
-            n_below += 1
-        end
-        inclusive_E += r.edep
-        ri = _stack_region_row(r.region)
         ci = _interaction_col(r.interaction)
-        if ri > 0 && ci > 0
-            sh.region_interaction_counts[ri, ci] += 1
+        if ci > 0
+            sh.interaction_type_freq[ci] += 1
+            ri = _stack_region_row(r.region)
+            ri > 0 && (sh.region_interaction_counts[ri, ci] += 1)
         end
     end
-    _bin_int!(sh.n_photo_counts,         n_photo)
-    _bin_int!(sh.n_compton_counts,       n_compton)
-    _bin_int!(sh.n_pair_counts,          n_pair)
-    _bin_int!(sh.n_below_thresh_counts,  n_below)
-
-    # First-interaction-type bin (only when any rows).
-    if n > 0
-        ci = _interaction_col(stack.rows[1].interaction)
-        ci > 0 && (sh.first_interaction_counts[ci] += 1)
-    end
-
-    # Inclusive edep — skip when zero to avoid clogging bin 1.
-    if inclusive_E > 0.0
-        ie = _bin_idx(inclusive_E, 0.0, sh.E_max_MeV, sh.E_n_bins)
-        ie > 0 && (sh.inclusive_edep_counts[ie] += 1)
-    end
-
-    # First :TPC deposit: E_first and Δz to subsequent :TPC rows.
-    first_tpc_idx = 0
-    @inbounds for i in 1:n
-        if stack.rows[i].region === :TPC
-            first_tpc_idx = i
-            break
-        end
-    end
-    if first_tpc_idx > 0
-        z_first = stack.rows[first_tpc_idx].z
-        e_first = stack.rows[first_tpc_idx].edep
-        ie = _bin_idx(e_first, 0.0, sh.E_max_MeV, sh.E_n_bins)
-        ie > 0 && (sh.E_first_counts[ie] += 1)
-        @inbounds for i in (first_tpc_idx + 1):n
-            if stack.rows[i].region === :TPC
-                Δz = abs(stack.rows[i].z - z_first)
-                iz = _bin_idx(Δz, 0.0, sh.Δz_max_cm, sh.Δz_n_bins)
-                iz > 0 && (sh.Δz_counts[iz] += 1)
-            end
-        end
-    end
+    ip = _bin_idx(stack.path_length_LXe, 0.0,
+                   sh.path_length_max_cm, sh.path_length_n_bins)
+    ip > 0 && (sh.path_length_LXe_counts[ip] += 1)
     nothing
 end
 
 function merge_stack_histograms!(into::StackHistogramSet,
                                   src::StackHistogramSet)
-    @assert into.E_n_bins == src.E_n_bins
-    @assert into.Δz_n_bins == src.Δz_n_bins
-    @. into.ng_max_counts            += src.ng_max_counts
-    @. into.first_interaction_counts += src.first_interaction_counts
-    @. into.n_photo_counts           += src.n_photo_counts
-    @. into.n_compton_counts         += src.n_compton_counts
-    @. into.n_pair_counts            += src.n_pair_counts
-    @. into.n_below_thresh_counts    += src.n_below_thresh_counts
-    @. into.inclusive_edep_counts    += src.inclusive_edep_counts
-    @. into.E_first_counts           += src.E_first_counts
-    @. into.Δz_counts                += src.Δz_counts
-    @. into.region_interaction_counts += src.region_interaction_counts
+    @assert into.path_length_n_bins == src.path_length_n_bins
+    @. into.interaction_type_freq      += src.interaction_type_freq
+    @. into.path_length_LXe_counts     += src.path_length_LXe_counts
+    @. into.region_interaction_counts  += src.region_interaction_counts
     into
 end
 
