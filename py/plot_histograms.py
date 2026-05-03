@@ -1,7 +1,7 @@
 """Plot the cut-flow + diagnostic histograms produced by `scripts/run_mc3.jl`.
 
-Reads the per-source `hist_<source>/` directory written by run_mc3 and
-renders three combined PNG panels organised by analysis stage:
+Reads a per-source `output/<run-name>/<source>/` directory and renders
+three combined PNG panels organised by analysis stage:
 
     cuts_acceptance.png       — cut 1 (h_u_sampled, geom-acceptance line)
                                 + cut 2 (first-interaction r vs z, FV box).
@@ -14,13 +14,13 @@ renders three combined PNG panels organised by analysis stage:
 
 Each family is rendered only when its CSVs are present. Cut overlays
 (FV box, ROI band, 3 mm Δz line, geometric-acceptance u_min) are read
-from `summary.csv` of the run directory above the histogram folder.
+from the per-source `summary.csv` in the same directory.
 
 Usage
 -----
-    python py/plot_histograms.py output/<run>/hist_<source>/
-    python py/plot_histograms.py output/<run>/hist_CB_Bi214/ --separate
-    python py/plot_histograms.py output/<run>/hist_CB_Bi214/ --family classification
+    python py/plot_histograms.py output/<run>/<source>/
+    python py/plot_histograms.py output/<run>/CB_Bi214/ --separate
+    python py/plot_histograms.py output/<run>/CB_Bi214/ --family classification
 """
 
 from __future__ import annotations
@@ -67,7 +67,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument(
         "input_dir",
         type=Path,
-        help="Directory containing histogram CSVs (hist_<source>/).",
+        help="Per-source directory: output/<run-name>/<source>/.",
     )
     p.add_argument(
         "--output", "-o",
@@ -132,8 +132,13 @@ _DEFAULT_CUTS: dict[str, float] = {
 
 
 def _read_cuts(input_dir: Path) -> dict[str, float]:
+    """Read run-wide cut config from `input_dir/summary.csv`. Each
+    per-source dir holds its own single-row summary.csv; the cut columns
+    are identical across sources, so any one row is sufficient. Falls
+    back to MCParams defaults if the file is missing or columns aren't
+    present (older runs)."""
     cuts = dict(_DEFAULT_CUTS)
-    summary_path = input_dir.parent / "summary.csv"
+    summary_path = input_dir / "summary.csv"
     if not summary_path.is_file():
         return cuts
     try:
@@ -490,7 +495,9 @@ def main() -> None:
     out.mkdir(parents=True, exist_ok=True)
     title = args.title if args.title else args.input_dir.name
     # Source name = the directory name with the leading "hist_" stripped.
-    source_name = args.input_dir.name.removeprefix("hist_")
+    # Per-source dir is named <source> (e.g. CB_Bi214) directly under
+    # the run dir. No prefix to strip.
+    source_name = args.input_dir.name
 
     families = {
         "acceptance":     (ACCEPTANCE_CSVS,     "cuts_acceptance.png",

@@ -341,7 +341,7 @@ function run_mc_all(det::LXeDetector, effs::Vector{EffectiveSource},
         verbose && @printf("\n── Running %s (%d / %d) ──\n",
                             mname, i, length(main_names))
         sample_path = if sample_stack != 0 && sample_stack_dir !== nothing
-            joinpath(sample_stack_dir, "hist_$(eff.name)", "stack_sample.csv")
+            joinpath(sample_stack_dir, eff.name, "stack_sample.csv")
         else
             nothing
         end

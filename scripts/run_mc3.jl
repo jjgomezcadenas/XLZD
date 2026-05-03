@@ -33,8 +33,11 @@ function parse_cli()
         "--seed"
             arg_type = Int
             default  = 1234
-        "--output"
+        "--run-name"
             default  = "last_run_v2"
+            help     = "Descriptive run name. Each source-job writes to " *
+                       "output/<run-name>/<source>/. The Python summarizer " *
+                       "globs **/summary.csv under output/<run-name>/."
         "--source-index"
             arg_type = Int
             default  = 0           # 0 = all 6 main sources
@@ -75,7 +78,7 @@ function main()
     args = parse_cli()
     N         = args["n-samples"]
     seed      = args["seed"]
-    outname   = args["output"]
+    run_name  = args["run-name"]
     src_i     = args["source-index"]
     sigma_e   = args["sigma-e"]
     roi_half  = args["roi-halfwidth"]
@@ -87,8 +90,8 @@ function main()
 
     # Construct output directory up front so per-source paths can be
     # built before the run_mc calls (needed for sample-stack output).
-    out_dir = joinpath(PROJECT_ROOT, "output", outname)
-    mkpath(out_dir)
+    run_dir = joinpath(PROJECT_ROOT, "output", run_name)
+    mkpath(run_dir)
 
     println("\n── src3/ MC driver — Cryostat backgrounds ──")
     @printf("  N samples per source : %d\n", N)
@@ -125,7 +128,7 @@ function main()
                               with_cluster_histograms=do_histos,
                               with_cut_histograms=do_histos,
                               sample_stack=sample_stack_n,
-                              sample_stack_dir=out_dir)
+                              sample_stack_dir=run_dir)
     else
         1 <= src_i <= length(main_names) ||
             error("source-index must be 1..$(length(main_names))")
@@ -137,7 +140,7 @@ function main()
         end
         @printf("\n── Running %s ──\n", eff.name)
         sample_path = sample_stack_n != 0 ?
-                      joinpath(out_dir, "hist_$(eff.name)", "stack_sample.csv") :
+                      joinpath(run_dir, eff.name, "stack_sample.csv") :
                       nothing
         push!(results, run_mc(det, eff, comp_eff, xcom, params, N;
                                mc_seed=seed, verbose=true,
@@ -220,20 +223,25 @@ function main()
     end
     println()
 
-    # Save CSV. Run-wide cut columns are repeated on every row so each line
-    # carries the analysis configuration that produced it.
-    csv_path = joinpath(out_dir, "summary.csv")
+    # Per-source output: one directory per source under run_dir, holding
+    # a single-row summary.csv plus all histogram CSVs. Multiple sources
+    # in one process (the all-sources mode) write multiple dirs; the
+    # Python summarizer aggregates by globbing **/summary.csv under run_dir.
     fv_r_max_cm = sqrt(params.fv_r2_max_cm2)
-    open(csv_path, "w") do f
-        println(f, "source,isotope,n_total,gamma_per_yr_total,f_SS_in_ROI,",
-                   "bg_per_yr,r_comp,runtime_s,",
-                   "n_escaped,n_MS,n_skin_vetoed,n_SS_outside_FV,",
-                   "n_SS_outside_ROI,n_SS_in_ROI,n_companion_vetoed,",
-                   "Q_betabeta_keV,sigma_E_over_E,ROI_halfwidth_keV,",
-                   "fv_z_min_cm,fv_z_max_cm,fv_r_max_cm,",
-                   "E_visible_keV,E_skin_veto_keV,",
-                   "R_LXe_outer_cm")
-        for r in results
+    for r in results
+        src_dir = joinpath(run_dir, r.name)
+        mkpath(src_dir)
+
+        csv_path = joinpath(src_dir, "summary.csv")
+        open(csv_path, "w") do f
+            println(f, "source,isotope,n_total,gamma_per_yr_total,f_SS_in_ROI,",
+                       "bg_per_yr,r_comp,runtime_s,",
+                       "n_escaped,n_MS,n_skin_vetoed,n_SS_outside_FV,",
+                       "n_SS_outside_ROI,n_SS_in_ROI,n_companion_vetoed,",
+                       "Q_betabeta_keV,sigma_E_over_E,ROI_halfwidth_keV,",
+                       "fv_z_min_cm,fv_z_max_cm,fv_r_max_cm,",
+                       "E_visible_keV,E_skin_veto_keV,",
+                       "R_LXe_outer_cm")
             println(f, join([
                 r.name, r.isotope, r.n_total,
                 @sprintf("%.6e", r.γ_per_yr_total),
@@ -256,19 +264,14 @@ function main()
                 @sprintf("%.3f", det.R_ICV_inner),
             ], ","))
         end
-    end
-    println("  → wrote $csv_path")
 
-    # ───────── Histogram CSVs (one folder per source) ─────────
-    if do_histos
-        for r in results
-            h_dir = joinpath(out_dir, "hist_$(r.name)")
-            mkpath(h_dir)
-            r.stack_hists   !== nothing && _save_stack_csvs(h_dir,   r.stack_hists)
-            r.cluster_hists !== nothing && _save_cluster_csvs(h_dir, r.cluster_hists)
-            r.cut_hists     !== nothing && _save_cut_csvs(h_dir,     r.cut_hists)
-            println("  → wrote $h_dir")
+        if do_histos
+            r.stack_hists   !== nothing && _save_stack_csvs(src_dir,   r.stack_hists)
+            r.cluster_hists !== nothing && _save_cluster_csvs(src_dir, r.cluster_hists)
+            r.cut_hists     !== nothing && _save_cut_csvs(src_dir,     r.cut_hists)
         end
+
+        println("  → wrote $src_dir")
     end
     println()
 end
