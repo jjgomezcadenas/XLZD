@@ -1,0 +1,145 @@
+% LZ Field Cage — r-z half-plane cross-section
+%
+% Numbers hand-copied from data/lz_fc_barrels.csv,
+% data/lz_fc_grids.csv, data/lxe_detector.csv as of 2026-05-03.
+% If you change a CSV, ask Claude to resync this file (and its
+% companion design/lz_fieldcage_model.md).
+%
+% Compile with:  pdflatex design/tikz/fieldcage.tex
+% Output:        fieldcage.pdf  (one-page standalone diagram)
+
+\documentclass[tikz,border=8pt]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{calc,patterns}
+
+% --- Dimensions in cm (single source of truth) -----------------------
+% Barrel sources (data/lz_fc_barrels.csv)
+\def\TpcR{72.8}        % FCPT inner radius = TPC inner
+\def\RingR{74.3}       % FCRN/FCRS/FCSE inner radius = FC outer
+\def\BarrelZbot{-13.75} % FC barrel z extent: bottom (RFR floor)
+\def\BarrelZtop{145.6}  % FC barrel z extent: top (gate plane)
+
+% Grid holders (data/lz_fc_grids.csv)
+\def\HolderRin{72.8}   % annular inner = TPC inner
+\def\HolderRout{80.3}  % annular outer = LXe-skin outer
+\def\GateZ{145.6}      % FCTG face (slab opens upward)
+\def\CathZ{0.0}        % FCBG face (slab opens downward)
+\def\HfctgAxial{1.558} % FCTG slab axial thickness (back-derived)
+\def\HfcbgAxial{0.779} % FCBG slab axial thickness (back-derived)
+
+% Skin LXe outer (data/lxe_detector.csv)
+\def\SkinOuter{82.1}   % R_ICV_inner
+
+% FV box overlay (the bb0nu inner-volume default, docs/run_recipes.md)
+\def\FvZmin{26.0}
+\def\FvZmax{96.0}
+\def\FvRmax{39.0}
+
+\begin{document}
+\begin{tikzpicture}[scale=0.07, every node/.style={font=\scriptsize}]
+
+  % ==== Material / region styles ====================================
+  \tikzset{
+    lxe/.style       = {fill=cyan!10, draw=cyan!50!black, line width=0.2pt},
+    skin/.style      = {fill=cyan!25, draw=cyan!50!black, line width=0.2pt},
+    rfr/.style       = {fill=cyan!18, draw=cyan!50!black, line width=0.2pt},
+    gas/.style       = {fill=yellow!8, draw=gray!60, line width=0.2pt},
+    ti/.style        = {fill=gray!50, draw=black, line width=0.3pt},
+    ss/.style        = {fill=gray!70, draw=black, line width=0.3pt},
+    ptfe/.style      = {fill=brown!20, draw=brown!60!black, line width=0.3pt},
+    ringline/.style  = {draw=gray!70!black, line width=0.4pt},
+    fv/.style        = {draw=red!80!black, line width=0.6pt, dashed},
+    dropped/.style   = {draw=gray!50, line width=0.4pt, dashed},
+    dim/.style       = {<->, >=stealth, draw=black!70, line width=0.2pt},
+  }
+
+  % ==== Background LXe regions ======================================
+  % Skin annulus: r ∈ [RingR, SkinOuter], z ∈ [BarrelZbot, GateZ]
+  % (Note: Real geometry has skin starting at FCPT inner = TpcR; we draw the
+  % portion outside the ring shell as cleanly-skin to avoid clutter.)
+  \fill[skin] (\RingR, \BarrelZbot) rectangle (\SkinOuter, \GateZ);
+  % Active TPC LXe: r ∈ [0, TpcR], z ∈ [CathZ, GateZ] (drift region)
+  \fill[lxe]  (0, \CathZ) rectangle (\TpcR, \GateZ);
+  % RFR (inert LXe, below cathode): r ∈ [0, TpcR], z ∈ [BarrelZbot, CathZ]
+  \fill[rfr]  (0, \BarrelZbot) rectangle (\TpcR, \CathZ);
+  % Gas above gate (inside the field cage but with no LXe interactions)
+  \fill[gas]  (0, \GateZ) rectangle (\TpcR, \GateZ+18);
+
+  % ==== FCPT — PTFE walls at R=72.8, full barrel ===================
+  % Drawn at the realistic 5 mm thickness for visibility.
+  \fill[ptfe] (\TpcR, \BarrelZbot) rectangle (\TpcR+0.5, \BarrelZtop);
+
+  % ==== FC annulus (R=72.8 to 74.3) — transparent in MC ============
+  % FCRN/FCRS/FCSE all sit at R=74.3 (FC outer); the 1.5 cm gap to PTFE
+  % is the field-cage volume itself, treated as vacuum by the tracker.
+  \draw[ringline] (\RingR, \BarrelZbot) -- (\RingR, \BarrelZtop);
+
+  % ==== FCRN — Ti rings, drawn at the 65 individual ring positions ==
+  % 25 mm pitch, with the ring shell smeared at R=74.3. Show 12 sample
+  % rings as short tick marks for visual reference.
+  \foreach \z in {-10, 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140} {
+    \draw[ti] (\RingR, \z-0.4) rectangle (\RingR+0.6, \z+0.4);
+  }
+
+  % ==== FCTG — top grids+holders annular slab =======================
+  % Slab spans z ∈ [GateZ, GateZ + H], r ∈ [HolderRin, HolderRout]
+  \fill[ss] (\HolderRin, \GateZ) rectangle (\HolderRout, \GateZ+\HfctgAxial);
+  % LXe-facing face (bottom of slab) emphasised
+  \draw[ringline, line width=0.6pt] (\HolderRin, \GateZ) -- (\HolderRout, \GateZ);
+
+  % ==== FCBG — cathode grid+holder annular slab =====================
+  % Slab spans z ∈ [-H, 0], r ∈ [HolderRin, HolderRout]
+  \fill[ss] (\HolderRin, \CathZ-\HfcbgAxial) rectangle (\HolderRout, \CathZ);
+  % LXe-facing face (top of slab) emphasised
+  \draw[ringline, line width=0.6pt] (\HolderRin, \CathZ) -- (\HolderRout, \CathZ);
+
+  % ==== Dropped bottom-shield grid (greyed out) =====================
+  % Indicative location below RFR floor — drawn dashed/grey, with a
+  % "dropped from model" label so the simplification is explicit.
+  \draw[dropped] (\HolderRin, \BarrelZbot-2) rectangle (\HolderRout, \BarrelZbot-1);
+  \node[anchor=west, gray!60!black] at (\HolderRout+1, \BarrelZbot-1.5)
+    {\tiny dropped: bottom-shield grid};
+
+  % ==== FV box overlay ==============================================
+  \draw[fv] (0, \FvZmin) rectangle (\FvRmax, \FvZmax);
+  \node[red!80!black, anchor=south west] at (1, \FvZmax-3) {FV};
+
+  % ==== Axes ========================================================
+  \draw[->, line width=0.3pt] (0, \BarrelZbot-15) -- (0, \GateZ+25)
+    node[above] {$z$};
+  \draw[->, line width=0.3pt] (0,0) -- (\SkinOuter+10, 0)
+    node[right] {$r$};
+
+  % ==== Annotations =================================================
+  % Component callouts
+  \node[anchor=west] at (\TpcR-10, 35)        {active LXe};
+  \node[anchor=west] at (\TpcR+1.6, 60)       {\tiny FCPT (PTFE)};
+  \node[anchor=west] at (\RingR+1.6, 75)      {\tiny FCRN/FCRS/FCSE};
+  \node[anchor=west] at (\HolderRout+1, \GateZ+3)  {FCTG (anode+gate)};
+  \node[anchor=west] at (\HolderRout+1, \CathZ-3)  {FCBG (cathode)};
+  \node[anchor=west] at (\SkinOuter-15, 110)  {\tiny LXe skin};
+  \node[anchor=west] at (5, \GateZ+10)        {gas};
+  \node[anchor=west] at (\TpcR-15, -8)        {\tiny RFR (inert)};
+
+  % z anchors on axis
+  \node[anchor=east, fill=white, inner sep=1pt] at (-1, \GateZ)
+    {gate $z=\GateZ$};
+  \node[anchor=east, fill=white, inner sep=1pt] at (-1, \CathZ)
+    {cathode $z=0$};
+  \node[anchor=east, fill=white, inner sep=1pt] at (-1, \BarrelZbot)
+    {RFR bot $z=\BarrelZbot$};
+
+  % Radial dimensions
+  \draw[dim] (0, \BarrelZbot-12) -- (\TpcR, \BarrelZbot-12);
+  \node[below] at (\TpcR/2, \BarrelZbot-13) {$R_{\rm FC,inner} = \TpcR$ cm};
+
+  \draw[dim] (0, \BarrelZbot-22) -- (\RingR, \BarrelZbot-22);
+  \node[below] at (\RingR/2, \BarrelZbot-23)
+    {$R_{\rm rings} = \RingR$ cm};
+
+  \draw[dim] (\HolderRin, \GateZ+8) -- (\HolderRout, \GateZ+8);
+  \node[above] at ((\HolderRin+\HolderRout)/2, \GateZ+8)
+    {\tiny annulus $R \in [\HolderRin, \HolderRout]$};
+
+\end{tikzpicture}
+\end{document}
