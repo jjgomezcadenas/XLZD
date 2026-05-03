@@ -56,11 +56,15 @@ function parse_cli()
         "--sigma-e"
             arg_type = Float64
             default  = 0.007       # σ_E / E (LZ default 0.7 %)
-            help     = "Energy resolution σ/E. bb0nu uses 0.010."
+            help     = "Energy resolution σ_rms/E (rms / standard " *
+                       "deviation; LZ + nEXO convention). NEXT and " *
+                       "others quote FWHM/E = 2.355 × σ_rms/E."
         "--roi-halfwidth"
             arg_type = Float64
-            default  = 17.2        # keV; ±1σ at σ/E = 0.7 % and Q = 2458 keV
-            help     = "ROI half-width in keV (±1σ around Q_ββ)."
+            default  = -1.0        # sentinel: auto = 1 FWHM at the supplied σ
+            help     = "ROI half-width in keV. Default = 1 FWHM at the " *
+                       "supplied σ_rms/E (≈ 40.5 keV at default σ = 0.7 %); " *
+                       "pass an explicit value (e.g. 17.2 for ±1σ) to override."
         "--fv-z-min"
             arg_type = Float64
             default  = 26.0
@@ -139,7 +143,13 @@ function main()
     src_i     = args["source-index"]
     src_name  = args["source-name"]
     sigma_e   = args["sigma-e"]
-    roi_half  = args["roi-halfwidth"]
+    # ROI half-width: sentinel -1 ⇒ auto = 1 FWHM at the supplied σ_rms.
+    # FWHM = 2√(2 ln 2) σ ≈ 2.3548 σ for a Gaussian; using the exact factor
+    # so the printed default tracks σ exactly.
+    Q_KEV     = MCParams().Q_betabeta_keV
+    roi_half  = args["roi-halfwidth"] < 0 ?
+                  2 * sqrt(2 * log(2)) * sigma_e * Q_KEV :
+                  args["roi-halfwidth"]
     fv_z_min  = args["fv-z-min"]
     fv_z_max  = args["fv-z-max"]
     fv_r_max  = args["fv-r-max"]
