@@ -237,7 +237,8 @@ function main()
                    "n_SS_outside_ROI,n_SS_in_ROI,n_companion_vetoed,",
                    "Q_betabeta_keV,sigma_E_over_E,ROI_halfwidth_keV,",
                    "fv_z_min_cm,fv_z_max_cm,fv_r_max_cm,",
-                   "E_visible_keV,E_skin_veto_keV")
+                   "E_visible_keV,E_skin_veto_keV,",
+                   "R_LXe_outer_cm")
         for r in results
             println(f, join([
                 r.name, r.isotope, r.n_total,
@@ -258,6 +259,7 @@ function main()
                 @sprintf("%.3f", fv_r_max_cm),
                 @sprintf("%.3f", params.E_visible_keV),
                 @sprintf("%.3f", params.E_skin_veto_keV),
+                @sprintf("%.3f", det.R_ICV_inner),
             ], ","))
         end
     end
