@@ -115,6 +115,10 @@ export ClusterHistogramSet, update_cluster_histograms!, merge_cluster_histograms
 export RejectionHistograms
 export fill_rejected_skin!, fill_rejected_fv!, merge_rejection_histograms!
 
+# Cut-flow histograms
+export CutHistograms, merge_cut_histograms!
+export fill_cut1_u!, fill_cut2_first_interaction!, fill_cut3!, fill_cut4!
+
 # Stack tracker (Phase 1 of src3 refactor)
 export StackRow, PhotonStack, push_row!
 export INT_PHOTO, INT_COMPTON, INT_PAIR, INT_BELOW_THRESH

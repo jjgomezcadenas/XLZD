@@ -540,3 +540,213 @@ function merge_rejection_histograms!(into::RejectionHistograms,
     @. into.fv_E_counts     += src.fv_E_counts
     into
 end
+
+# ===========================================================================
+# CutHistograms — one accumulator per cut stage of the analysis funnel.
+# ===========================================================================
+"""
+    CutHistograms
+
+Cut-flow diagnostic histograms, one set of bins per cut stage:
+
+  Cut 1 (into detector):
+    - `h_u_sampled`           1D, [0, 1], `u = cos θ_inward` of every
+                              sampled photon (before any propagation).
+
+  Cut 2 (pass skin + FV):
+    - `first_interaction_r_z` 2D r × z heatmap of the *first*
+                              interaction position for every event with
+                              an interaction (filled in `fast_veto`).
+
+  Cut 3 (SS / MS classification — filled for cut-2-pass events):
+    - `dz_inclusive`          1D, [0, dz_max] cm, every consecutive
+                              visible-cluster |Δz| (one entry per
+                              consecutive pair, not per event).
+    - `n_visible`             1D integer, # visible clusters per event.
+    - `E_total`               1D, [0, E_max] MeV, Σ ec across the
+                              visible clusters of the event.
+
+  Cut 4 (SS in ROI — filled for SS_in_ROI ∪ SS_outside_ROI):
+    - `ss_ec_pre_roi`         1D, [0, E_max] MeV, true cluster energy.
+    - `ss_es_pre_roi`         1D, [0, E_max] MeV, smeared cluster
+                              energy (what the ROI cut acts on).
+    - `ss_r_z`                2D r × z, SS cluster centroid.
+
+All bin edges and conditioning live with the histogram itself so the
+plotter can read them off without consulting MCParams.
+"""
+struct CutHistograms
+    # Cut 1
+    u_n_bins::Int
+    h_u_sampled::Vector{Int}
+
+    # Cut 2 / Cut 4 share the (r, z) binning
+    r_n_bins::Int
+    r_max_cm::Float64
+    z_n_bins::Int
+    z_min_cm::Float64
+    z_max_cm::Float64
+    first_interaction_r_z::Matrix{Int}
+
+    # Cut 3
+    dz_n_bins::Int
+    dz_max_cm::Float64
+    dz_inclusive::Vector{Int}
+    n_visible_n_bins::Int
+    n_visible::Vector{Int}
+    E_n_bins::Int
+    E_max_MeV::Float64
+    E_total::Vector{Int}
+
+    # Cut 4
+    ss_ec_pre_roi::Vector{Int}
+    ss_es_pre_roi::Vector{Int}
+    ss_r_z::Matrix{Int}
+end
+
+function CutHistograms(;
+        u_n_bins::Int = 100,
+        r_n_bins::Int = 100, r_max_cm::Real = 82.1,
+        z_n_bins::Int = 100, z_min_cm::Real = -69.0, z_max_cm::Real = 145.6,
+        dz_n_bins::Int = 200, dz_max_cm::Real = 5.0,        # zoom near 3mm threshold
+        n_visible_n_bins::Int = 21,                          # 0..20
+        E_n_bins::Int = 270, E_max_MeV::Real = 2.7)
+    CutHistograms(
+        u_n_bins,
+        zeros(Int, u_n_bins),
+        r_n_bins,  Float64(r_max_cm),
+        z_n_bins,  Float64(z_min_cm), Float64(z_max_cm),
+        zeros(Int, r_n_bins, z_n_bins),
+        dz_n_bins, Float64(dz_max_cm),
+        zeros(Int, dz_n_bins),
+        n_visible_n_bins,
+        zeros(Int, n_visible_n_bins),
+        E_n_bins,  Float64(E_max_MeV),
+        zeros(Int, E_n_bins),
+        zeros(Int, E_n_bins),
+        zeros(Int, E_n_bins),
+        zeros(Int, r_n_bins, z_n_bins),
+    )
+end
+
+# --- Cut 1 ---------------------------------------------------------------
+
+"Bin one sampled `u = cos θ_inward` into `h_u_sampled`."
+@inline function fill_cut1_u!(ch::CutHistograms, u::Float64)
+    iu = _bin_idx(u, 0.0, 1.0, ch.u_n_bins)
+    iu > 0 && (ch.h_u_sampled[iu] += 1)
+    nothing
+end
+
+# --- Cut 2 ---------------------------------------------------------------
+
+"Bin one first-interaction (x, y, z) into `first_interaction_r_z`."
+@inline function fill_cut2_first_interaction!(ch::CutHistograms,
+                                                x::Float64, y::Float64, z::Float64)
+    r = sqrt(x*x + y*y)
+    ir = _bin_idx(r, 0.0, ch.r_max_cm, ch.r_n_bins)
+    iz = _bin_idx(z, ch.z_min_cm, ch.z_max_cm, ch.z_n_bins)
+    if ir > 0 && iz > 0
+        ch.first_interaction_r_z[ir, iz] += 1
+    end
+    nothing
+end
+
+# --- Cut 3 ---------------------------------------------------------------
+
+"""
+    fill_cut3!(ch, clusters, params)
+
+Fill cut-3 histograms for one event whose outcome ∈ {`MS_rejected`,
+`SS_outside_ROI`, `SS_in_ROI`, `companion_vetoed`} (i.e., events that
+passed cut 2). Iterates only over visible clusters
+(`c.ec > params.E_visible_keV / 1000`):
+
+  - `dz_inclusive`: |Δz| between consecutive visible clusters in z-sort
+    order, one entry per consecutive pair.
+  - `n_visible`: count of visible clusters in the event.
+  - `E_total`: Σ ec over visible clusters.
+"""
+function fill_cut3!(ch::CutHistograms,
+                     clusters::Vector{Cluster},
+                     params::MCParams)
+    thr_MeV = params.E_visible_keV / 1000.0
+
+    # Collect visible-cluster z and energies in z-sort order.
+    vis_z = Float64[]
+    E_tot = 0.0
+    @inbounds for c in clusters
+        if c.ec > thr_MeV
+            push!(vis_z, c.zc)
+            E_tot += c.ec
+        end
+    end
+    n_vis = length(vis_z)
+
+    _bin_int!(ch.n_visible, n_vis)
+    if n_vis > 0
+        iE = _bin_idx(E_tot, 0.0, ch.E_max_MeV, ch.E_n_bins)
+        iE > 0 && (ch.E_total[iE] += 1)
+    end
+    if n_vis >= 2
+        sort!(vis_z)
+        @inbounds for i in 1:(n_vis - 1)
+            adz = abs(vis_z[i+1] - vis_z[i])
+            iz  = _bin_idx(adz, 0.0, ch.dz_max_cm, ch.dz_n_bins)
+            iz > 0 && (ch.dz_inclusive[iz] += 1)
+        end
+    end
+    nothing
+end
+
+# --- Cut 4 ---------------------------------------------------------------
+
+"""
+    fill_cut4!(ch, clusters, params)
+
+Fill cut-4 histograms for one event whose outcome ∈ {`SS_in_ROI`,
+`SS_outside_ROI`} — i.e., a single visible cluster, in FV, about to
+have the ROI cut applied. Picks the (single) visible cluster.
+"""
+function fill_cut4!(ch::CutHistograms,
+                     clusters::Vector{Cluster},
+                     params::MCParams)
+    thr_MeV = params.E_visible_keV / 1000.0
+    @inbounds for c in clusters
+        if c.ec > thr_MeV
+            iec = _bin_idx(c.ec, 0.0, ch.E_max_MeV, ch.E_n_bins)
+            ies = _bin_idx(c.es, 0.0, ch.E_max_MeV, ch.E_n_bins)
+            iec > 0 && (ch.ss_ec_pre_roi[iec] += 1)
+            ies > 0 && (ch.ss_es_pre_roi[ies] += 1)
+
+            r  = sqrt(c.xc * c.xc + c.yc * c.yc)
+            ir = _bin_idx(r,    0.0,           ch.r_max_cm, ch.r_n_bins)
+            iz = _bin_idx(c.zc, ch.z_min_cm,   ch.z_max_cm, ch.z_n_bins)
+            if ir > 0 && iz > 0
+                ch.ss_r_z[ir, iz] += 1
+            end
+            return  # only one visible cluster by construction
+        end
+    end
+    nothing
+end
+
+# --- Merge ---------------------------------------------------------------
+
+"Sum `src` into `into` element-wise across every histogram field."
+function merge_cut_histograms!(into::CutHistograms, src::CutHistograms)
+    @assert into.u_n_bins  == src.u_n_bins
+    @assert into.r_n_bins  == src.r_n_bins
+    @assert into.z_n_bins  == src.z_n_bins
+    @assert into.dz_n_bins == src.dz_n_bins
+    @assert into.E_n_bins  == src.E_n_bins
+    @. into.h_u_sampled              += src.h_u_sampled
+    @. into.first_interaction_r_z    += src.first_interaction_r_z
+    @. into.dz_inclusive             += src.dz_inclusive
+    @. into.n_visible                += src.n_visible
+    @. into.E_total                  += src.E_total
+    @. into.ss_ec_pre_roi            += src.ss_ec_pre_roi
+    @. into.ss_es_pre_roi            += src.ss_es_pre_roi
+    @. into.ss_r_z                   += src.ss_r_z
+    into
+end
