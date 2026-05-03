@@ -1,0 +1,159 @@
+% LZ Cryostat — r-z half-plane cross-section
+%
+% Numbers hand-copied from data/lz_cryo_geometry.csv,
+% data/lz_cryo_extras.csv, data/lxe_detector.csv as of 2026-05-03.
+% If you change a CSV, ask Claude to resync this file (and its
+% companion design/lz_cryostat_model.md).
+%
+% Compile with:  pdflatex design/tikz/cryostat.tex
+% Output:        cryostat.pdf  (one-page standalone diagram)
+
+\documentclass[tikz,border=8pt]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{calc,patterns,decorations.pathmorphing}
+
+% --- Dimensions in cm (single source of truth) -----------------------
+% Vessels (data/lz_cryo_geometry.csv)
+\def\OcvR{91.5}        % OCV outer-equator radius
+\def\OcvT{0.7}         % OCV body wall thickness
+\def\IcvR{83.0}        % ICV outer-equator radius
+\def\IcvT{0.9}         % ICV body wall thickness
+\def\IcvRinner{82.1}   % = IcvR - IcvT (γ-entry surface for cryostat sources)
+
+% z anchors (data/lxe_detector.csv)
+\def\zCathode{0.0}
+\def\zGate{145.6}
+\def\zRfrBot{-13.75}
+\def\zLxeBot{-69.0}    % = ICV bottom apex
+\def\zIcvTop{190.0}    % = ICV top apex
+
+% Body cylinder z extent (derived: body equator = apex ∓ R/aspect_ratio)
+% ICV: 2:1 top → depth 41.5; 3:1 bottom → depth 27.67
+\def\IcvBodyTop{148.5}    % = zIcvTop - 41.5
+\def\IcvBodyBot{-41.33}   % = zLxeBot + 27.67
+% OCV: 2:1 top + 2:1 bottom; H_cyl 212.5 cm, ~11.3 cm above/below ICV body
+\def\OcvBodyTop{159.83}   % = IcvBodyTop + 11.33
+\def\OcvBodyBot{-52.67}   % = IcvBodyBot - 11.33
+\def\OcvTopApex{205.58}   % = OcvBodyTop + 45.75 (= R/2 for 2:1)
+\def\OcvBotApex{-98.42}   % = OcvBodyBot - 45.75
+
+% TPC active envelope (data/lxe_detector.csv)
+\def\TpcR{72.8}        % = R_FC_inner
+\def\FcOuter{74.3}     % = R_FC_outer (skin-LXe inner boundary)
+
+\begin{document}
+\begin{tikzpicture}[scale=0.045, every node/.style={font=\scriptsize}]
+
+  % ==== Materials & styles ==========================================
+  \tikzset{
+    ti/.style       = {fill=gray!30, draw=black, line width=0.2pt},
+    mli/.style      = {fill=orange!40, draw=orange!70!black, line width=0.4pt},
+    lxe/.style      = {fill=cyan!10, draw=cyan!50!black, line width=0.2pt},
+    skin/.style     = {fill=cyan!25, draw=cyan!50!black, line width=0.2pt},
+    rfr/.style      = {fill=cyan!18, draw=cyan!50!black, line width=0.2pt},
+    gas/.style      = {fill=yellow!8, draw=gray!60, line width=0.2pt},
+    fcedge/.style   = {draw=brown!60, line width=0.4pt, dashed},
+    dim/.style      = {<->, >=stealth, draw=black!70, line width=0.2pt},
+  }
+
+  % Helper: draw an oblate ellipsoidal head as a half-ellipse, with
+  % equator at z=#1, R=#2, depth (along axis) = #3, sign #4 (+1 = bulge up,
+  % -1 = bulge down). Uses parametric: r = R sin(t), z = z_eq + sign*depth*cos(t)
+  %   for t ∈ [0, π/2]; second arc r=R-tWall, etc., is drawn separately.
+
+  % ==== OCV (outermost Ti vessel) ===================================
+  % Body: rectangle from (R_inner, body_bot) to (R_outer, body_top)
+  \fill[ti] (\OcvR-\OcvT, \OcvBodyBot) rectangle (\OcvR, \OcvBodyTop);
+  % Top head (2:1 oblate)
+  \fill[ti, even odd rule]
+    (\OcvR, \OcvBodyTop)
+      arc[start angle=0, end angle=90, x radius=\OcvR, y radius=45.75]
+    -- (0, \OcvBodyTop+45.75-0.9)
+      arc[start angle=90, end angle=0, x radius=\OcvR-\OcvT, y radius=45.75-0.9]
+    -- cycle;
+  % Bottom head (2:1 oblate, mirrored)
+  \fill[ti, even odd rule]
+    (\OcvR, \OcvBodyBot)
+      arc[start angle=0, end angle=-90, x radius=\OcvR, y radius=45.75]
+    -- (0, \OcvBodyBot-45.75+1.5)
+      arc[start angle=-90, end angle=0, x radius=\OcvR-\OcvT, y radius=45.75-1.5]
+    -- cycle;
+
+  % ==== ICV (inner Ti vessel) =======================================
+  \fill[ti] (\IcvRinner, \IcvBodyBot) rectangle (\IcvR, \IcvBodyTop);
+  % Top head (2:1 oblate, t=8 mm)
+  \fill[ti, even odd rule]
+    (\IcvR, \IcvBodyTop)
+      arc[start angle=0, end angle=90, x radius=\IcvR, y radius=41.5]
+    -- (0, \IcvBodyTop+41.5-0.8)
+      arc[start angle=90, end angle=0, x radius=\IcvRinner, y radius=41.5-0.8]
+    -- cycle;
+  % Bottom head (3:1 oblate, t=12 mm) — depth = 83/3 = 27.67
+  \fill[ti, even odd rule]
+    (\IcvR, \IcvBodyBot)
+      arc[start angle=0, end angle=-90, x radius=\IcvR, y radius=27.67]
+    -- (0, \IcvBodyBot-27.67+1.2)
+      arc[start angle=-90, end angle=0, x radius=\IcvRinner, y radius=27.67-1.2]
+    -- cycle;
+
+  % ==== MLI (orange strip on ICV outer wall) ========================
+  % Modeled as a thin layer at R = IcvR (zero thickness; drawn 0.4 cm thick
+  % so it's visible on the diagram).
+  \fill[mli] (\IcvR, \IcvBodyBot) rectangle (\IcvR+0.4, \IcvBodyTop);
+
+  % ==== LXe regions =================================================
+  % Skin annulus: r ∈ [FcOuter, IcvRinner], z ∈ [zRfrBot, zGate]
+  \fill[skin] (\FcOuter, \zRfrBot) rectangle (\IcvRinner, \zGate);
+  % Active TPC: r ∈ [0, TpcR], z ∈ [zCathode, zGate]
+  \fill[lxe] (0, \zCathode) rectangle (\TpcR, \zGate);
+  % RFR (inert LXe below cathode): r ∈ [0, TpcR], z ∈ [zRfrBot, zCathode]
+  \fill[rfr] (0, \zRfrBot) rectangle (\TpcR, \zCathode);
+  % Dome LXe (everything else inside ICV that isn't FC/RFR/skin/active):
+  % below z_RFR_bottom, contained by ICV bottom head — drawn as rfr style.
+  \fill[rfr] (0, \IcvBodyBot) rectangle (\IcvRinner, \zRfrBot);
+  % Gas region above gate, inside ICV
+  \fill[gas] (0, \zGate) rectangle (\IcvRinner, \IcvBodyTop);
+
+  % ==== Field-cage envelope (transparent annulus, drawn dashed) =====
+  \draw[fcedge] (\TpcR, \zRfrBot) rectangle (\FcOuter, \zGate);
+
+  % ==== Axis ========================================================
+  \draw[->, line width=0.3pt] (0, \OcvBotApex-15) -- (0, \OcvTopApex+15)
+    node[above] {$z$};
+  \draw[->, line width=0.3pt] (0,0) -- (\OcvR+15, 0) node[right] {$r$};
+
+  % ==== Annotations =================================================
+  % Vessel labels
+  \node[anchor=west] at (\OcvR+5, \OcvBodyTop-30) {OCV (Ti)};
+  \node[anchor=west] at (\IcvR+5, \IcvBodyTop-50) {ICV (Ti)};
+  \node[anchor=west, orange!70!black] at (\IcvR+5, 50) {MLI};
+  \node[anchor=west] at (\TpcR+0.5, 100) {\tiny FC};
+  \node at (\TpcR/2, 75) {active LXe};
+  \node at ((\IcvRinner+\FcOuter)/2, 110) {\tiny skin};
+  \node at (\TpcR/2, -7) {\tiny RFR};
+  \node at (\TpcR/2, \IcvBodyTop+5) {gas};
+
+  % Key dimensions (radial)
+  \draw[dim] (0, \OcvBotApex-12) -- (\OcvR, \OcvBotApex-12);
+  \node[below] at (\OcvR/2, \OcvBotApex-13) {OCV $R = \OcvR$ cm};
+
+  \draw[dim] (0, \IcvBodyBot-32) -- (\IcvR, \IcvBodyBot-32);
+  \node[below] at (\IcvR/2, \IcvBodyBot-33) {ICV $R = \IcvR$ cm};
+
+  \draw[dim] (\TpcR, \zCathode-25) -- (\IcvRinner, \zCathode-25);
+  \node[below] at ((\TpcR+\IcvRinner)/2, \zCathode-26) {\tiny LXe skin $\sim 6$ cm};
+
+  % Key dimensions (axial)
+  \draw[dim] (\OcvR+18, \OcvBotApex) -- (\OcvR+18, \OcvTopApex);
+  \node[anchor=west, rotate=90, align=center] at (\OcvR+19, (\OcvBotApex+\OcvTopApex)/2)
+    {OCV $H = 304$ cm};
+
+  % z anchors on the axis
+  \node[anchor=east, fill=white, inner sep=1pt] at (-1, \zGate)    {gate $z=\zGate$};
+  \node[anchor=east, fill=white, inner sep=1pt] at (-1, \zCathode) {cathode $z=0$};
+  \node[anchor=east, fill=white, inner sep=1pt] at (-1, \zRfrBot)  {RFR bot $z=\zRfrBot$};
+  \node[anchor=east, fill=white, inner sep=1pt] at (-1, \zLxeBot)  {ICV bot apex $z=\zLxeBot$};
+  \node[anchor=east, fill=white, inner sep=1pt] at (-1, \zIcvTop)  {ICV top apex $z=\zIcvTop$};
+
+\end{tikzpicture}
+\end{document}
