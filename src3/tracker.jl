@@ -67,9 +67,9 @@ function track_photon_stack(rng::AbstractRNG, det::LXeDetector,
                              rej_hist::Union{RejectionHistograms, Nothing}=nothing,
                              cdf::Union{Vector{Float64}, Nothing}=nothing
                              )::Symbol
-    x, y, z, dx, dy, dz = cdf === nothing ?
-                          sample_entry(rng, det, eff) :
-                          sample_entry(rng, det, eff, cdf)
+    x, y, z, dx, dy, dz, _u = cdf === nothing ?
+                              sample_entry(rng, det, eff) :
+                              sample_entry(rng, det, eff, cdf)
     _track_child_photon!(stack, rng, det, xcom, params,
                           x, y, z, dx, dy, dz, eff.E_MeV,
                           eff.region, 0)
@@ -132,6 +132,7 @@ function _track_child_photon!(stack::PhotonStack,
 
         if dnext < dint
             # Transparent advance to boundary; loop continues.
+            stack.path_length_LXe += dnext
             x += dx * (dnext + ε)
             y += dy * (dnext + ε)
             z += dz * (dnext + ε)
@@ -140,6 +141,7 @@ function _track_child_photon!(stack::PhotonStack,
 
         # Interaction at distance dint inside `region`. Row tagged with
         # `region` (start region) — dint was sampled from its μ.
+        stack.path_length_LXe += dint
         x += dx * dint
         y += dy * dint
         z += dz * dint
@@ -252,9 +254,9 @@ function fast_veto(rng::AbstractRNG, det::LXeDetector,
                     rej_hist::Union{RejectionHistograms, Nothing}=nothing,
                     cdf::Union{Vector{Float64}, Nothing}=nothing
                     )::Symbol
-    x, y, z, dx, dy, dz = cdf === nothing ?
-                          sample_entry(rng, det, eff) :
-                          sample_entry(rng, det, eff, cdf)
+    x, y, z, dx, dy, dz, _u = cdf === nothing ?
+                              sample_entry(rng, det, eff) :
+                              sample_entry(rng, det, eff, cdf)
     e   = eff.E_MeV
     ε   = _TRACKER_BOUNDARY_NUDGE
     E_visible_MeV   = params.E_visible_keV   / 1000.0

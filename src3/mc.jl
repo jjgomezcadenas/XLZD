@@ -85,9 +85,9 @@ function companion_visible!(rng::AbstractRNG, det::LXeDetector,
                              xcom::XCOMTable,
                              params::MCParams;
                              cdf::Union{Vector{Float64}, Nothing}=nothing)::Bool
-    x, y, z, dx, dy, dz = cdf === nothing ?
-                          sample_entry(rng, det, comp_eff) :
-                          sample_entry(rng, det, comp_eff, cdf)
+    x, y, z, dx, dy, dz, _u = cdf === nothing ?
+                              sample_entry(rng, det, comp_eff) :
+                              sample_entry(rng, det, comp_eff, cdf)
     E = comp_eff.E_MeV
     E_visible_MeV   = params.E_visible_keV   * 1.0e-3
     E_skin_veto_MeV = params.E_skin_veto_keV * 1.0e-3

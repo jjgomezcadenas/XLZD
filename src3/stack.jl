@@ -53,23 +53,27 @@ const INT_BELOW_THRESH = :BELOW_THRESH
     PhotonStack()
 
 Container of `StackRow` records for ONE source-photon event, plus a
-running counter `next_ng` used to assign sequential `ng` values.
+running counter `next_ng` used to assign sequential `ng` values, plus a
+running `path_length_LXe` accumulator (cm) for the photon's total
+distance through any LXe region (`:TPC`, `:Skin`).
 
 Reuse across events by calling `empty!(stack)` between events; this
-clears the rows and resets `next_ng = 1`.
+clears the rows, resets `next_ng = 1`, and resets `path_length_LXe = 0`.
 """
 mutable struct PhotonStack
     rows::Vector{StackRow}
     next_ng::Int
+    path_length_LXe::Float64
 end
 
-PhotonStack() = PhotonStack(StackRow[], 1)
+PhotonStack() = PhotonStack(StackRow[], 1, 0.0)
 
 Base.length(stack::PhotonStack) = length(stack.rows)
 
 function Base.empty!(stack::PhotonStack)
     empty!(stack.rows)
     stack.next_ng = 1
+    stack.path_length_LXe = 0.0
     stack
 end
 

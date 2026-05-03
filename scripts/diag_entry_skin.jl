@@ -94,7 +94,7 @@ function main()
     for _ in 1:N
         # Sample direction → compute u, then restore rng.
         copy!(snap, rng)
-        x, y, z, dx, dy, dz = sample_entry(rng, det, eff)
+        x, y, z, dx, dy, dz, _u = sample_entry(rng, det, eff)
         nx, ny, nz = inward_normal(eff.region, x, y, z, det)
         u = dx*nx + dy*ny + dz*nz
 

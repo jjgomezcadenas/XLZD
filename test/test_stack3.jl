@@ -42,8 +42,9 @@ end
 
 @testset "PhotonStack defaults" begin
     s = PhotonStack()
-    @test length(s)   == 0
-    @test s.next_ng   == 1
+    @test length(s)         == 0
+    @test s.next_ng         == 1
+    @test s.path_length_LXe == 0.0
     @test isempty(s.rows)
 end
 
@@ -105,9 +106,11 @@ end
     @test length(s) == 3
     @test s.next_ng == 4
 
+    s.path_length_LXe = 12.34       # ensure empty! also resets the path accumulator
     empty!(s)
-    @test length(s) == 0
-    @test s.next_ng == 1
+    @test length(s)         == 0
+    @test s.next_ng         == 1
+    @test s.path_length_LXe == 0.0
     @test isempty(s.rows)
 
     # Subsequent push starts ng numbering over.

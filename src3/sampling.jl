@@ -69,12 +69,14 @@ end
 # ---------------------------------------------------------------------------
 
 """
-    sample_barrel_entry(rng, det, cdf, u_bins) -> (x, y, z, dx, dy, dz)
+    sample_barrel_entry(rng, det, cdf, u_bins) -> (x, y, z, dx, dy, dz, u)
 
 Sample one γ entering the LXe through the ICV inner cylindrical wall.
 Position uniform on the cylinder R = R_ICV_inner over z ∈ [z_RFR_bottom,
 z_gate]; direction at polar angle θ from the local inward normal
-(u = cos θ from `cdf`), azimuth uniform.
+(u = cos θ from `cdf`), azimuth uniform. The 7th return value is the
+sampled `u` itself, exposed so callers can histogram the entry-angle
+distribution as a Cut-1 diagnostic.
 """
 function sample_barrel_entry(rng::AbstractRNG, det::LXeDetector,
                               cdf::Vector{Float64}, u_bins::Vector{Float64})
@@ -87,7 +89,7 @@ function sample_barrel_entry(rng::AbstractRNG, det::LXeDetector,
     u   = sample_u(rng, u_bins, cdf)
     ψ   = 2π * rand(rng)
     dx, dy, dz = rotate_direction(nx, ny, nz, u, ψ)
-    (x, y, z, dx, dy, dz)
+    (x, y, z, dx, dy, dz, u)
 end
 
 """
@@ -115,12 +117,13 @@ icv_bot_inner_disk(det::LXeDetector) = GDisk(
 )
 
 """
-    sample_endcap_entry(rng, det, region, cdf, u_bins) -> (x, y, z, dx, dy, dz)
+    sample_endcap_entry(rng, det, region, cdf, u_bins) -> (x, y, z, dx, dy, dz, u)
 
 Sample one γ entering through the ICV inner top (`:endcap_top`) or
 bottom (`:endcap_bottom`) head. Position uniform-by-area on the
 ellipsoidal surface (delegated to GDisk.sample_inner_surface);
-direction at polar angle θ from the local inward normal.
+direction at polar angle θ from the local inward normal. The 7th return
+value is the sampled `u` (Cut-1 diagnostic).
 
 Note: the top head sits *above* the LXe surface, so γ from CTH start
 in the gas region and must propagate to the liquid surface before any
@@ -143,16 +146,17 @@ function sample_endcap_entry(rng::AbstractRNG, det::LXeDetector,
     u   = sample_u(rng, u_bins, cdf)
     ψ   = 2π * rand(rng)
     dx, dy, dz = rotate_direction(nx, ny, nz, u, ψ)
-    (x, y, z, dx, dy, dz)
+    (x, y, z, dx, dy, dz, u)
 end
 
 """
-    sample_entry(rng, det, eff::EffectiveSource) -> (x, y, z, dx, dy, dz)
+    sample_entry(rng, det, eff::EffectiveSource) -> (x, y, z, dx, dy, dz, u)
     sample_entry(rng, det, eff::EffectiveSource, cdf::Vector{Float64})
-        -> (x, y, z, dx, dy, dz)
+        -> (x, y, z, dx, dy, dz, u)
 
 Sample one (entry point, direction) for the given EffectiveSource by
-dispatching on its region.
+dispatching on its region. Returns the sampled cos θ_inward as the 7th
+element so callers can histogram it (Cut-1 diagnostic).
 
 The 3-arg form rebuilds the CDF on every call — convenient for tests
 and one-off scripts but **not** for production MC (allocates ~2N times

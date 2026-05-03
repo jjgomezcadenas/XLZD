@@ -95,7 +95,7 @@ end
     rs = Float64[]; zs = Float64[]; phis = Float64[]
     cosθs = Float64[]
     for _ in 1:N_SAMPLE
-        x, y, z, dx, dy, dz = sample_barrel_entry(rng, det, cdf, eff.u_bins)
+        x, y, z, dx, dy, dz, u = sample_barrel_entry(rng, det, cdf, eff.u_bins)
         push!(rs, sqrt(x*x + y*y))
         push!(zs, z)
         push!(phis, atan(y, x))
@@ -132,8 +132,8 @@ end
     # Sample many; verify ellipsoidal surface eq, inward normal, direction.
     cosθs = Float64[]
     for _ in 1:N_SAMPLE
-        x, y, z, dx, dy, dz = sample_endcap_entry(rng, det, :endcap_top,
-                                                   cdf, eff.u_bins)
+        x, y, z, dx, dy, dz, u = sample_endcap_entry(rng, det, :endcap_top,
+                                                      cdf, eff.u_bins)
         # Ellipsoid: (r/R)^2 + (z_off/d)^2 = 1, with z_off = z - z_eq ≥ 0 (head bulges up)
         r2 = x*x + y*y
         z_off = z - z_eq
@@ -164,8 +164,8 @@ end
 
     cosθs = Float64[]
     for _ in 1:N_SAMPLE
-        x, y, z, dx, dy, dz = sample_endcap_entry(rng, det, :endcap_bottom,
-                                                   cdf, eff.u_bins)
+        x, y, z, dx, dy, dz, u = sample_endcap_entry(rng, det, :endcap_bottom,
+                                                      cdf, eff.u_bins)
         # Bottom head bulges down: z_off = z - z_eq ≤ 0
         r2 = x*x + y*y
         z_off = z - z_eq
@@ -190,10 +190,12 @@ end
     rng = MersenneTwister(RNG_SEED + 40)
     for name in ("CB_Tl208", "CTH_Tl208", "CBH_Tl208")
         eff = by_name[name]
-        x, y, z, dx, dy, dz = sample_entry(rng, det, eff)
+        x, y, z, dx, dy, dz, u = sample_entry(rng, det, eff)
         # Sanity: position inside ICV inner radius and direction unit
         @test sqrt(x*x + y*y) ≤ det.R_ICV_inner + 1e-6
         @test isapprox(dx*dx + dy*dy + dz*dz, 1.0; atol=1e-10)
+        # u is in [0, 1] — sampled cos θ_inward
+        @test 0.0 ≤ u ≤ 1.0
     end
 end
 
