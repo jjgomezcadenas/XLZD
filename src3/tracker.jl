@@ -252,11 +252,15 @@ function fast_veto(rng::AbstractRNG, det::LXeDetector,
                     eff::EffectiveSource, xcom::XCOMTable,
                     params::MCParams;
                     rej_hist::Union{RejectionHistograms, Nothing}=nothing,
+                    cut_hist::Union{CutHistograms, Nothing}=nothing,
                     cdf::Union{Vector{Float64}, Nothing}=nothing
                     )::Symbol
-    x, y, z, dx, dy, dz, _u = cdf === nothing ?
+    x, y, z, dx, dy, dz, u = cdf === nothing ?
                               sample_entry(rng, det, eff) :
                               sample_entry(rng, det, eff, cdf)
+    # Cut 1: bin the sampled u for every photon, before anything else.
+    cut_hist !== nothing && fill_cut1_u!(cut_hist, u)
+
     e   = eff.E_MeV
     ε   = _TRACKER_BOUNDARY_NUDGE
     E_visible_MeV   = params.E_visible_keV   / 1000.0
@@ -293,6 +297,10 @@ function fast_veto(rng::AbstractRNG, det::LXeDetector,
         x += dx * dint
         y += dy * dint
         z += dz * dint
+
+        # Cut 2: bin the position of this first interaction (regardless
+        # of whether the reject decision below fires).
+        cut_hist !== nothing && fill_cut2_first_interaction!(cut_hist, x, y, z)
 
         # Sample interaction type and compute edep.
         sP = σ_photo(xcom, e)

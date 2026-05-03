@@ -38,6 +38,7 @@ struct MCResult
     stack_hists::Union{StackHistogramSet, Nothing}
     cluster_hists::Union{ClusterHistogramSet, Nothing}
     rej_hist::Union{RejectionHistograms, Nothing}
+    cut_hists::Union{CutHistograms, Nothing}
 end
 
 const _MC_OUTCOMES = (:escaped, :MS_rejected, :skin_vetoed,
@@ -83,6 +84,7 @@ function run_mc(det::LXeDetector, eff::EffectiveSource,
                 with_stack_histograms::Bool=true,
                 with_cluster_histograms::Bool=true,
                 with_rejection_histograms::Bool=true,
+                with_cut_histograms::Bool=true,
                 sample_stack::Int=0,
                 sample_stack_path::Union{AbstractString, Nothing}=nothing
                 )::MCResult
@@ -120,6 +122,15 @@ function run_mc(det::LXeDetector, eff::EffectiveSource,
                               z_max_cm   = det.z_gate)
                            for _ in 1:n_threads] :
                           Vector{ClusterHistogramSet}()
+    # CutHistograms: r-axis padded ~5 % beyond the LXe envelope so the FV
+    # box and the outermost bin are both visible on the cut-2 plot.
+    thread_cut_hist = with_cut_histograms ?
+                      [CutHistograms(
+                          r_max_cm = 1.05 * det.R_ICV_inner,
+                          z_min_cm = det.z_LXe_bottom - 0.05 * (det.z_gate - det.z_LXe_bottom),
+                          z_max_cm = det.z_gate       + 0.05 * (det.z_gate - det.z_LXe_bottom))
+                       for _ in 1:n_threads] :
+                      Vector{CutHistograms}()
     thread_stack    = [PhotonStack()         for _ in 1:n_threads]
     thread_snapshot = [MersenneTwister(0)    for _ in 1:n_threads]
 
@@ -143,6 +154,7 @@ function run_mc(det::LXeDetector, eff::EffectiveSource,
         local_rej    = with_rejection_histograms ? thread_rej_hist[tid] : nothing
         local_stack_hist   = with_stack_histograms   ? thread_stack_hist[tid]   : nothing
         local_cluster_hist = with_cluster_histograms ? thread_cluster_hist[tid] : nothing
+        local_cut    = with_cut_histograms ? thread_cut_hist[tid] : nothing
         local_stack  = thread_stack[tid]
         local_snap   = thread_snapshot[tid]
 
@@ -163,8 +175,11 @@ function run_mc(det::LXeDetector, eff::EffectiveSource,
         end
         for i in 1:n_local
             copy!(local_snap, rng)
+            # fast_veto fills cut 1 (h_u_sampled) on every photon and
+            # cut 2 (first_interaction_r_z) when the photon interacts.
             fv = fast_veto(rng, det, eff, xcom, params;
-                            rej_hist=local_rej, cdf=eff_cdf)
+                            rej_hist=local_rej, cut_hist=local_cut,
+                            cdf=eff_cdf)
             if fv === :pass
                 copy!(rng, local_snap)
                 empty!(local_stack)
@@ -184,6 +199,23 @@ function run_mc(det::LXeDetector, eff::EffectiveSource,
                     # (companion-veto reclassification happens later, below).
                     if outcome === :SS_in_ROI || outcome === :SS_outside_ROI
                         fill_ss_pre_roi!(local_cluster_hist, clusters, params)
+                    end
+                end
+                # Cut 3: events that passed skin + FV (= NOT escaped /
+                # skin_vetoed / outside_FV). Equivalent to outcome ∈
+                # {MS_rejected, SS_outside_ROI, SS_in_ROI}; companion_vetoed
+                # is reclassified from SS_in_ROI later, so it gets included
+                # automatically when we move the fill there.
+                if local_cut !== nothing
+                    if outcome === :MS_rejected ||
+                       outcome === :SS_outside_ROI ||
+                       outcome === :SS_in_ROI
+                        fill_cut3!(local_cut, clusters, params)
+                    end
+                    # Cut 4: SS events about to be ROI-tested (= the
+                    # SS_in_ROI ∪ SS_outside_ROI set).
+                    if outcome === :SS_in_ROI || outcome === :SS_outside_ROI
+                        fill_cut4!(local_cut, clusters, params)
                     end
                 end
             elseif fv === :vetoed_skin
@@ -287,9 +319,23 @@ function run_mc(det::LXeDetector, eff::EffectiveSource,
         nothing
     end
 
+    merged_cut_hist = if with_cut_histograms
+        cuth = CutHistograms(
+            r_max_cm = 1.05 * det.R_ICV_inner,
+            z_min_cm = det.z_LXe_bottom - 0.05 * (det.z_gate - det.z_LXe_bottom),
+            z_max_cm = det.z_gate       + 0.05 * (det.z_gate - det.z_LXe_bottom))
+        for tch in thread_cut_hist
+            merge_cut_histograms!(cuth, tch)
+        end
+        cuth
+    else
+        nothing
+    end
+
     MCResult(eff.name, eff.isotope, counts, n_total, runtime,
              eff.total_per_yr, f_ss_roi, bg, r_comp,
-             merged_stack_hist, merged_cluster_hist, merged_rej)
+             merged_stack_hist, merged_cluster_hist, merged_rej,
+             merged_cut_hist)
 end
 
 """
@@ -307,6 +353,7 @@ function run_mc_all(det::LXeDetector, effs::Vector{EffectiveSource},
                     with_stack_histograms::Bool=true,
                     with_cluster_histograms::Bool=true,
                     with_rejection_histograms::Bool=true,
+                    with_cut_histograms::Bool=true,
                     sample_stack::Int=0,
                     sample_stack_dir::Union{AbstractString, Nothing}=nothing
                     )::Vector{MCResult}
@@ -336,6 +383,7 @@ function run_mc_all(det::LXeDetector, effs::Vector{EffectiveSource},
                               with_stack_histograms=with_stack_histograms,
                               with_cluster_histograms=with_cluster_histograms,
                               with_rejection_histograms=with_rejection_histograms,
+                              with_cut_histograms=with_cut_histograms,
                               sample_stack=sample_stack,
                               sample_stack_path=sample_path))
     end

@@ -67,6 +67,9 @@ function parse_cli()
         "--no-cluster-histos"
             action   = :store_true
             help     = "Skip accumulating + writing ClusterHistogramSet CSVs."
+        "--no-cut-histos"
+            action   = :store_true
+            help     = "Skip accumulating + writing the cut-flow CutHistograms CSVs."
         "--sample-stack"
             arg_type = Int
             default  = 0
@@ -89,6 +92,7 @@ function main()
     do_rej_hist       = !args["no-rejection-histograms"]
     do_stack_hist     = !args["no-stack-histos"]
     do_cluster_hist   = !args["no-cluster-histos"]
+    do_cut_hist       = !args["no-cut-histos"]
     sample_stack_n    = args["sample-stack"]
 
     # Construct output directory up front so per-source paths can be
@@ -130,6 +134,7 @@ function main()
                               with_stack_histograms=do_stack_hist,
                               with_cluster_histograms=do_cluster_hist,
                               with_rejection_histograms=do_rej_hist,
+                              with_cut_histograms=do_cut_hist,
                               sample_stack=sample_stack_n,
                               sample_stack_dir=out_dir)
     else
@@ -150,6 +155,7 @@ function main()
                                with_stack_histograms=do_stack_hist,
                                with_cluster_histograms=do_cluster_hist,
                                with_rejection_histograms=do_rej_hist,
+                               with_cut_histograms=do_cut_hist,
                                sample_stack=sample_stack_n,
                                sample_stack_path=sample_path))
     end
@@ -264,7 +270,7 @@ function main()
     println("  → wrote $csv_path")
 
     # ───────── Histogram CSVs (one folder per source) ─────────
-    if do_rej_hist || do_stack_hist || do_cluster_hist
+    if do_rej_hist || do_stack_hist || do_cluster_hist || do_cut_hist
         for r in results
             h_dir = joinpath(out_dir, "hist_$(r.name)")
             wrote = false
@@ -276,6 +282,9 @@ function main()
             end
             if do_cluster_hist && r.cluster_hists !== nothing
                 mkpath(h_dir); _save_cluster_csvs(h_dir, r.cluster_hists); wrote = true
+            end
+            if do_cut_hist && r.cut_hists !== nothing
+                mkpath(h_dir); _save_cut_csvs(h_dir, r.cut_hists); wrote = true
             end
             wrote && println("  → wrote $h_dir")
         end
@@ -431,6 +440,51 @@ function _save_cluster_csvs(dir::String, ch::ClusterHistogramSet)
               x_left="bin_ec_left_MeV",  x_right="bin_ec_right_MeV",
               y_lo=0.0,           y_hi=ch.dz_max_cm,    y_n=ch.dz_n_bins,
               y_left="bin_dz_left_cm",   y_right="bin_dz_right_cm")
+end
+
+# ---------------------------------------------------------------------------
+# CutHistograms → CSVs (cut-flow set, one CSV per histogram)
+# ---------------------------------------------------------------------------
+
+function _save_cut_csvs(dir::String, ch::CutHistograms)
+    # Cut 1
+    _write_1d(joinpath(dir, "cut1_h_u_sampled.csv"),
+              ch.h_u_sampled;
+              lo=0.0, hi=1.0,
+              left_label="bin_u_left", right_label="bin_u_right")
+    # Cut 2
+    _write_2d(joinpath(dir, "cut2_first_interaction_r_z.csv"),
+              ch.first_interaction_r_z;
+              x_lo=0.0,           x_hi=ch.r_max_cm,   x_n=ch.r_n_bins,
+              x_left="bin_r_left_cm",   x_right="bin_r_right_cm",
+              y_lo=ch.z_min_cm,   y_hi=ch.z_max_cm,   y_n=ch.z_n_bins,
+              y_left="bin_z_left_cm",   y_right="bin_z_right_cm")
+    # Cut 3
+    _write_1d(joinpath(dir, "cut3_dz_inclusive.csv"),
+              ch.dz_inclusive;
+              lo=0.0, hi=ch.dz_max_cm,
+              left_label="bin_left_cm", right_label="bin_right_cm")
+    _write_int_bins(joinpath(dir, "cut3_n_visible.csv"),
+                    ch.n_visible; label="n_visible")
+    _write_1d(joinpath(dir, "cut3_E_total.csv"),
+              ch.E_total;
+              lo=0.0, hi=ch.E_max_MeV,
+              left_label="bin_left_MeV", right_label="bin_right_MeV")
+    # Cut 4
+    _write_1d(joinpath(dir, "cut4_ss_ec_pre_roi.csv"),
+              ch.ss_ec_pre_roi;
+              lo=0.0, hi=ch.E_max_MeV,
+              left_label="bin_left_MeV", right_label="bin_right_MeV")
+    _write_1d(joinpath(dir, "cut4_ss_es_pre_roi.csv"),
+              ch.ss_es_pre_roi;
+              lo=0.0, hi=ch.E_max_MeV,
+              left_label="bin_left_MeV", right_label="bin_right_MeV")
+    _write_2d(joinpath(dir, "cut4_ss_r_z.csv"),
+              ch.ss_r_z;
+              x_lo=0.0,           x_hi=ch.r_max_cm,   x_n=ch.r_n_bins,
+              x_left="bin_r_left_cm",   x_right="bin_r_right_cm",
+              y_lo=ch.z_min_cm,   y_hi=ch.z_max_cm,   y_n=ch.z_n_bins,
+              y_left="bin_z_left_cm",   y_right="bin_z_right_cm")
 end
 
 function _save_rejection_csvs(dir::String, rh::RejectionHistograms)
