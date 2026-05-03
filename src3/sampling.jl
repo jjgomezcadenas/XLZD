@@ -175,7 +175,72 @@ function sample_entry(rng::AbstractRNG, det::LXeDetector,
                        eff::EffectiveSource, cdf::Vector{Float64})
     if eff.region === :barrel
         return sample_barrel_entry(rng, det, cdf, eff.u_bins)
-    else
+    elseif eff.region === :endcap_top || eff.region === :endcap_bottom
         return sample_endcap_entry(rng, det, eff.region, cdf, eff.u_bins)
+    elseif eff.region === :fc_barrel
+        # FC barrel: read geometry from the (single) contribution's PCyl.
+        p = eff.contributions[1].source.producer::PCyl
+        return sample_fc_barrel_entry(rng, p.geom, cdf, eff.u_bins)
+    elseif eff.region === :fc_annular
+        # FC annular grid holder: read geometry from PAnnularDisk.
+        p = eff.contributions[1].source.producer::PAnnularDisk
+        return sample_fc_annular_entry(rng, p, cdf, eff.u_bins)
+    else
+        error("sample_entry: unknown region $(eff.region)")
     end
+end
+
+# ---------------------------------------------------------------------------
+# Field-cage sampling primitives
+# ---------------------------------------------------------------------------
+
+"""
+    sample_fc_barrel_entry(rng, g::GCyl, cdf, u_bins) -> (x, y, z, dx, dy, dz, u)
+
+Sample one γ entering the LXe from a field-cage barrel source. Position
+uniform on the inner cylindrical surface at radius `g.R_inner`, with z
+in `[g.z_min, g.z_max]`. Direction at polar angle θ from the inward
+normal (= −r̂), azimuth uniform.
+
+Used for FCRN, FCRS, FCSE (R = 74.3 cm) and FCPT (R = 72.8 cm); all four
+share `z ∈ [-13.75, 145.6] cm` (full FC barrel envelope).
+"""
+function sample_fc_barrel_entry(rng::AbstractRNG, g::GCyl,
+                                 cdf::Vector{Float64}, u_bins::Vector{Float64})
+    R   = g.R_inner
+    φ   = 2π * rand(rng)
+    z   = g.z_min + height(g) * rand(rng)
+    x   = R * cos(φ)
+    y   = R * sin(φ)
+    nx, ny, nz = -cos(φ), -sin(φ), 0.0   # inward = −r̂
+    u   = sample_u(rng, u_bins, cdf)
+    ψ   = 2π * rand(rng)
+    dx, dy, dz = rotate_direction(nx, ny, nz, u, ψ)
+    (x, y, z, dx, dy, dz, u)
+end
+
+"""
+    sample_fc_annular_entry(rng, p::PAnnularDisk, cdf, u_bins)
+        -> (x, y, z, dx, dy, dz, u)
+
+Sample one γ exiting the LXe-facing face of a grid-holder slab. Position
+uniform on the annular face at z = `p.z_face`, with `r² ~ Uniform(R_in²,
+R_out²)` and `φ ~ Uniform(0, 2π)`. Inward normal is `+ẑ` (FCBG, slab
+opens downward) or `−ẑ` (FCTG, slab opens upward); set by
+`p.normal_sign`. Direction at polar angle θ from the inward normal,
+azimuth uniform.
+"""
+function sample_fc_annular_entry(rng::AbstractRNG, p::PAnnularDisk,
+                                  cdf::Vector{Float64}, u_bins::Vector{Float64})
+    φ   = 2π * rand(rng)
+    r²  = p.R_in^2 + (p.R_out^2 - p.R_in^2) * rand(rng)
+    r   = sqrt(r²)
+    x   = r * cos(φ)
+    y   = r * sin(φ)
+    z   = p.z_face
+    nx, ny, nz = 0.0, 0.0, Float64(p.normal_sign)   # ±ẑ inward
+    u   = sample_u(rng, u_bins, cdf)
+    ψ   = 2π * rand(rng)
+    dx, dy, dz = rotate_direction(nx, ny, nz, u, ψ)
+    (x, y, z, dx, dy, dz, u)
 end

@@ -92,8 +92,12 @@ export ME_C2_MEV
 # Source sampling
 export build_cdf, sample_u
 export sample_barrel_entry, sample_endcap_entry, sample_entry
+export sample_fc_barrel_entry, sample_fc_annular_entry
 export icv_top_inner_disk, icv_bot_inner_disk
 export ICV_TOP_ASPECT, ICV_BOT_ASPECT
+
+# Field-cage effective sources
+export build_field_cage_effective_sources
 
 # MC params and helper functions
 export MCParams, in_fv

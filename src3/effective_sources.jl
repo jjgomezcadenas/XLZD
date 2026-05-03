@@ -201,3 +201,57 @@ function build_effective_sources(individual_sources::Vector{GammaSource},
 
     out
 end
+
+# ---------------------------------------------------------------------------
+# Field-cage effective sources
+# ---------------------------------------------------------------------------
+#
+# Each FC component sits inside the LXe with no Ti to traverse on the way
+# to the active volume; its EffectiveSource has exactly one contribution
+# (itself) with empty downstream slab list, and the dN/du at the LXe
+# entry equals the dN/du at the source's own inner surface — already
+# computed by `make_gamma_source`.
+#
+# Region symbols introduced here (used by sampling.jl):
+#   :fc_barrel   — emit on the source PCyl's inner cylindrical surface
+#   :fc_annular  — emit on the source PAnnularDisk's LXe-facing face
+
+"""
+    _fc_region(p::PObject) -> Symbol
+
+Region symbol used by the EffectiveSource and the sampler to dispatch
+the entry-point geometry. PCyl → :fc_barrel, PAnnularDisk → :fc_annular.
+"""
+_fc_region(::PCyl)::Symbol         = :fc_barrel
+_fc_region(::PAnnularDisk)::Symbol = :fc_annular
+_fc_region(p) = error("Unsupported PObject for FC: $(typeof(p))")
+
+"""
+    build_field_cage_effective_sources(fc::FieldCage, mat_Ti, mat_SS, mat_PTFE;
+                                       u_bins=DEFAULT_U_BINS) -> Vector{EffectiveSource}
+
+Build 6 components × 3 isotopes (Bi-214, Tl-208, Tl-208 cascade companion)
+= 18 EffectiveSources for the field cage. Each carries a single
+SourceContribution whose downstream slab list is empty (no cryostat-Ti
+attenuation). The companion Tl208c sources are needed by the Tl-208
+companion-veto path in run_mc.
+
+Names follow the same convention as the cryostat sources:
+  FCRN_Bi214, FCRN_Tl208, FCRN_Tl208c, FCRS_Bi214, ...
+"""
+function build_field_cage_effective_sources(
+            fc::FieldCage;
+            u_bins::Vector{Float64}=DEFAULT_U_BINS
+        )::Vector{EffectiveSource}
+    out = EffectiveSource[]
+    for p in fc_components(fc)
+        region = _fc_region(p)
+        for iso in (:Bi214, :Tl208, :Tl208c)
+            gs = make_gamma_source(p, iso, u_bins)
+            contribs = [SourceContribution(gs, Slab[])]
+            push!(out, build_effective_source(string(p.name, "_", iso),
+                                               region, iso, contribs, u_bins))
+        end
+    end
+    out
+end

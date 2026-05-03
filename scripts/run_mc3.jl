@@ -18,14 +18,32 @@ using .XLZD3
 const PROJECT_ROOT = abspath(joinpath(@__DIR__, ".."))
 const TI_PATH      = joinpath(PROJECT_ROOT, "data", "nist_ti.csv")
 const LXE_NIST     = joinpath(PROJECT_ROOT, "data", "nist_lxe.csv")
+const FE_NIST      = joinpath(PROJECT_ROOT, "data", "nist_fe.csv")
+const PTFE_NIST    = joinpath(PROJECT_ROOT, "data", "nist_teflon.csv")
 const XCOM_PATH    = joinpath(PROJECT_ROOT, "data", "nist.csv")
 const LXE_CSV      = joinpath(PROJECT_ROOT, "data", "lxe_detector.csv")
 const GEOM_CSV     = joinpath(PROJECT_ROOT, "data", "lz_cryo_geometry.csv")
 const EXTRAS_CSV   = joinpath(PROJECT_ROOT, "data", "lz_cryo_extras.csv")
 const SURFACES_CSV = joinpath(PROJECT_ROOT, "data", "lz_cryo_surface_sources.csv")
 
+# Canonical source list — order is the index for --source-index.
+# Cryostat (1-6) and field cage (7-18) sources can both be selected by
+# --source-name. The Tl208c companion sources are not user-selectable;
+# they get auto-attached to the corresponding _Tl208 main source.
+const MAIN_SOURCE_NAMES = String[
+    # 1..6  cryostat (CB/CTH/CBH × Bi/Tl)
+    "CB_Bi214",  "CTH_Bi214",  "CBH_Bi214",
+    "CB_Tl208",  "CTH_Tl208",  "CBH_Tl208",
+    # 7..12 field cage Bi-214
+    "FCRN_Bi214", "FCRS_Bi214", "FCSE_Bi214",
+    "FCPT_Bi214", "FCTG_Bi214", "FCBG_Bi214",
+    # 13..18 field cage Tl-208
+    "FCRN_Tl208", "FCRS_Tl208", "FCSE_Tl208",
+    "FCPT_Tl208", "FCTG_Tl208", "FCBG_Tl208",
+]
+
 function parse_cli()
-    s = ArgParseSettings(description="src3/ MC driver — cryostat-only")
+    s = ArgParseSettings(description="src3/ MC driver — cryostat + field cage")
     @add_arg_table! s begin
         "--n-samples"
             arg_type = Int
@@ -41,18 +59,20 @@ function parse_cli()
         "--source-index"
             arg_type = Int
             default  = 0           # 0 = unspecified
-            help     = "1..6 index into the source list (CB_Bi214, " *
-                       "CTH_Bi214, CBH_Bi214, CB_Tl208, CTH_Tl208, " *
-                       "CBH_Tl208). Use --source-name as the canonical " *
-                       "alternative; both may be passed if they agree."
+            help     = "1..18 index into the source list. 1..6 = cryostat " *
+                       "(CB/CTH/CBH × Bi/Tl); 7..12 = field cage Bi-214 " *
+                       "(FCRN, FCRS, FCSE, FCPT, FCTG, FCBG); 13..18 = " *
+                       "same field cage components for Tl-208. Use " *
+                       "--source-name as the canonical alternative; " *
+                       "both may be passed if they agree."
         "--source-name"
             arg_type = String
             default  = ""
-            help     = "Canonical source identifier (e.g. CB_Tl208). " *
-                       "If both --source-name and --source-index are " *
-                       "given they must refer to the same source; " *
-                       "mismatch aborts with both values printed. " *
-                       "If neither is given the script aborts."
+            help     = "Canonical source identifier (e.g. CB_Tl208 or " *
+                       "FCBG_Bi214). If both --source-name and " *
+                       "--source-index are given they must refer to the " *
+                       "same source; mismatch aborts with both values " *
+                       "printed. If neither is given the script aborts."
         "--sigma-e"
             arg_type = Float64
             default  = 0.007       # σ_E / E (LZ default 0.7 %)
@@ -170,25 +190,27 @@ function main()
     @printf("  FV z range           : [%.1f, %.1f] cm\n", fv_z_min, fv_z_max)
     @printf("  FV r max             : %.1f cm\n", fv_r_max)
 
-    # Load
-    mat_LXe = load_material("LXe", 2.953, LXE_NIST)
-    mat_Ti  = load_material("Ti",  4.510, TI_PATH)
-    det     = build_lxe_detector(LXE_CSV, mat_LXe)
-    cryo    = build_cryostat(GEOM_CSV, EXTRAS_CSV, SURFACES_CSV)
-    indiv   = build_individual_sources(cryo, mat_Ti)
-    effs    = build_effective_sources(indiv, cryo, mat_Ti)
-    xcom    = load_xcom(XCOM_PATH)
-    params  = MCParams(σ_E_over_E       = sigma_e,
-                       ROI_halfwidth_keV = roi_half,
-                       fv_z_min_cm       = fv_z_min,
-                       fv_z_max_cm       = fv_z_max,
-                       fv_r2_max_cm2     = fv_r_max^2)
+    # Load — cryostat + field-cage materials, both source families.
+    mat_LXe  = load_material("LXe",  2.953, LXE_NIST)
+    mat_Ti   = load_material("Ti",   4.510, TI_PATH)
+    mat_SS   = load_material("SS",   7.930, FE_NIST)        # Fe XCOM as proxy
+    mat_PTFE = load_material("PTFE", 2.200, PTFE_NIST)
+    det      = build_lxe_detector(LXE_CSV, mat_LXe)
+    cryo     = build_cryostat(GEOM_CSV, EXTRAS_CSV, SURFACES_CSV)
+    indiv    = build_individual_sources(cryo, mat_Ti)
+    cryo_effs = build_effective_sources(indiv, cryo, mat_Ti)
+    fc        = build_field_cage(mat_Ti, mat_SS, mat_PTFE)
+    fc_effs   = build_field_cage_effective_sources(fc)
+    effs      = vcat(cryo_effs, fc_effs)
+    xcom      = load_xcom(XCOM_PATH)
+    params    = MCParams(σ_E_over_E       = sigma_e,
+                         ROI_halfwidth_keV = roi_half,
+                         fv_z_min_cm       = fv_z_min,
+                         fv_z_max_cm       = fv_z_max,
+                         fv_r2_max_cm2     = fv_r_max^2)
 
-    # Source selection (per the validation matrix below).
-    main_names = ["CB_Bi214", "CTH_Bi214", "CBH_Bi214",
-                  "CB_Tl208", "CTH_Tl208", "CBH_Tl208"]
     by_name = Dict(e.name => e for e in effs)
-    selected_name = _resolve_source(src_i, src_name, main_names)
+    selected_name = _resolve_source(src_i, src_name, MAIN_SOURCE_NAMES)
 
     eff = by_name[selected_name]
     comp_eff = if eff.isotope === :Tl208
@@ -222,7 +244,7 @@ function main()
         total_bg += r.bg_per_yr
     end
     println("  ", "─"^77)
-    @printf("  TOTAL background (cryostat sources) : %.4e events/yr\n", total_bg)
+    @printf("  Single-source background : %.4e events/yr\n", total_bg)
     println()
 
     # Run-wide analysis cuts (same for all sources). Printed together so the
