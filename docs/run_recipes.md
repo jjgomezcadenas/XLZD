@@ -33,9 +33,13 @@ To override the auto-default, pass `--roi-halfwidth N` (e.g. `17.2` for
 
 ## Sources
 
-The MC propagates γ from six main effective sources, plus three
-companion sources used by the cascade-companion veto when running a
-Tl-208 main source:
+The MC propagates γ from **18 main effective sources** (6 cryostat +
+12 field cage), plus a Tl-208 cascade companion attached to each Tl-208
+main source for the companion-veto step. Activities and masses are from
+the LZ bb0nu paper Table I; geometry is summarized in
+`design/lz_fieldcage_model.md` and `docs/LZ_detector_summary.md`.
+
+### Cryostat (1–6)
 
 | index | name        | isotope | E (MeV) | region        | role                    |
 |-------|-------------|---------|---------|---------------|-------------------------|
@@ -45,12 +49,42 @@ Tl-208 main source:
 | 4     | CB_Tl208    | Tl-208  | 2.615   | barrel        | main γ + companion veto |
 | 5     | CTH_Tl208   | Tl-208  | 2.615   | top endcap    | main γ + companion veto |
 | 6     | CBH_Tl208   | Tl-208  | 2.615   | bottom endcap | main γ + companion veto |
-| —     | CB_Tl208c   | Tl-208c | 0.583   | barrel        | cascade companion       |
-| —     | CTH_Tl208c  | Tl-208c | 0.583   | top endcap    | cascade companion       |
-| —     | CBH_Tl208c  | Tl-208c | 0.583   | bottom endcap | cascade companion       |
+
+### Field cage (7–18)
+
+Each field-cage component is one source per isotope; FC components sit
+*inside* the LXe with no Ti to traverse. The "barrel" sources are
+smeared cylindrical shells over the full FC axial extent
+(z ∈ [−13.75, 145.6] cm); the two grid holders are annular slabs
+(R_in = 72.8, R_out = 80.3 cm) with a single LXe-facing emission face.
+
+| index | name        | component               | R (cm)       | z geometry                    | mass (kg) |
+|-------|-------------|-------------------------|--------------|-------------------------------|-----------|
+| 7     | FCRN_Bi214  | Field-cage rings (Ti)   | 74.3         | shell, full barrel            | 93.0      |
+| 8     | FCRS_Bi214  | Field-cage resistors    | 74.3         | shell, full barrel            | 0.06      |
+| 9     | FCSE_Bi214  | TPC sensors             | 74.3         | shell, full barrel            | 5.02      |
+| 10    | FCPT_Bi214  | PTFE walls              | 72.8         | shell, full barrel            | 184.0     |
+| 11    | FCTG_Bi214  | Top grids+holders (anode+gate) | 72.8–80.3 | annular slab at z=145.6, opens up   | 44.55 |
+| 12    | FCBG_Bi214  | Cathode grid+holder     | 72.8–80.3    | annular slab at z=0, opens down     | 22.28 |
+| 13–18 | FCRN_Tl208 … FCBG_Tl208 | (same components, Tl-208 isotope) | … | … | … |
+
+The bottom-shield grid (deepest in LXe) is intentionally dropped — the
+γ paths to the FV are blocked by the cathode + RFR, so its
+contribution is negligible in this model. The cathode mass is taken as
+¼ of the bb0nu paper's lumped 89.1 kg "field grids and holders" (4
+grids of comparable mass).
+
+Specific activities, masses, and the per-component μ·t at 2.448 MeV
+are tabulated in the test output of `test/test_field_cage3.jl`.
+
+### Cascade companions (auto-attached)
+
+For every Tl-208 source the matching `*_Tl208c` companion source (lumped
+at 583 keV, 99% of Tl-208 decays) is built but not user-selectable. The
+driver attaches it automatically when a Tl-208 main source is run.
 
 The driver runs **exactly one** main source per process. Production
-jobs are per-source by design (e.g. 1e9 events × 6 sources is not a
+jobs are per-source by design (e.g. 1e9 events × 18 sources is not a
 single-process workload). Specify the source via `--source-name` or
 `--source-index`; both can be passed if they agree.
 
@@ -62,7 +96,7 @@ single-process workload). Specify the source via `--source-name` or
 | `--seed N`              | `1234`           | master RNG seed (per-thread = seed + tid)                       |
 | `--run-name STR`        | `last_run_v2`    | run dir under `output/<STR>/`                                   |
 | `--source-name NAME`    | (empty)          | canonical source name (e.g. `CB_Tl208`)                         |
-| `--source-index N`      | `0`              | 1..6 alternative; if both given they must agree                 |
+| `--source-index N`      | `0`              | 1..18 alternative (1–6 cryostat, 7–12 FC Bi-214, 13–18 FC Tl-208) |
 | `--sigma-e σ`           | `0.007`          | `σ_rms / E` (LZ convention)                                     |
 | `--roi-halfwidth keV`   | auto             | default = 1 FWHM at the supplied σ; pass to override            |
 | `--fv-z-min cm`         | `26.0`           | FV box, lower z                                                 |
@@ -90,8 +124,18 @@ julia --project=. -t 8 scripts/run_mc3.jl \
     --n-samples 1000000000 --source-name CB_Tl208 \
     --run-name FV_default
 ```
-Produces `output/FV_default/CB_Tl208/`. Repeat for the other five
-sources (each in its own job).
+Produces `output/FV_default/CB_Tl208/`. Repeat for the other 17 sources
+(each in its own job).
+
+### Field-cage source — annular grid holder (FCBG)
+```bash
+julia --project=. -t 8 scripts/run_mc3.jl \
+    --n-samples 1000000000 --source-name FCBG_Bi214 \
+    --run-name FV_default
+```
+FCBG sits in the LXe at z=0 (cathode plane) — emits over an annular
+slab spanning R ∈ [72.8, 80.3]. Self-shielding is non-negligible
+(μ·t ≈ 0.24 axial), already folded into the source's dN/du.
 
 ### Loose FV + ±1σ ROI (LZ-paper-like)
 ```bash
@@ -239,3 +283,41 @@ for src in output/run_1e9/*/ ; do
     [ -f "$src/summary.csv" ] && python py/plot_histograms.py "$src"
 done
 ```
+
+## Field cage cross-check
+
+Reference numbers from the LZ bb0nu paper (FV [26, 96] × r ≤ 39 cm),
+reproduced from the spec in `design/lz_fieldcage_model.md` §3:
+
+| component       | spec γ/yr | bb0nu γ/yr |
+|-----------------|-----------|------------|
+| Field-cage rings (FCRN)            | 0.50 | 0.30 |
+| Field-cage resistors+sensors (FCRS+FCSE) | 1.70 | 1.39 |
+| PTFE walls (FCPT)                  | 0.14 | 0.14 |
+| Top grid holders (FCTG)            | 0.03 | —    |
+| Bottom holder (full mass, both grids) | 0.38 | —    |
+| **Holders total (paper)**          | **0.41** | **0.23** |
+| **Field-cage total (paper)**       | **2.75** | **2.06** |
+
+Our model (cathode-only FCBG = ¼ of the lumped 89.1 kg, vs the spec's
+"full bottom holder" using ½) trims the FCBG mass from 44.55 to 22.28
+kg. So our predicted FCBG should land near `0.38 / 2 ≈ 0.19` γ/yr.
+
+A 1e6-sample smoke pass at default cuts (σ_rms/E = 0.7%, ROI = ±1 FWHM,
+default FV) reproduced these orders of magnitude:
+
+| component | smoke γ/yr | spec γ/yr | ratio |
+|-----------|-----------|-----------|-------|
+| FCRN_Bi214 | 0.90 | 0.50 | 1.8× |
+| FCRS_Bi214 | 2.12 | (in 1.70 lump) | — |
+| FCSE_Bi214 | 0.79 | (in 1.70 lump) | — |
+| FCRS+FCSE | 2.91 | 1.70 | 1.7× |
+| FCPT_Bi214 | 0.090 | 0.14 | 0.6× |
+| FCTG_Bi214 | 0.032 | 0.03 | 1.1× |
+| FCBG_Bi214 | 0.181 | 0.19 | 0.9× |
+| **Bi-214 total** | **4.11** | **2.75 (full mass)** | **1.5×** |
+
+A 1e9-sample production pass tightens the per-source uncertainty to ≪1%
+and resolves the Tl-208 contributions (zero at 1e6 because the 2.615
+MeV line sits above ROI; only Compton-edge fluctuations land in the
+ROI window, requiring much higher statistics to count).

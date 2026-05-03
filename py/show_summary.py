@@ -35,8 +35,16 @@ import pandas as pd
 # Source ordering for the report. Sources not in this list are appended
 # alphabetically at the end so future additions still print.
 _PREFERRED_ORDER = [
+    # Cryostat (6)
     "CB_Bi214", "CTH_Bi214", "CBH_Bi214",
     "CB_Tl208", "CTH_Tl208", "CBH_Tl208",
+    # Field cage Bi-214 (6): rings, resistors, sensors, PTFE, top grids,
+    # bottom grid (cathode-only)
+    "FCRN_Bi214", "FCRS_Bi214", "FCSE_Bi214",
+    "FCPT_Bi214", "FCTG_Bi214", "FCBG_Bi214",
+    # Field cage Tl-208 (6)
+    "FCRN_Tl208", "FCRS_Tl208", "FCSE_Tl208",
+    "FCPT_Tl208", "FCTG_Tl208", "FCBG_Tl208",
 ]
 
 
