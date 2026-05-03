@@ -40,7 +40,19 @@ function parse_cli()
                        "globs **/summary.csv under output/<run-name>/."
         "--source-index"
             arg_type = Int
-            default  = 0           # 0 = all 6 main sources
+            default  = 0           # 0 = unspecified
+            help     = "1..6 index into the source list (CB_Bi214, " *
+                       "CTH_Bi214, CBH_Bi214, CB_Tl208, CTH_Tl208, " *
+                       "CBH_Tl208). Use --source-name as the canonical " *
+                       "alternative; both may be passed if they agree."
+        "--source-name"
+            arg_type = String
+            default  = ""
+            help     = "Canonical source identifier (e.g. CB_Tl208). " *
+                       "If both --source-name and --source-index are " *
+                       "given they must refer to the same source; " *
+                       "mismatch aborts with both values printed. " *
+                       "If neither is given the script aborts."
         "--sigma-e"
             arg_type = Float64
             default  = 0.007       # σ_E / E (LZ default 0.7 %)
@@ -74,12 +86,58 @@ function parse_cli()
     parse_args(s)
 end
 
+"""
+    _resolve_source(src_i, src_name, main_names) -> String
+
+Apply the source-selection validation matrix:
+
+  --source-index   --source-name   action
+  given            given           accept iff names[index] == name; abort
+                                    on mismatch with both values printed
+  given            ""              accept names[index]; abort if index
+                                    out of [1, length(names)]
+  0                given           accept name; abort if not in main_names
+  0                ""              abort: must specify one
+
+Returns the canonical source name to run.
+"""
+function _resolve_source(src_i::Int, src_name::String,
+                          main_names::Vector{String})::String
+    n_max = length(main_names)
+    has_idx  = src_i != 0
+    has_name = !isempty(src_name)
+
+    if !has_idx && !has_name
+        error("must specify --source-index 1..$n_max or --source-name " *
+              "(one of: " * join(main_names, ", ") * ")")
+    end
+
+    if has_idx && (src_i < 1 || src_i > n_max)
+        error("--source-index $src_i out of range; must be 1..$n_max")
+    end
+    if has_name && !(src_name in main_names)
+        error("--source-name \"$src_name\" not in known list: " *
+              join(main_names, ", "))
+    end
+
+    if has_idx && has_name
+        idx_name = main_names[src_i]
+        if idx_name != src_name
+            error("--source-index $src_i resolves to \"$idx_name\" " *
+                  "but --source-name was \"$src_name\" — they must agree.")
+        end
+        return src_name
+    end
+    return has_name ? src_name : main_names[src_i]
+end
+
 function main()
     args = parse_cli()
     N         = args["n-samples"]
     seed      = args["seed"]
     run_name  = args["run-name"]
     src_i     = args["source-index"]
+    src_name  = args["source-name"]
     sigma_e   = args["sigma-e"]
     roi_half  = args["roi-halfwidth"]
     fv_z_min  = args["fv-z-min"]
@@ -116,40 +174,30 @@ function main()
                        fv_z_max_cm       = fv_z_max,
                        fv_r2_max_cm2     = fv_r_max^2)
 
-    # Run
+    # Source selection (per the validation matrix below).
     main_names = ["CB_Bi214", "CTH_Bi214", "CBH_Bi214",
                   "CB_Tl208", "CTH_Tl208", "CBH_Tl208"]
     by_name = Dict(e.name => e for e in effs)
-    results = MCResult[]
-    if src_i == 0
-        results = run_mc_all(det, effs, xcom, params, N;
-                              mc_seed=seed, verbose=true,
-                              with_stack_histograms=do_histos,
-                              with_cluster_histograms=do_histos,
-                              with_cut_histograms=do_histos,
-                              sample_stack=sample_stack_n,
-                              sample_stack_dir=run_dir)
+    selected_name = _resolve_source(src_i, src_name, main_names)
+
+    eff = by_name[selected_name]
+    comp_eff = if eff.isotope === :Tl208
+        get(by_name, replace(eff.name, "_Tl208" => "_Tl208c"), nothing)
     else
-        1 <= src_i <= length(main_names) ||
-            error("source-index must be 1..$(length(main_names))")
-        eff = by_name[main_names[src_i]]
-        comp_eff = if eff.isotope === :Tl208
-            get(by_name, replace(eff.name, "_Tl208" => "_Tl208c"), nothing)
-        else
-            nothing
-        end
-        @printf("\n── Running %s ──\n", eff.name)
-        sample_path = sample_stack_n != 0 ?
-                      joinpath(run_dir, eff.name, "stack_sample.csv") :
-                      nothing
-        push!(results, run_mc(det, eff, comp_eff, xcom, params, N;
-                               mc_seed=seed, verbose=true,
-                               with_stack_histograms=do_histos,
-                               with_cluster_histograms=do_histos,
-                               with_cut_histograms=do_histos,
-                               sample_stack=sample_stack_n,
-                               sample_stack_path=sample_path))
+        nothing
     end
+    @printf("\n── Running %s ──\n", eff.name)
+    sample_path = sample_stack_n != 0 ?
+                  joinpath(run_dir, eff.name, "stack_sample.csv") :
+                  nothing
+    results = MCResult[]
+    push!(results, run_mc(det, eff, comp_eff, xcom, params, N;
+                           mc_seed=seed, verbose=true,
+                           with_stack_histograms=do_histos,
+                           with_cluster_histograms=do_histos,
+                           with_cut_histograms=do_histos,
+                           sample_stack=sample_stack_n,
+                           sample_stack_path=sample_path))
 
     # Print summary
     println("\n── Per-source results ──")
