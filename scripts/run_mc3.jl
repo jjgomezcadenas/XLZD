@@ -284,7 +284,7 @@ function main()
         open(csv_path, "w") do f
             println(f, "source,isotope,n_total,gamma_per_yr_total,f_SS_in_ROI,",
                        "bg_per_yr,r_comp,runtime_s,",
-                       "n_escaped,n_MS,n_skin_vetoed,n_SS_outside_FV,",
+                       "n_escaped,n_MS,n_skin_vetoed,n_outside_FV,",
                        "n_SS_outside_ROI,n_SS_in_ROI,n_companion_vetoed,",
                        "Q_betabeta_keV,sigma_E_over_E,ROI_halfwidth_keV,",
                        "fv_z_min_cm,fv_z_max_cm,fv_r_max_cm,",
