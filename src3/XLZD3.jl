@@ -46,11 +46,6 @@ export total_mass, mass_breakdown, mc_active_extras, mc_active_mass
 
 # Field cage composite
 export FieldCage, build_field_cage, fc_components, fc_total_mass
-export FC_R_TPC_INNER_CM, FC_R_RING_CM, FC_R_HOLDER_OUT_CM
-export FC_BARREL_Z_BOT_CM, FC_BARREL_Z_TOP_CM, FC_BARREL_HEIGHT_CM
-export FC_Z_GATE_CM, FC_Z_CATHODE_CM
-export FC_M_RINGS_KG, FC_M_RESISTORS_KG, FC_M_SENSORS_KG, FC_M_PTFE_KG
-export FC_M_GRIDS_TOTAL_KG, FC_M_FCTG_KG, FC_M_FCBG_KG
 
 # Materials
 export Material, load_material

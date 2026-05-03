@@ -1,0 +1,5 @@
+name,material,R_inner_cm,z_min_cm,z_max_cm,mass_kg,act_U238_late_mBqkg,act_Th232_late_mBqkg,notes
+FCRN,Ti,74.3,-13.75,145.6,93.0,0.35,0.24,Field-cage Ti rings (57 drift + 8 RFR)
+FCRS,SS,74.3,-13.75,145.6,0.06,1350,2010,Field-shaping resistors (alumina ceramic; SS proxy)
+FCSE,SS,74.3,-13.75,145.6,5.02,5.82,1.88,TPC sensors (loop antennas + sensors)
+FCPT,PTFE,72.8,-13.75,145.6,184.0,0.04,0.01,PTFE reflector walls (5 mm panels)

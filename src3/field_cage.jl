@@ -7,70 +7,23 @@
 #   FCRS  — field-cage resistors          (barrel,  R=74.3, SS proxy)
 #   FCSE  — TPC sensors                   (barrel,  R=74.3, SS proxy)
 #   FCPT  — PTFE reflector walls          (barrel,  R=72.8, PTFE)
-#   FCTG  — top grids+holders (anode+gate),  endcap-top (annular slab at z_gate, +H above)
-#   FCBG  — bottom grid+holder (cathode only), endcap-bot (annular slab at z=0, +H below)
+#   FCTG  — top grids+holders (anode+gate),  endcap-top (annular slab at z_gate)
+#   FCBG  — bottom grid+holder (cathode only), endcap-bot (annular slab at z=0)
 #
-# Masses and specific activities from the LZ bb0nu paper Table I:
-#   Field-cage rings        93.0 kg   Bi=0.35  Tl=0.24
-#   Field-cage resistors     0.06 kg  Bi=1350  Tl=2010
-#   TPC sensors              5.02 kg  Bi=5.82  Tl=1.88
-#   PTFE walls               184  kg  Bi=0.04  Tl=0.01
-#   Field grids and holders  89.1 kg  Bi=2.63  Tl=1.46  (4-grid lump)
-#       → FCTG = 2/4 of 89.1 = 44.55 kg  (anode + gate at top)
-#       → FCBG = 1/4 of 89.1 = 22.28 kg  (cathode only;
-#                                          bottom-shield grid dropped)
+# Data lives in two CSVs (single source of truth):
+#   data/lz_fc_barrels.csv  — 4 PCyl rows  (FCRN, FCRS, FCSE, FCPT)
+#   data/lz_fc_grids.csv    — 2 PAnnularDisk rows (FCTG, FCBG)
 #
-# The "barrel" components are smeared cylindrical shells over the full
-# field-cage axial extent (drift + RFR). Effective wall thickness is
-# back-derived from mass/(ρ·area) so the GCyl carries a physically
-# meaningful slab depth for the self-shielding integral.
+# CSV schema is self-contained: every per-component dimension, mass and
+# specific activity sits in the row. Materials (Ti, SS, PTFE) are named
+# as strings; the loader looks each up in a `materials` Dict supplied by
+# the caller, so NIST table paths stay in code (alongside the LXe + Ti
+# loaders the cryostat already uses).
 #
-# Grid-holder geometry: thick-walled annulus from R_in=72.8 (TPC inner)
-# to R_out=80.3 (skin outer), axial slab thickness H back-derived from
-# the SS density. The slab extends *away* from the active LXe (above the
-# gate plane for FCTG; below the cathode plane for FCBG); the LXe-facing
-# face lies at the gate / cathode plane respectively.
-
-# ---------------------------------------------------------------------------
-# Geometry constants
-# ---------------------------------------------------------------------------
-
-# TPC anchors (from docs/LZ_detector_summary.md §2)
-const FC_R_TPC_INNER_CM   = 72.8         # PTFE inner = TPC inner
-const FC_R_RING_CM        = 74.3         # rings, resistors, sensors at FC outer
-const FC_R_HOLDER_OUT_CM  = 80.3         # grid-holder outer (= skin outer)
-const FC_BARREL_Z_BOT_CM  = -13.75       # bottom of RFR
-const FC_BARREL_Z_TOP_CM  =  145.6       # gate plane (top of drift)
-const FC_BARREL_HEIGHT_CM = FC_BARREL_Z_TOP_CM - FC_BARREL_Z_BOT_CM  # 159.35
-
-const FC_Z_GATE_CM        = FC_BARREL_Z_TOP_CM   # top grid emission face
-const FC_Z_CATHODE_CM     = 0.0                  # bottom grid emission face
-
-# Material densities (g/cm³)
-const ρ_Ti_GCM3           = 4.510        # field-cage rings
-const ρ_SS_GCM3           = 7.930        # SS-304 (Fe XCOM proxy)
-const ρ_PTFE_GCM3         = 2.200        # PTFE reflectors
-
-# bb0nu Table I — masses (kg)
-const FC_M_RINGS_KG       = 93.0
-const FC_M_RESISTORS_KG   = 0.06
-const FC_M_SENSORS_KG     = 5.02
-const FC_M_PTFE_KG        = 184.0
-const FC_M_GRIDS_TOTAL_KG = 89.1
-const FC_M_FCTG_KG        = FC_M_GRIDS_TOTAL_KG / 2          # 44.55
-const FC_M_FCBG_KG        = FC_M_GRIDS_TOTAL_KG / 4          # 22.275
-
-# bb0nu Table I — late-chain specific activities (mBq/kg)
-const FC_A_RINGS_BI214      = 0.35
-const FC_A_RINGS_TL208      = 0.24
-const FC_A_RESISTORS_BI214  = 1350.0
-const FC_A_RESISTORS_TL208  = 2010.0
-const FC_A_SENSORS_BI214    = 5.82
-const FC_A_SENSORS_TL208    = 1.88
-const FC_A_PTFE_BI214       = 0.04
-const FC_A_PTFE_TL208       = 0.01
-const FC_A_GRIDS_BI214      = 2.63
-const FC_A_GRIDS_TL208      = 1.46
+# Effective wall thickness (PCyl) and slab height (PAnnularDisk) are
+# back-derived from mass + density at load time so the slab self-shielding
+# integral receives the correct optical depth without ever needing the
+# thickness as an explicit CSV column.
 
 # ---------------------------------------------------------------------------
 # Composite type
@@ -79,36 +32,29 @@ const FC_A_GRIDS_TL208      = 1.46
 """
     FieldCage
 
-Container for the six field-cage PObjects. Built once at startup from
-`build_field_cage(mat_Ti, mat_SS, mat_PTFE)`; passed read-only to the
-effective-source builder.
+Container for the six field-cage PObjects, ordered as they appear in
+the source CSVs:
 
-Fields:
-  * `FCRN` — Ti rings, barrel, PCyl
-  * `FCRS` — resistors, barrel, PCyl (SS proxy)
-  * `FCSE` — TPC sensors, barrel, PCyl (SS proxy)
-  * `FCPT` — PTFE walls, barrel, PCyl
-  * `FCTG` — top grids+holders, PAnnularDisk (single emission face = gate plane)
-  * `FCBG` — cathode grid+holder, PAnnularDisk (single emission face = cathode plane)
+  * `barrels` — Vector{PCyl}        (FCRN, FCRS, FCSE, FCPT)
+  * `grids`   — Vector{PAnnularDisk} (FCTG, FCBG)
+
+Built once at startup from `build_field_cage(barrels_csv, grids_csv,
+materials)`; passed read-only to the effective-source builder.
 """
 struct FieldCage
-    FCRN::PCyl
-    FCRS::PCyl
-    FCSE::PCyl
-    FCPT::PCyl
-    FCTG::PAnnularDisk
-    FCBG::PAnnularDisk
+    barrels::Vector{PCyl}
+    grids::Vector{PAnnularDisk}
 end
 
 # ---------------------------------------------------------------------------
-# Helpers
+# CSV → PObject
 # ---------------------------------------------------------------------------
 
 """
     _back_derive_wall_thickness_cm(mass_kg, ρ_g_cm3, R_in_cm, height_cm) -> cm
 
 Back-solve for the cylindrical-shell wall thickness that reproduces a
-target mass at fixed inner radius and axial height. This smears the
+target mass at fixed inner radius and axial height. Smears the
 component's physical metal over the full FC barrel envelope; the slab
 self-shielding integral then sees the correct optical depth (μ·t)
 without needing an explicit per-component geometry.
@@ -116,43 +62,70 @@ without needing an explicit per-component geometry.
 function _back_derive_wall_thickness_cm(mass_kg::Real, ρ_g_cm3::Real,
                                         R_in_cm::Real, height_cm::Real)::Float64
     # mass(GCyl) = π·(R_o² − R_i²)·H · ρ / 1000.0 = kg
-    # Solve: (R_in + t)² − R_in² = mass·1000 / (π·H·ρ)
+    # Solve:    (R_in + t)² − R_in² = mass·1000 / (π·H·ρ)
     target_diff = Float64(mass_kg) * 1000.0 / (π * height_cm * ρ_g_cm3)
     R_out = sqrt(R_in_cm^2 + target_diff)
     R_out - R_in_cm
 end
 
 """
-    _fcbarrel_pcyl(name, mass_kg, R_in_cm, mat, aBi, aTh) -> PCyl
+    _lookup_material(materials, name) -> Material
 
-Build a barrel field-cage PCyl whose wall thickness is back-derived
-from the target mass at the supplied inner radius and the FC barrel
-axial extent.
+Resolve a material name (a CSV cell) to the `Material` object the
+caller supplied. Errors with a clear message if the name is unknown,
+listing the available keys for fast diagnosis of typos in CSVs.
 """
-function _fcbarrel_pcyl(name::AbstractString, mass_kg::Real, R_in_cm::Real,
-                        mat::Material, aBi::Real, aTh::Real)::PCyl
-    t = _back_derive_wall_thickness_cm(mass_kg, mat.density,
-                                        R_in_cm, FC_BARREL_HEIGHT_CM)
-    g = GCyl(R_in_cm, t, FC_BARREL_Z_BOT_CM, FC_BARREL_Z_TOP_CM)
-    PCyl(g, mat, aBi, aTh; count=1, name=String(name))
+function _lookup_material(materials::Dict{String,Material},
+                          name::AbstractString)::Material
+    haskey(materials, name) ||
+        error("FieldCage CSV: unknown material '$name'. " *
+              "Known: $(sort(collect(keys(materials))))")
+    materials[name]
 end
 
 """
-    _annular_holder(name, mass_kg, z_face_cm, normal_sign, mat, aBi, aTh) -> PAnnularDisk
+    _build_barrel_pcyl(row, materials) -> PCyl
 
-Build an annular-slab grid holder (FCTG / FCBG) whose axial thickness
-H is back-derived from the target mass, given the SS density and the
-fixed annular footprint π·(R_out² − R_in²).
+Build one barrel-source PCyl from a parsed CSV row. Wall thickness is
+back-derived from mass.
 """
-function _annular_holder(name::AbstractString, mass_kg::Real,
-                         z_face_cm::Real, normal_sign::Integer,
-                         mat::Material, aBi::Real, aTh::Real)::PAnnularDisk
-    H = mass_kg * 1000.0 /
-        (mat.density * π * (FC_R_HOLDER_OUT_CM^2 - FC_R_TPC_INNER_CM^2))
-    PAnnularDisk(FC_R_TPC_INNER_CM, FC_R_HOLDER_OUT_CM,
-                 Float64(z_face_cm), H, Int(normal_sign),
-                 mat, Float64(aBi), Float64(aTh);
-                 count=1, name=String(name))
+function _build_barrel_pcyl(row::Dict{String,Any},
+                            materials::Dict{String,Material})::PCyl
+    name    = strip(string(row["name"]))
+    mat     = _lookup_material(materials, strip(string(row["material"])))
+    R_in    = Float64(row["R_inner_cm"])
+    z_min   = Float64(row["z_min_cm"])
+    z_max   = Float64(row["z_max_cm"])
+    mass_kg = Float64(row["mass_kg"])
+    aBi     = Float64(row["act_U238_late_mBqkg"])
+    aTh     = Float64(row["act_Th232_late_mBqkg"])
+
+    t = _back_derive_wall_thickness_cm(mass_kg, mat.density, R_in, z_max - z_min)
+    g = GCyl(R_in, t, z_min, z_max)
+    PCyl(g, mat, aBi, aTh; count=1, name=name)
+end
+
+"""
+    _build_grid_annulus(row, materials) -> PAnnularDisk
+
+Build one grid-holder PAnnularDisk from a parsed CSV row. Slab height
+H is back-derived from mass and density.
+"""
+function _build_grid_annulus(row::Dict{String,Any},
+                             materials::Dict{String,Material})::PAnnularDisk
+    name        = strip(string(row["name"]))
+    mat         = _lookup_material(materials, strip(string(row["material"])))
+    R_in        = Float64(row["R_in_cm"])
+    R_out       = Float64(row["R_out_cm"])
+    z_face      = Float64(row["z_face_cm"])
+    normal_sign = Int(row["normal_sign"])
+    mass_kg     = Float64(row["mass_kg"])
+    aBi         = Float64(row["act_U238_late_mBqkg"])
+    aTh         = Float64(row["act_Th232_late_mBqkg"])
+
+    H = mass_kg * 1000.0 / (mat.density * π * (R_out^2 - R_in^2))
+    PAnnularDisk(R_in, R_out, z_face, H, normal_sign, mat, aBi, aTh;
+                 count=1, name=name)
 end
 
 # ---------------------------------------------------------------------------
@@ -160,38 +133,32 @@ end
 # ---------------------------------------------------------------------------
 
 """
-    build_field_cage(mat_Ti, mat_SS, mat_PTFE) -> FieldCage
+    build_field_cage(barrels_csv, grids_csv, materials) -> FieldCage
 
-Construct the six field-cage components with the bb0nu Table I masses
-and activities. Materials must be provided by the caller (so the script
-controls the NIST table source); typically:
+Construct the six field-cage components by reading the two CSVs:
+
+  * `barrels_csv` (default `data/lz_fc_barrels.csv`) — 4 PCyl rows
+  * `grids_csv`   (default `data/lz_fc_grids.csv`)   — 2 PAnnularDisk rows
+
+`materials` is a `Dict{String,Material}` that maps every material name
+appearing in the CSVs to a fully-loaded `Material`. Typical wiring:
 
     mat_Ti   = load_material("Ti",   4.510, "data/nist_ti.csv")
     mat_SS   = load_material("SS",   7.930, "data/nist_fe.csv")
     mat_PTFE = load_material("PTFE", 2.200, "data/nist_teflon.csv")
+    fc = build_field_cage("data/lz_fc_barrels.csv",
+                           "data/lz_fc_grids.csv",
+                           Dict("Ti" => mat_Ti, "SS" => mat_SS,
+                                "PTFE" => mat_PTFE))
 """
-function build_field_cage(mat_Ti::Material, mat_SS::Material,
-                          mat_PTFE::Material)::FieldCage
-    fcrn = _fcbarrel_pcyl("FCRN", FC_M_RINGS_KG,     FC_R_RING_CM,
-                          mat_Ti,   FC_A_RINGS_BI214,     FC_A_RINGS_TL208)
-    fcrs = _fcbarrel_pcyl("FCRS", FC_M_RESISTORS_KG, FC_R_RING_CM,
-                          mat_SS,   FC_A_RESISTORS_BI214, FC_A_RESISTORS_TL208)
-    fcse = _fcbarrel_pcyl("FCSE", FC_M_SENSORS_KG,   FC_R_RING_CM,
-                          mat_SS,   FC_A_SENSORS_BI214,   FC_A_SENSORS_TL208)
-    fcpt = _fcbarrel_pcyl("FCPT", FC_M_PTFE_KG,      FC_R_TPC_INNER_CM,
-                          mat_PTFE, FC_A_PTFE_BI214,      FC_A_PTFE_TL208)
-
-    # FCTG: anode+gate collapsed at the gate plane. Emission face = z_gate
-    # (LXe-facing side of the slab); the slab itself extends UP into the
-    # gas+anode region (irrelevant for active-LXe accounting).
-    fctg = _annular_holder("FCTG", FC_M_FCTG_KG, FC_Z_GATE_CM, -1,
-                           mat_SS, FC_A_GRIDS_BI214, FC_A_GRIDS_TL208)
-    # FCBG: cathode only. Emission face = z=0 (LXe-facing top of slab);
-    # slab extends DOWN into the RFR (also irrelevant).
-    fcbg = _annular_holder("FCBG", FC_M_FCBG_KG, FC_Z_CATHODE_CM, +1,
-                           mat_SS, FC_A_GRIDS_BI214, FC_A_GRIDS_TL208)
-
-    FieldCage(fcrn, fcrs, fcse, fcpt, fctg, fcbg)
+function build_field_cage(barrels_csv::AbstractString,
+                          grids_csv::AbstractString,
+                          materials::Dict{String,Material})::FieldCage
+    barrels = PCyl[_build_barrel_pcyl(row, materials)
+                   for row in _read_csv_rows(barrels_csv)]
+    grids   = PAnnularDisk[_build_grid_annulus(row, materials)
+                           for row in _read_csv_rows(grids_csv)]
+    FieldCage(barrels, grids)
 end
 
 # ---------------------------------------------------------------------------
@@ -201,16 +168,16 @@ end
 """
     fc_components(fc::FieldCage) -> Vector{PObject}
 
-Return the six FC PObjects in canonical order:
+Return the six FC PObjects in canonical CSV order:
     [FCRN, FCRS, FCSE, FCPT, FCTG, FCBG]
+(barrels in lz_fc_barrels.csv order, then grids in lz_fc_grids.csv order)
 """
 fc_components(fc::FieldCage)::Vector{PObject} =
-    PObject[fc.FCRN, fc.FCRS, fc.FCSE, fc.FCPT, fc.FCTG, fc.FCBG]
+    PObject[fc.barrels..., fc.grids...]
 
 """
     fc_total_mass(fc::FieldCage) -> Float64
 
-Total field-cage mass (kg) summed over the six components. For sanity
-checks vs. bb0nu Table I (≈ 350.6 kg with FCBG at 1/4 mass).
+Total field-cage mass (kg) summed over the six components.
 """
 fc_total_mass(fc::FieldCage)::Float64 = sum(mass(p) for p in fc_components(fc))

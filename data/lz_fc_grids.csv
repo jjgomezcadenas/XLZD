@@ -1,0 +1,3 @@
+name,material,R_in_cm,R_out_cm,z_face_cm,normal_sign,mass_kg,act_U238_late_mBqkg,act_Th232_late_mBqkg,notes
+FCTG,SS,72.8,80.3,145.6,-1,44.55,2.63,1.46,Anode+gate collapsed at gate plane; slab opens upward into gas/anode region
+FCBG,SS,72.8,80.3,0.0,1,22.275,2.63,1.46,Cathode only; bottom-shield grid dropped from model; slab opens downward into RFR

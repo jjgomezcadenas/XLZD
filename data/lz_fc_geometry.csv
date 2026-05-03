@@ -1,7 +1,0 @@
-component,region,material,R_cm,H_cm,position
-Field-cage rings,barrel,Ti,74.3,159.35,"65 rings (57 drift + 8 RFR), 25 mm pitch, smeared over 159.3 cm"
-Field-cage resistors,barrel,mixed (alumina ceramic),74.3,159.35,FC drift + RFR + cathode feedthrough resistors
-PTFE walls,barrel,PTFE,72.8,159.35,"5 mm thick panels, full barrel height 159.3 cm"
-TPC sensors,barrel,mixed,74.3,159.35,"Loop antennas, thermometers, acoustic sensors"
-Top grids and holders,endcap,SS/Ti,72.8,0.0,Anode + gate grids with holder rings (top)
-Bottom grids and holders,endcap,SS/Ti,72.8,0.0,Cathode + bottom shield grids with holder rings (bottom)

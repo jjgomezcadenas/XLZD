@@ -7,14 +7,21 @@ using Printf
 isdefined(Main, :XLZD3) || include("../src3/XLZD3.jl")
 using .XLZD3
 
-ti_path     = joinpath(@__DIR__, "..", "data", "nist_ti.csv")
-fe_path     = joinpath(@__DIR__, "..", "data", "nist_fe.csv")
-teflon_path = joinpath(@__DIR__, "..", "data", "nist_teflon.csv")
+ti_path        = joinpath(@__DIR__, "..", "data", "nist_ti.csv")
+fe_path        = joinpath(@__DIR__, "..", "data", "nist_fe.csv")
+teflon_path    = joinpath(@__DIR__, "..", "data", "nist_teflon.csv")
+fc_barrels_csv = joinpath(@__DIR__, "..", "data", "lz_fc_barrels.csv")
+fc_grids_csv   = joinpath(@__DIR__, "..", "data", "lz_fc_grids.csv")
 
 mat_Ti   = load_material("Ti",   4.510, ti_path)
 mat_SS   = load_material("SS",   7.930, fe_path)
 mat_PTFE = load_material("PTFE", 2.200, teflon_path)
-fc       = build_field_cage(mat_Ti, mat_SS, mat_PTFE)
+fc       = build_field_cage(fc_barrels_csv, fc_grids_csv,
+                             Dict("Ti"   => mat_Ti,
+                                  "SS"   => mat_SS,
+                                  "PTFE" => mat_PTFE))
+
+named = Dict(p.name => p for p in fc_components(fc))
 
 @testset "Component identity and order" begin
     comps = fc_components(fc)
@@ -22,23 +29,28 @@ fc       = build_field_cage(mat_Ti, mat_SS, mat_PTFE)
     names = [p.name for p in comps]
     @test names == ["FCRN", "FCRS", "FCSE", "FCPT", "FCTG", "FCBG"]
 
-    @test fc.FCRN isa PCyl
-    @test fc.FCRS isa PCyl
-    @test fc.FCSE isa PCyl
-    @test fc.FCPT isa PCyl
-    @test fc.FCTG isa PAnnularDisk
-    @test fc.FCBG isa PAnnularDisk
+    # Barrel components are PCyl, grids are PAnnularDisk
+    for n in ("FCRN", "FCRS", "FCSE", "FCPT")
+        @test named[n] isa PCyl
+    end
+    for n in ("FCTG", "FCBG")
+        @test named[n] isa PAnnularDisk
+    end
+
+    # FieldCage struct exposes barrels + grids vectors
+    @test length(fc.barrels) == 4
+    @test length(fc.grids)   == 2
 end
 
-@testset "Masses match bb0nu Table I" begin
+@testset "Masses match bb0nu Table I (CSV-driven)" begin
     # Each component's back-derived geometry should yield exactly the
-    # target mass to within float roundoff.
-    @test isapprox(mass(fc.FCRN), 93.0;        rtol=1e-10)
-    @test isapprox(mass(fc.FCRS),  0.06;       rtol=1e-10)
-    @test isapprox(mass(fc.FCSE),  5.02;       rtol=1e-10)
-    @test isapprox(mass(fc.FCPT), 184.0;       rtol=1e-10)
-    @test isapprox(mass(fc.FCTG),  44.55;      rtol=1e-10)
-    @test isapprox(mass(fc.FCBG),  22.275;     rtol=1e-10)
+    # mass listed in the source CSV row.
+    @test isapprox(mass(named["FCRN"]),  93.0;   rtol=1e-10)
+    @test isapprox(mass(named["FCRS"]),   0.06;  rtol=1e-10)
+    @test isapprox(mass(named["FCSE"]),   5.02;  rtol=1e-10)
+    @test isapprox(mass(named["FCPT"]), 184.0;   rtol=1e-10)
+    @test isapprox(mass(named["FCTG"]),  44.55;  rtol=1e-10)
+    @test isapprox(mass(named["FCBG"]),  22.275; rtol=1e-10)
 
     # Total: 93 + 0.06 + 5.02 + 184 + 44.55 + 22.275 = 348.905 kg
     @test isapprox(fc_total_mass(fc), 348.905; rtol=1e-10)
@@ -46,82 +58,79 @@ end
 
 @testset "Activities match bb0nu Table I" begin
     # Bi-214 chain
-    @test isapprox(activity_U238_late(fc.FCRN), 93.0   * 0.35;    rtol=1e-10)
-    @test isapprox(activity_U238_late(fc.FCRS),  0.06  * 1350.0;  rtol=1e-10)
-    @test isapprox(activity_U238_late(fc.FCSE),  5.02  * 5.82;    rtol=1e-10)
-    @test isapprox(activity_U238_late(fc.FCPT), 184.0  * 0.04;    rtol=1e-10)
-    @test isapprox(activity_U238_late(fc.FCTG),  44.55 * 2.63;    rtol=1e-10)
-    @test isapprox(activity_U238_late(fc.FCBG),  22.275* 2.63;    rtol=1e-10)
+    @test isapprox(activity_U238_late(named["FCRN"]),  93.0  * 0.35;   rtol=1e-10)
+    @test isapprox(activity_U238_late(named["FCRS"]),   0.06 * 1350.0; rtol=1e-10)
+    @test isapprox(activity_U238_late(named["FCSE"]),   5.02 * 5.82;   rtol=1e-10)
+    @test isapprox(activity_U238_late(named["FCPT"]), 184.0  * 0.04;   rtol=1e-10)
+    @test isapprox(activity_U238_late(named["FCTG"]),  44.55 * 2.63;   rtol=1e-10)
+    @test isapprox(activity_U238_late(named["FCBG"]),  22.275* 2.63;   rtol=1e-10)
 
     # Tl-208 chain (Th-late)
-    @test isapprox(activity_Th232_late(fc.FCRN), 93.0   * 0.24;   rtol=1e-10)
-    @test isapprox(activity_Th232_late(fc.FCRS),  0.06  * 2010.0; rtol=1e-10)
-    @test isapprox(activity_Th232_late(fc.FCSE),  5.02  * 1.88;   rtol=1e-10)
-    @test isapprox(activity_Th232_late(fc.FCPT), 184.0  * 0.01;   rtol=1e-10)
-    @test isapprox(activity_Th232_late(fc.FCTG),  44.55 * 1.46;   rtol=1e-10)
-    @test isapprox(activity_Th232_late(fc.FCBG),  22.275* 1.46;   rtol=1e-10)
+    @test isapprox(activity_Th232_late(named["FCRN"]),  93.0  * 0.24;  rtol=1e-10)
+    @test isapprox(activity_Th232_late(named["FCRS"]),   0.06 * 2010.0; rtol=1e-10)
+    @test isapprox(activity_Th232_late(named["FCSE"]),   5.02 * 1.88;  rtol=1e-10)
+    @test isapprox(activity_Th232_late(named["FCPT"]), 184.0  * 0.01;  rtol=1e-10)
+    @test isapprox(activity_Th232_late(named["FCTG"]),  44.55 * 1.46;  rtol=1e-10)
+    @test isapprox(activity_Th232_late(named["FCBG"]),  22.275* 1.46;  rtol=1e-10)
 end
 
-@testset "Barrel geometry: radii and z extent" begin
-    # All barrel components share the FC barrel z extent
-    for p in (fc.FCRN, fc.FCRS, fc.FCSE, fc.FCPT)
-        @test p.geom.z_min ≈ FC_BARREL_Z_BOT_CM
-        @test p.geom.z_max ≈ FC_BARREL_Z_TOP_CM
-        @test height(p.geom) ≈ FC_BARREL_HEIGHT_CM
+@testset "Barrel geometry: radii and z extent (CSV-driven)" begin
+    # All barrel components share the FC barrel z extent (per CSV)
+    for n in ("FCRN", "FCRS", "FCSE", "FCPT")
+        p = named[n]
+        @test p.geom.z_min ≈ -13.75
+        @test p.geom.z_max ≈ 145.6
+        @test height(p.geom) ≈ 159.35
     end
     # Rings/resistors/sensors at R=74.3 (FC outer); PTFE at R=72.8 (TPC inner)
-    @test fc.FCRN.geom.R_inner ≈ FC_R_RING_CM
-    @test fc.FCRS.geom.R_inner ≈ FC_R_RING_CM
-    @test fc.FCSE.geom.R_inner ≈ FC_R_RING_CM
-    @test fc.FCPT.geom.R_inner ≈ FC_R_TPC_INNER_CM
+    @test named["FCRN"].geom.R_inner ≈ 74.3
+    @test named["FCRS"].geom.R_inner ≈ 74.3
+    @test named["FCSE"].geom.R_inner ≈ 74.3
+    @test named["FCPT"].geom.R_inner ≈ 72.8
 end
 
 @testset "Back-derived wall thickness sanity" begin
     # FCRN (Ti, ρ=4.51): t ≈ 0.277 cm
-    @test isapprox(fc.FCRN.geom.wall_thickness, 0.277; rtol=5e-2)
+    @test isapprox(named["FCRN"].geom.wall_thickness, 0.277; rtol=5e-2)
     # FCRS (SS, 60 g): essentially 0
-    @test fc.FCRS.geom.wall_thickness < 1e-3
+    @test named["FCRS"].geom.wall_thickness < 1e-3
     # FCSE (SS, 5 kg): t ≈ 0.0087 cm
-    @test isapprox(fc.FCSE.geom.wall_thickness, 0.0087; rtol=5e-2)
+    @test isapprox(named["FCSE"].geom.wall_thickness, 0.0087; rtol=5e-2)
     # FCPT (PTFE, 184 kg): t ≈ 1.15 cm
-    @test isapprox(fc.FCPT.geom.wall_thickness, 1.15; rtol=5e-2)
+    @test isapprox(named["FCPT"].geom.wall_thickness, 1.15; rtol=5e-2)
 end
 
-@testset "FCTG/FCBG annular slab geometry" begin
+@testset "FCTG/FCBG annular slab geometry (CSV-driven)" begin
     # Both share inner=72.8 (TPC inner), outer=80.3 (skin outer)
-    @test fc.FCTG.R_in  ≈ FC_R_TPC_INNER_CM
-    @test fc.FCTG.R_out ≈ FC_R_HOLDER_OUT_CM
-    @test fc.FCBG.R_in  ≈ FC_R_TPC_INNER_CM
-    @test fc.FCBG.R_out ≈ FC_R_HOLDER_OUT_CM
+    @test named["FCTG"].R_in  ≈ 72.8
+    @test named["FCTG"].R_out ≈ 80.3
+    @test named["FCBG"].R_in  ≈ 72.8
+    @test named["FCBG"].R_out ≈ 80.3
 
-    # FCTG: face at gate plane, slab opens UP (into gas/anode region) —
-    # inward normal = −ẑ (emit into LXe drift below)
-    @test fc.FCTG.z_face ≈ FC_Z_GATE_CM
-    @test fc.FCTG.normal_sign == -1
-    # FCBG: face at cathode plane, slab opens DOWN (into RFR) —
-    # inward normal = +ẑ (emit into LXe drift above)
-    @test fc.FCBG.z_face ≈ FC_Z_CATHODE_CM
-    @test fc.FCBG.normal_sign == +1
+    # FCTG: face at gate plane (z=145.6), slab opens UP (normal -z)
+    @test named["FCTG"].z_face ≈ 145.6
+    @test named["FCTG"].normal_sign == -1
+    # FCBG: face at cathode plane (z=0), slab opens DOWN (normal +z)
+    @test named["FCBG"].z_face ≈ 0.0
+    @test named["FCBG"].normal_sign == +1
 
     # Slab heights from mass / (ρ_SS × annular footprint)
-    expected_H_FCTG = 44.55 * 1000 / (mat_SS.density *
-                       π * (FC_R_HOLDER_OUT_CM^2 - FC_R_TPC_INNER_CM^2))
-    expected_H_FCBG = 22.275 * 1000 / (mat_SS.density *
-                       π * (FC_R_HOLDER_OUT_CM^2 - FC_R_TPC_INNER_CM^2))
-    @test isapprox(fc.FCTG.H_axial, expected_H_FCTG; rtol=1e-10)
-    @test isapprox(fc.FCBG.H_axial, expected_H_FCBG; rtol=1e-10)
+    expected_H_FCTG = 44.55  * 1000 / (mat_SS.density * π * (80.3^2 - 72.8^2))
+    expected_H_FCBG = 22.275 * 1000 / (mat_SS.density * π * (80.3^2 - 72.8^2))
+    @test isapprox(named["FCTG"].H_axial, expected_H_FCTG; rtol=1e-10)
+    @test isapprox(named["FCBG"].H_axial, expected_H_FCBG; rtol=1e-10)
     # Sanity: design values 1.56 cm and 0.78 cm
-    @test isapprox(fc.FCTG.H_axial, 1.558; rtol=2e-3)
-    @test isapprox(fc.FCBG.H_axial, 0.779; rtol=2e-3)
+    @test isapprox(named["FCTG"].H_axial, 1.558; rtol=2e-3)
+    @test isapprox(named["FCBG"].H_axial, 0.779; rtol=2e-3)
 end
 
 @testset "Slab regions stay clear of active LXe" begin
     # FCTG slab spans z ∈ [z_gate, z_gate + H], i.e. fully ABOVE the gate
-    z_top_FCTG = fc.FCTG.z_face + fc.FCTG.H_axial
-    @test z_top_FCTG > FC_Z_GATE_CM           # opens upward
+    z_top_FCTG = named["FCTG"].z_face + named["FCTG"].H_axial
+    @test z_top_FCTG > 145.6                      # opens upward
     # FCBG slab spans z ∈ [-H, 0], i.e. fully BELOW the cathode
-    z_bot_FCBG = fc.FCBG.z_face - fc.FCBG.H_axial
-    @test z_bot_FCBG < FC_Z_CATHODE_CM        # opens downward
+    z_bot_FCBG = named["FCBG"].z_face - named["FCBG"].H_axial
+    @test z_bot_FCBG < 0.0                        # opens downward
 end
 
 @testset "γ-rates per source" begin
@@ -154,12 +163,12 @@ end
     μ_Ti   = mat_Ti.μ_lin(E_BI214_MEV)
     μ_SS   = mat_SS.μ_lin(E_BI214_MEV)
     μ_PTFE = mat_PTFE.μ_lin(E_BI214_MEV)
-    μt_FCRN = μ_Ti   * fc.FCRN.geom.wall_thickness
-    μt_FCRS = μ_SS   * fc.FCRS.geom.wall_thickness
-    μt_FCSE = μ_SS   * fc.FCSE.geom.wall_thickness
-    μt_FCPT = μ_PTFE * fc.FCPT.geom.wall_thickness
-    μt_FCTG = μ_SS   * fc.FCTG.H_axial
-    μt_FCBG = μ_SS   * fc.FCBG.H_axial
+    μt_FCRN = μ_Ti   * named["FCRN"].geom.wall_thickness
+    μt_FCRS = μ_SS   * named["FCRS"].geom.wall_thickness
+    μt_FCSE = μ_SS   * named["FCSE"].geom.wall_thickness
+    μt_FCPT = μ_PTFE * named["FCPT"].geom.wall_thickness
+    μt_FCTG = μ_SS   * named["FCTG"].H_axial
+    μt_FCBG = μ_SS   * named["FCBG"].H_axial
 
     @test μt_FCRS < 0.05
     @test μt_FCSE < 0.05

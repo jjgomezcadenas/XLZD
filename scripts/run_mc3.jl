@@ -22,9 +22,11 @@ const FE_NIST      = joinpath(PROJECT_ROOT, "data", "nist_fe.csv")
 const PTFE_NIST    = joinpath(PROJECT_ROOT, "data", "nist_teflon.csv")
 const XCOM_PATH    = joinpath(PROJECT_ROOT, "data", "nist.csv")
 const LXE_CSV      = joinpath(PROJECT_ROOT, "data", "lxe_detector.csv")
-const GEOM_CSV     = joinpath(PROJECT_ROOT, "data", "lz_cryo_geometry.csv")
-const EXTRAS_CSV   = joinpath(PROJECT_ROOT, "data", "lz_cryo_extras.csv")
-const SURFACES_CSV = joinpath(PROJECT_ROOT, "data", "lz_cryo_surface_sources.csv")
+const GEOM_CSV       = joinpath(PROJECT_ROOT, "data", "lz_cryo_geometry.csv")
+const EXTRAS_CSV     = joinpath(PROJECT_ROOT, "data", "lz_cryo_extras.csv")
+const SURFACES_CSV   = joinpath(PROJECT_ROOT, "data", "lz_cryo_surface_sources.csv")
+const FC_BARRELS_CSV = joinpath(PROJECT_ROOT, "data", "lz_fc_barrels.csv")
+const FC_GRIDS_CSV   = joinpath(PROJECT_ROOT, "data", "lz_fc_grids.csv")
 
 # Canonical source list — order is the index for --source-index.
 # Cryostat (1-6) and field cage (7-18) sources can both be selected by
@@ -199,7 +201,10 @@ function main()
     cryo     = build_cryostat(GEOM_CSV, EXTRAS_CSV, SURFACES_CSV)
     indiv    = build_individual_sources(cryo, mat_Ti)
     cryo_effs = build_effective_sources(indiv, cryo, mat_Ti)
-    fc        = build_field_cage(mat_Ti, mat_SS, mat_PTFE)
+    fc        = build_field_cage(FC_BARRELS_CSV, FC_GRIDS_CSV,
+                                 Dict("Ti"   => mat_Ti,
+                                      "SS"   => mat_SS,
+                                      "PTFE" => mat_PTFE))
     fc_effs   = build_field_cage_effective_sources(fc)
     effs      = vcat(cryo_effs, fc_effs)
     xcom      = load_xcom(XCOM_PATH)

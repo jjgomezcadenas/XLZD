@@ -10,11 +10,13 @@ using Random
 isdefined(Main, :XLZD3) || include("../src3/XLZD3.jl")
 using .XLZD3
 
-ti_path     = joinpath(@__DIR__, "..", "data", "nist_ti.csv")
-fe_path     = joinpath(@__DIR__, "..", "data", "nist_fe.csv")
-teflon_path = joinpath(@__DIR__, "..", "data", "nist_teflon.csv")
-lxe_path    = joinpath(@__DIR__, "..", "data", "nist_lxe.csv")
-lxe_csv     = joinpath(@__DIR__, "..", "data", "lxe_detector.csv")
+ti_path        = joinpath(@__DIR__, "..", "data", "nist_ti.csv")
+fe_path        = joinpath(@__DIR__, "..", "data", "nist_fe.csv")
+teflon_path    = joinpath(@__DIR__, "..", "data", "nist_teflon.csv")
+lxe_path       = joinpath(@__DIR__, "..", "data", "nist_lxe.csv")
+lxe_csv        = joinpath(@__DIR__, "..", "data", "lxe_detector.csv")
+fc_barrels_csv = joinpath(@__DIR__, "..", "data", "lz_fc_barrels.csv")
+fc_grids_csv   = joinpath(@__DIR__, "..", "data", "lz_fc_grids.csv")
 
 mat_Ti   = load_material("Ti",   4.510, ti_path)
 mat_SS   = load_material("SS",   7.930, fe_path)
@@ -22,7 +24,10 @@ mat_PTFE = load_material("PTFE", 2.200, teflon_path)
 mat_LXe  = load_material("LXe",  2.953, lxe_path)
 det      = build_lxe_detector(lxe_csv, mat_LXe)
 
-fc       = build_field_cage(mat_Ti, mat_SS, mat_PTFE)
+fc       = build_field_cage(fc_barrels_csv, fc_grids_csv,
+                             Dict("Ti"   => mat_Ti,
+                                  "SS"   => mat_SS,
+                                  "PTFE" => mat_PTFE))
 fc_effs  = build_field_cage_effective_sources(fc)
 
 @testset "FC effective sources: count and names" begin
